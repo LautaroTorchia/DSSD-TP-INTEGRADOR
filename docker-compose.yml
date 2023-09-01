@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  bonita:
+    image: bonita:8.0.0
+    container_name: bonita
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    environment:
+      - BONITA_DB_VENDOR=postgres
+      - BONITA_DB_URL=jdbc:postgresql://postgres:5432/bonitadb
+      - BONITA_DB_DIALECT=org.hibernate.dialect.PostgreSQL9Dialect
+      - BONITA_DB_DRIVER=org.postgresql.Driver
+      - BONITA_DB_USERNAME=bonita
+      - BONITA_DB_PASSWORD=bonita
+      - HTTP_API=true                    
+      - HTTP_API_USERNAME=admin        
+      - HTTP_API_PASSWORD=admin 
+      - PLATFORM_LOGIN=admin
+      - PLATFORM_PASSWORD=admin  
+    depends_on:
+      - postgres
+    volumes:
+      - bonita-temp:/opt/bonita/server/temp
+      - bonita-work:/opt/bonita/server/work
+
+  postgres:
+    image: postgres:13
+    container_name: db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=bonitadb
+      - POSTGRES_USER=bonita
+      - POSTGRES_PASSWORD=bonita
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  bonita-temp:
+  bonita-work:
+  postgres-data:
