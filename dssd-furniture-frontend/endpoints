@@ -1,0 +1,12 @@
+login:
+http://localhost:8080/bonita/loginservice
+form url encoded
+
+check process:
+http://localhost:8080/bonita/API/bpm/process?c=100&p=0
+
+tareas:
+http://localhost:8080/bonita/API/bpm/activity?c=100&p=0
+
+instanciar el proceso:
+http://localhost:8080/bonita/API/bpm/process/7792400268011448559/instantiation

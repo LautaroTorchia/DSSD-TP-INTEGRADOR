@@ -66,6 +66,11 @@ export default function CollectionForm({ onSubmit }) {
           Crear Colección
         </button>
       </form>
+      {/* Additional content or instructions for the form */}
+      <div className={styles.formInstructions}>
+        <p>Por favor, complete el formulario para crear una nueva colección de muebles.</p>
+        {/* You can add more instructions or information here */}
+      </div>
     </div>
   );
 }
