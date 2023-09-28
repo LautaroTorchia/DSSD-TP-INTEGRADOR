@@ -1,0 +1,40 @@
+login:
+http://localhost:8080/bonita/loginservice
+
+curl --location 'http://localhost:8080/bonita/loginservice' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'username=anthony.nichols' \
+--data-urlencode 'password=bpm'
+
+check process:
+http://localhost:8080/bonita/API/bpm/process?c=100&p=0
+
+curl --location 'http://localhost:8080/bonita/API/bpm/process?c=100&p=0' \
+--header 'Cookie: BOS_Locale=en; JSESSIONID=A22341664C8BFD409FAF4640C54B372A; X-Bonita-API-Token=d1dc4a9b-1123-4e6a-a087-70a187798f26'
+
+Instanciar el proceso:
+http://localhost:8080/bonita/API/bpm/process/6748757083116501950/instantiation
+curl --location 'http://localhost:8080/bonita/API/bpm/process/6748757083116501950/instantiation' \
+--header 'X-Bonita-API-Token: d1dc4a9b-1123-4e6a-a087-70a187798f26' \
+--header 'Content-Type: application/json' \
+--header 'Cookie: BOS_Locale=en; JSESSIONID=A22341664C8BFD409FAF4640C54B372A; X-Bonita-API-Token=d1dc4a9b-1123-4e6a-a087-70a187798f26' \
+--data '{
+  "ticket_account": "CustomerA",
+  "ticket_description": "issue description",
+  "ticket_subject": "Issue 1"
+}'
+
+
+Conseguir las userTask:
+http://localhost:8080/bonita/API/bpm/userTask?c=100&p=0
+
+curl --location 'http://localhost:8080/bonita/API/bpm/userTask?c=100&p=0' \
+--header 'Cookie: BOS_Locale=en; JSESSIONID=A22341664C8BFD409FAF4640C54B372A; X-Bonita-API-Token=d1dc4a9b-1123-4e6a-a087-70a187798f26'
+
+curl --location 'http://localhost:8080/bonita/API/bpm/userTask/20007/execution' \
+--header 'X-Bonita-API-Token: d1dc4a9b-1123-4e6a-a087-70a187798f26' \
+--header 'Content-Type: application/json' \
+--header 'Cookie: BOS_Locale=en; JSESSIONID=A22341664C8BFD409FAF4640C54B372A; X-Bonita-API-Token=d1dc4a9b-1123-4e6a-a087-70a187798f26' \
+--data '{
+  "ticket_comment": "Aprobar tarea"
+}'

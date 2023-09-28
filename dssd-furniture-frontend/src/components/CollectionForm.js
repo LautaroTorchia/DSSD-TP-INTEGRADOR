@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from '../styles/collectionForm.module.css'; // Estilos específicos para el formulario
-import authenticateWithBonita from '@/endpoints/login';
+import login from '@/endpoints/login';
+import fetchProcesses from '@/endpoints/fetchProcesses';
 
 export default function CollectionForm({ onSubmit }) {
   const [formData, setFormData] = useState({
@@ -20,23 +21,18 @@ export default function CollectionForm({ onSubmit }) {
     e.preventDefault();
     try {
       // Authenticate with Bonita and get cookies
-      const cookies = await authenticateWithBonita('anthony.nichols', 'bpm');
+      const cookies = await login('anthony.nichols', 'bpm');
 
-      // Check if authentication was successful
       if (cookies) {
         setIsAuthenticated(true);
-        console.log('Authentication successful. Cookies:', cookies);
-
-        // You can now use the cookies for subsequent API requests
-        // For example, set the cookies in Axios headers for API calls
-        // axios.defaults.headers.common['Cookie'] = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
       } else {
-        // Authentication failed
         setIsAuthenticated(false);
         console.error('Authentication failed');
       }
+      
     } catch (error) {
       console.error('Authentication error:', error);
+      fetchProcesses()
     }
   };
 
