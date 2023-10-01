@@ -1,44 +1,49 @@
+# Use tech_user/secret as user/password credentials
 version: '3.8'
-
 services:
-  bonita:
-    image: bonita:8.0.0
-    container_name: bonita
-    restart: on-failure
-    ports:
-      - "8080:8080"
-    environment:
-      - BONITA_DB_VENDOR=postgres
-      - BONITA_DB_URL=jdbc:postgresql://postgres:5432/bonitadb
-      - BONITA_DB_DIALECT=org.hibernate.dialect.PostgreSQL9Dialect
-      - BONITA_DB_DRIVER=org.postgresql.Driver
-      - BONITA_DB_USERNAME=bonita
-      - BONITA_DB_PASSWORD=bonita
-      - HTTP_API=true                    
-      - HTTP_API_USERNAME=admin        
-      - HTTP_API_PASSWORD=admin 
-      - PLATFORM_LOGIN=admin
-      - PLATFORM_PASSWORD=admin  
-    depends_on:
-      - postgres
+  frontend:
+    container_name: frontend
+    build:
+      context: dssd-furniture-frontend
+      dockerfile: Dockerfile
+    expose:
+      - 3000
+  
+  backend:
+    container_name: backend
+    build:
+      context: dssd-furniture-backend
+      dockerfile: Dockerfile
+    expose:
+      - 8000
     volumes:
-      - bonita-temp:/opt/bonita/server/temp
-      - bonita-work:/opt/bonita/server/work
-
-  postgres:
-    image: postgres:13
+      - static-volume:/home/app/web/staticfiles
+      - static-media:/home/app/web/mediafiles
+  
+  db:
     container_name: db
-    restart: always
+    image: postgres:13
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=bonitadb
-      - POSTGRES_USER=bonita
-      - POSTGRES_PASSWORD=bonita
+      POSTGRES_DB: ljj_muebles
+      POSTGRES_USER: ljj_muebles
+      POSTGRES_PASSWORD: admin
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - db-volume:/var/lib/postgresql/data/
+  
+  nginx:
+    container_name: nginx 
+    build:
+      context: nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - static-volume:/home/app/web/staticfiles
+      - static-media:/home/app/web/mediafiles
 
 volumes:
-  bonita-temp:
-  bonita-work:
-  postgres-data:
+  db-volume:
+  static-volume:
+  static-media:
