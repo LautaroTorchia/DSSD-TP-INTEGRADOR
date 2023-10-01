@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+# Ignore all migrations files in all applications
+**/migrations/
+
+# Ignore the virtual environment directory
+env/
+
 # Distribution / packaging
 .Python
 build/
