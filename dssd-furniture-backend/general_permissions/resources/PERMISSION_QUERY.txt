@@ -1,0 +1,1 @@
+SELECT count(*) from authorization_permissionrole JOIN authorization_userrole ON authorization_permissionrole.role_id_id = authorization_userrole.role_id_id JOIN authorization_viewdescriptor ON authorization_permissionrole.view_id_id = authorization_viewdescriptor.id WHERE authorization_userrole.user_id_id = {}  AND authorization_viewdescriptor.stack_name = '{}'

@@ -1,0 +1,9 @@
+query para permisos:
+
+SELECT count(*) from authorization_permissionrole 
+JOIN authorization_userrole ON authorization_permissionrole.role_id_id IN 
+(SELECT authorization_headrole.head_id FROM authorization_headrole 
+WHERE authorization_headrole.child_id = authorization_userrole.role_id_id UNION SELECT authorization_userrole.role_id_id) 
+AND authorization_permissionrole.role_id_id NOT IN (select role_id_id from authorization_eventsuspensionrole 
+WHERE start_at < now() AND end_at > now() UNION select authorization_role.id from authorization_role WHERE is_archived = 't') JOIN authorization_viewdescriptor ON authorization_permissionrole.view_id_id = authorization_viewdescriptor.id WHERE authorization_userrole.user_id_id = {}  
+AND authorization_viewdescriptor.stack_name = '{}'
