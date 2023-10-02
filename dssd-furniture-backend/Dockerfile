@@ -23,40 +23,8 @@ COPY . .
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
-
-#########
-# FINAL #
-#########
-
 # pull official base image
 FROM python:3.9.6-alpine
-
-# set environment variables
-ARG POSTGRES_DB
-ARG POSTGRES_USER
-ARG POSTGRES_PASSWORD
-ARG SQL_HOST
-ARG SQL_PORT
-ARG SECRET_KEY
-ARG DJANGO_HOSTS
-ARG EMAIL_HOST_USER
-ARG EMAIL_HOST_PASSWORD
-ARG PARAMETER_NIFI_HOST
-
-
-ENV DEBUG 0
-ENV SECRET_KEY=$SECRET_KEY
-ENV DJANGO_ALLOWED_HOSTS=$DJANGO_HOSTS
-ENV SQL_ENGINE tenant_schemas.postgresql_backend
-ENV POSTGRES_DB=$POSTGRES_DB
-ENV POSTGRES_USER=$POSTGRES_USER
-ENV POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-ENV SQL_HOST=$SQL_HOST
-ENV SQL_PORT=$SQL_PORT
-ENV DATABASE postgres
-ENV EMAIL_HOST_USER=$EMAIL_HOST_USER
-ENV EMAIL_HOST_PASSWORD=$EMAIL_HOST_PASSWORD
-ENV parameter_nifi_HOST $PARAMETER_NIFI_HOST
 
 # create directory for the app user
 RUN mkdir -p /home/app
