@@ -2,11 +2,12 @@ import axios from 'axios';
 
 const fetchProcesses = async () => {
   try {
-    const endpoint = 'http://localhost:8080/bonita/API/bpm/process?c=100&p=0';
+    const endpoint = 'http://localhost:8000/api/bonita/list-processes/';
 
     // Read cookies from the browser's document.cookie
     console.log(document.cookie)
-    cookies=document.cookie
+    var cookies=document.cookie
+    console.log(cookies)
 
     const response = await axios.get(endpoint, {
       headers: {

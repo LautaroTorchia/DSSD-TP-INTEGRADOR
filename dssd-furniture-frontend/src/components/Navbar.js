@@ -1,5 +1,3 @@
-// components/Navbar.js
-
 import Link from 'next/link';
 import { useRouter } from 'next/router'; // Import useRouter
 
@@ -26,7 +24,7 @@ export default function Navbar() {
           </div>
         </li>
         <li>
-          <div onClick={() => handleNavigation('/collections')} className={styles.navLink}>
+          <div onClick={() => handleNavigation('/collection/list')} className={styles.navLink}>
             Ver Colecciones
           </div>
         </li>

@@ -1,33 +1,26 @@
+import { API_URL, JWT_SECRET } from '../../config';
 import axios from 'axios';
+import jwt from 'jsonwebtoken';
 
-const login = async () => {
+const login = async (username, password) => {
   try {
-    const endpoint = 'http://localhost:8080/bonita/loginservice';
-    const username = 'anthony.nichols';
-    const password = 'bpm';
-
-    const response = await axios.post(
-      endpoint,
-      `username=${username}&password=${password}`,
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        withCredentials: true, // Enable sending cookies with the request
-      }
-    );
-
-    // Handle the response here
-    console.log('Response:', response.data);
-
-
-    return response.data;
+    const response = await axios.post(`${API_URL}auth/login/`, {
+      "email": username,
+      "password": password
+    });
+    const { access } = response.data;
+    return access;
   } catch (error) {
-    // Handle errors here
-    console.error('Error:', error);
     throw error;
   }
 };
 
-export default login;
+export default login
 
+export const logout = () => {
+  localStorage.removeItem('token');
+};
+
+export const decodeToken = (token) => {
+  return jwt.verify(token, JWT_SECRET);
+};
