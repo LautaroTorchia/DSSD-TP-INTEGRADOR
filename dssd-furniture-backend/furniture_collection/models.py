@@ -20,13 +20,13 @@ class Mueble(models.Model):
     plazo_fabricacion = models.PositiveIntegerField()  # En días
     fecha_lanzamiento_estimada = models.DateField()
     descripcion = models.TextField()
-    imagen = models.URLField()  # URL de la imagen en el repositorio documental
-    plan_fabricacion = models.URLField()  # URL del plan de fabricación en el repositorio documental
+    imagen = models.URLField(nullable=True)  # URL de la imagen en el repositorio documental
+    plan_fabricacion = models.URLField(nullable=True)  # URL del plan de fabricación en el repositorio documental
     materiales = models.TextField()
     
     class Meta:
         unique_together = ('nombre', 'coleccion')
-    
+        verbose_name_plural = "Muebles" 
 
     def __str__(self):
         return self.nombre
