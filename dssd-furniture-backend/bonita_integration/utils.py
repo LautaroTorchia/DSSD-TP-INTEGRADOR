@@ -4,7 +4,7 @@ from rest_framework import status
 
 def bonita_login(username, password):
     # Define the Bonita login endpoint URL
-    bonita_login_url = 'http://192.168.100.7:8080/bonita/loginservice'
+    bonita_login_url = 'http://localhost:8080/bonita/loginservice'
 
     # Create a dictionary with the login credentials
     data = {
