@@ -7,7 +7,11 @@ __pycache__/
 *.so
 
 # Ignore all migrations files in all applications
-**/migrations/
+# Ignore all files inside the migrations/ folder of all applications
+**/migrations/*
+
+# Keep the migrations/ folder itself and __init__.py files
+!**/migrations/__init__.py
 
 # Ignore the virtual environment directory
 env/
