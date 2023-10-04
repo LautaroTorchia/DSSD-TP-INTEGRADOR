@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import { API_URL } from '@/../config';
 import PrivateLayout from '@/components/privateLayout';
+import { useRouter } from 'next/router'; 
 
 
 export default function CollectionList() {
   const [collections, setCollections] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCollections = async () => {
@@ -25,23 +27,41 @@ export default function CollectionList() {
     fetchCollections();
   }, []);
 
+  const handleEdit = (collection) => {
+    localStorage.setItem(`${collection.id}`, JSON.stringify(collection))
+    router.push(`/collection/update?collectionid=${collection.id}`)
+  }
+
+  const handleAddFurniture = (collection) => {
+    localStorage.setItem(`${collection.id}`, JSON.stringify(collection))
+    router.push(`/furniture/create?collectionid=${collection.id}`)
+  }
+
   return (
     <PrivateLayout>
-    <div>
       <div>
-        <Navbar />
+        <div>
+          <Navbar />
+        </div>
+        <h1>Collection List</h1>
+        <ul>
+          {collections.map((collection) => (
+            <div>
+              <li key={collection.id}>
+                <h2>{collection.nombre}</h2>
+                <p>{collection.descripcion}</p>
+                <p>{collection.fecha_creacion}</p>
+              </li>
+              <div onClick={() => handleEdit(collection) } >
+              Editar {collection.nombre}
+              </div>
+              <div onClick={() => handleAddFurniture(collection) } >
+              Agregar mueble {collection.nombre}
+              </div>
+            </div>
+          ))}
+        </ul>
       </div>
-      <h1>Collection List</h1>
-      <ul>
-        {collections.map((collection) => (
-          <li key={collection.id}>
-            <h2>{collection.nombre}</h2>
-            <p>{collection.descripcion}</p>
-            <p>{collection.fecha_creacion}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
     </PrivateLayout>
   );
 }

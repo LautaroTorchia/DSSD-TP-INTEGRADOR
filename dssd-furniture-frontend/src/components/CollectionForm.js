@@ -1,18 +1,18 @@
 import { useState } from 'react';
 
-export default function ColeccionForm({ onSubmit }) {
-  const [nombre, setNombre] = useState('');
-  const [descripcion, setDescripcion] = useState('');
+export default function ColeccionForm({ onSubmit, collection }) {
+  const [nombre, setNombre] = useState(collection.nombre);
+  const [descripcion, setDescripcion] = useState(collection.descripcion);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const coleccionData = {
+    const collectionData = {
       nombre,
       descripcion,
     };
 
-    onSubmit(coleccionData);
+    onSubmit(collectionData);
   };
 
   return (

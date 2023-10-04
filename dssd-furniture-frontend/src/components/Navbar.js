@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router'; // Import useRouter
+import { useRouter } from 'next/router'; 
 
 import styles from '../styles/Navbar.module.css'; // Import your custom styles
 
@@ -7,7 +7,7 @@ export default function Navbar() {
   const router = useRouter(); // Initialize router
 
   const handleNavigation = (path) => {
-    router.push(path); // Use router.push to navigate
+    router.push(path); 
   };
 
   return (
