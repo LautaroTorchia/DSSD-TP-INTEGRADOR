@@ -36,8 +36,8 @@ export default function ListFurniture() {
             });
     }, [collectionid]);
 
-    const handleReturn = () => {
-        localStorage.removeItem(`${collectionid}`)
+    const handleReturn = (collection) => {
+        localStorage.removeItem(`${collection.id}`)
         router.push(`/collection/list`)
     }
     const handleUpdate = (furniture_item) => {

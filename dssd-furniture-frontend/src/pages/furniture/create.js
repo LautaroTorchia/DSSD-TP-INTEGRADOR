@@ -1,7 +1,6 @@
 import Navbar from '@/components/Navbar';
 import FurnitureForm from '@/components/FurnitureForm';
 import { useRouter } from 'next/router';
-import { API_URL } from '@/../config';
 import PrivateLayout from '@/components/privateLayout';
 import createApiClient from '@/axios/axios';
 
