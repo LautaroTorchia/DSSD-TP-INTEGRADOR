@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { API_URL } from '@/../config';
 import { listBonitaProcesses } from '@/endpoints/fetchProcesses';
 import PrivateLayout from '@/components/privateLayout';
+import { instantiateBonita } from '@/endpoints/instantiateProcess';
 
 export default function CreateColeccionPage() {
   const router = useRouter();
@@ -21,7 +22,14 @@ export default function CreateColeccionPage() {
 
       if (response.ok) {
         const bonitaProcessesResponse = await listBonitaProcesses();
-        console.log(bonitaProcessesResponse)
+        const foundItem = bonitaProcessesResponse.find(item => item.displayName === "Muebles");
+        const bonitaInstantiationResponse = instantiateBonita(foundItem.id, {
+          "ticket_account": "string",
+          "ticket_description": "string",
+          "ticket_subject": "string"
+        })
+        console.log(bonitaInstantiationResponse);
+
         router.push('/collection/list')
       } else {
         console.error('Error:', response.statusText)

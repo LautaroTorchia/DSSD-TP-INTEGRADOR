@@ -1,7 +1,7 @@
 import createApiClient from "@/axios/axios";
 
-export const loginToBonita = async (username, password, token) => {
-  const api = createApiClient(); // Create an Axios instance with the provided token
+export const loginToBonita = async (username, password) => {
+  const api = createApiClient();
   try {
     const response = await api.post('/bonita/login/', {
       username,
