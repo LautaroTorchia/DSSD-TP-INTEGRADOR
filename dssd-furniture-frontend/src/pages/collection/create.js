@@ -2,8 +2,8 @@ import Navbar from '@/components/Navbar';
 import CollectionForm from '@/components/CollectionForm'; // Import the CollectionForm component
 import { useRouter } from 'next/router';
 import { API_URL } from '@/../config';
-import { loginToBonita } from '@/endpoints/bonitalogin';
 import { listBonitaProcesses } from '@/endpoints/fetchProcesses';
+import PrivateLayout from '@/components/privateLayout';
 
 export default function CreateColeccionPage() {
   const router = useRouter();
@@ -20,34 +20,28 @@ export default function CreateColeccionPage() {
       });
 
       if (response.ok) {
-
-        //Here we should continue with BONITA ENDPOINTS
-        const bonitaLoginResponse = await loginToBonita('anthony.nichols', 'bpm');
-        console.log(bonitaLoginResponse)
-
         const bonitaProcessesResponse = await listBonitaProcesses();
         console.log(bonitaProcessesResponse)
-
-
-        router.push('/collection/list');
+        router.push('/collection/list')
       } else {
-        // Handle error cases
-        console.error('Error:', response.statusText);
+        console.error('Error:', response.statusText)
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error:', error)
     }
   };
 
   return (
-    <div>
+    <PrivateLayout>
       <div>
-        <Navbar />
+        <div>
+          <Navbar />
+        </div>
+        <div>
+          <h2>Crear Nueva Colección</h2>
+          <CollectionForm onSubmit={handleSubmit} />
+        </div>
       </div>
-      <div>
-        <h2>Crear Nueva Colección</h2>
-        <CollectionForm onSubmit={handleSubmit} />
-      </div>
-  </div>
+    </PrivateLayout>
   );
 }

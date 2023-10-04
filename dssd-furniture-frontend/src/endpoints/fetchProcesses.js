@@ -1,17 +1,14 @@
-import { API_URL } from '@/../config';
+import createApiClient from "@/axios/axios";
+
 
 export const listBonitaProcesses = async () => {
+  const api = createApiClient();
   try {
-    const response = await fetch(`${API_URL}bonita/list-processes/`, {
-      method: 'GET',
-      headers: {
-        'accept': 'application/json',
-      },
-    });
+    const response = await api.get('bonita/list-processes/');
 
-    if (response.ok) {
+    if (response.status === 200) {
       // Return the response data or handle as needed
-      return response.json();
+      return response.data;
     } else {
       throw new Error(`Error: ${response.statusText}`);
     }

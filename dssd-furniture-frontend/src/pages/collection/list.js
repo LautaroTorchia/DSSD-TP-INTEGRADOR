@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import { API_URL } from '@/../config';
+import PrivateLayout from '@/components/privateLayout';
+
 
 export default function CollectionList() {
   const [collections, setCollections] = useState([]);
@@ -24,6 +26,7 @@ export default function CollectionList() {
   }, []);
 
   return (
+    <PrivateLayout>
     <div>
       <div>
         <Navbar />
@@ -39,5 +42,6 @@ export default function CollectionList() {
         ))}
       </ul>
     </div>
+    </PrivateLayout>
   );
 }

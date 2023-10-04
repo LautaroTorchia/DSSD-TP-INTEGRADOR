@@ -51,11 +51,20 @@ class BonitaLogin(APIView):
             bonita_api_call.save()
             
             # Save the cookies into the BonitaCookies table
+            print(cookies_data)
+            for cookie in cookies_data:
+                if cookie['name'] == 'BOS_Locale':
+                    BOS_Locale = cookie['value']
+                elif cookie['name'] == 'JSESSIONID':
+                    JSESSIONID = cookie['value']
+                elif cookie['name'] == 'X-Bonita-API-Token':
+                    X_Bonita_API_Token = cookie['value']
+            
             BonitaCookies.objects.create(
                 user=request.user,  
-                BOS_Locale=cookies_data[0].get('value', ''),
-                JSESSIONID=cookies_data[1].get('value', ''),
-                X_Bonita_API_Token=cookies_data[2].get('value', '')
+                BOS_Locale=BOS_Locale,
+                JSESSIONID=JSESSIONID,
+                X_Bonita_API_Token=X_Bonita_API_Token
             )
             
             return Response(status=status.HTTP_204_NO_CONTENT)

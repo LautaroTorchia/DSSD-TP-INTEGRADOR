@@ -1,17 +1,14 @@
-import { API_URL } from '@/../config';
+import createApiClient from "@/axios/axios";
 
-export const loginToBonita = async (username, password) => {
+export const loginToBonita = async (username, password, token) => {
+  const api = createApiClient(); // Create an Axios instance with the provided token
   try {
-    const response = await fetch(`${API_URL}bonita/login/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
+    const response = await api.post('/bonita/login/', {
+      username,
+      password,
     });
 
-    if (response.ok) {
-      // Return the response data or handle as needed
+    if (response.status === 204) {
       return { success: true };
     } else {
       throw new Error(`Error: ${response.statusText}`);
