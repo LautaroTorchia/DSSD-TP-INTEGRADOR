@@ -16,6 +16,13 @@ services:
       dockerfile: Dockerfile
     expose:
       - 8000
+    environment:
+      DB_NAME: ljj_muebles 
+      DB_USER: ljj_muebles 
+      DB_PASSWORD: admin 
+      DB_HOST: 192.168.0.23
+      DB_PORT: 5432
+      BONITA_URL: http://192.168.0.23:8080
     volumes:
       - static-volume:/home/app/web/staticfiles
       - static-media:/home/app/web/mediafiles

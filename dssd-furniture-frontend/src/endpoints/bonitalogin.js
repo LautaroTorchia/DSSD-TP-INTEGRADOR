@@ -1,17 +1,18 @@
 import { API_URL } from '@/../config';
 
-export const listBonitaProcesses = async () => {
+export const loginToBonita = async (username, password) => {
   try {
-    const response = await fetch(`${API_URL}bonita/list-processes/`, {
-      method: 'GET',
+    const response = await fetch(`${API_URL}bonita/login/`, {
+      method: 'POST',
       headers: {
-        'accept': 'application/json',
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify({ username, password }),
     });
 
     if (response.ok) {
       // Return the response data or handle as needed
-      return response.json();
+      return { success: true };
     } else {
       throw new Error(`Error: ${response.statusText}`);
     }

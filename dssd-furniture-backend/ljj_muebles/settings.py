@@ -78,8 +78,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'bonita_integration.middleware.BonitaAuthenticationMiddleware',
     ]
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'  # or 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_NAME = 'bonita_session'
+
 
 ROOT_URLCONF = 'ljj_muebles.urls'
 
@@ -125,14 +128,17 @@ CORS_ALLOW_METHODS = [
     'PUT',
 ]
 
+#BONITA_URL= os.environ.get("BONITA_URL","http://localhost:8080")
+BONITA_URL="http://localhost:8080"
+
 DATABASES = {
     "default": {
-        "ENGINE":  "django.db.backends.postgresql_psycopg2",
-        "NAME": "ljj_muebles",
-        "USER": "ljj_muebles",
-        "PASSWORD": "admin",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.environ.get("DB_NAME", "ljj_muebles"),
+        "USER": os.environ.get("DB_USER", "ljj_muebles"),
+        "PASSWORD": os.environ.get("DB_PASSWORD", "admin"),
+        "HOST": os.environ.get("DB_HOST", "localhost"),
+        "PORT": os.environ.get("DB_PORT", "5432"),
     }
 }
 

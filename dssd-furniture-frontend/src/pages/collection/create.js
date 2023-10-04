@@ -2,6 +2,8 @@ import Navbar from '@/components/Navbar';
 import CollectionForm from '@/components/CollectionForm'; // Import the CollectionForm component
 import { useRouter } from 'next/router';
 import { API_URL } from '@/../config';
+import { loginToBonita } from '@/endpoints/bonitalogin';
+import { listBonitaProcesses } from '@/endpoints/fetchProcesses';
 
 export default function CreateColeccionPage() {
   const router = useRouter();
@@ -18,7 +20,15 @@ export default function CreateColeccionPage() {
       });
 
       if (response.ok) {
-        // Redirect to a success page or perform any other actions
+
+        //Here we should continue with BONITA ENDPOINTS
+        const bonitaLoginResponse = await loginToBonita('anthony.nichols', 'bpm');
+        console.log(bonitaLoginResponse)
+
+        const bonitaProcessesResponse = await listBonitaProcesses();
+        console.log(bonitaProcessesResponse)
+
+
         router.push('/collection/list');
       } else {
         // Handle error cases
