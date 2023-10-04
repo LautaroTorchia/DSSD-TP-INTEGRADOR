@@ -9,8 +9,8 @@ const login = async (username, password) => {
       email: username,
       password: password,
     });
-    localStorage.setItem('token', response.data.tokens.access);
-    localStorage.setItem('refreshToken', response.data.tokens.refresh);
+    sessionStorage.setItem('token', response.data.tokens.access);
+    sessionStorage.setItem('refreshToken', response.data.tokens.refresh);
     const bonitaLoginResponse = await loginToBonita('anthony.nichols', 'bpm',response.data.tokens.access);
     console.log(bonitaLoginResponse)
     return response.data.access;
@@ -21,7 +21,7 @@ const login = async (username, password) => {
 
 const refreshAccessToken = async () => {
   try {
-    const refreshToken = localStorage.getItem('refreshToken'); // Retrieve refresh token from localStorage
+    const refreshToken = sessionStorage.getItem('refreshToken'); // Retrieve refresh token from localStorage
     if (!refreshToken) {
       throw new Error('Refresh token not found');
     }

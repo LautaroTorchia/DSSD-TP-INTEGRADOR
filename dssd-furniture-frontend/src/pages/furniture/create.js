@@ -16,7 +16,8 @@ export default function CreateFurniturenPage() {
         try {
             console.log("furnitureData")
             const response = await api.post(`coleccion/muebles/`, furnitureData);
-            if (response.ok) {
+            if (response.status === 201) {
+                localStorage.removeItem(`${collectionid}`)
                 router.push('/collection/list')
             } else {
                 console.error('Error:', response.statusText)

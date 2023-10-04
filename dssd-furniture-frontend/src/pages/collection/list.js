@@ -37,6 +37,11 @@ export default function CollectionList() {
     router.push(`/furniture/create?collectionid=${collection.id}`)
   }
 
+  const handleListFurniture = (collection) => {
+    localStorage.setItem(`${collection.id}`, JSON.stringify(collection))
+    router.push(`/furniture/list?collectionid=${collection.id}`)
+  }
+
   return (
     <PrivateLayout>
       <div>
@@ -58,6 +63,10 @@ export default function CollectionList() {
               <div onClick={() => handleAddFurniture(collection) } >
               Agregar mueble {collection.nombre}
               </div>
+              <div onClick={() => handleListFurniture(collection) } >
+              Ver muebles {collection.nombre}
+              </div>
+
             </div>
           ))}
         </ul>
