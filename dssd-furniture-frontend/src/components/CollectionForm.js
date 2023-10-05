@@ -16,6 +16,8 @@ export default function ColeccionForm({ onSubmit, collection }) {
     const collectionData = {
       nombre,
       descripcion,
+      terminada: false,
+      instancia_bonita: null,
     };
 
     onSubmit(collectionData);

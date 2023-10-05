@@ -3,19 +3,21 @@ import Navbar from '@/components/Navbar';
 import { API_URL } from '@/../config';
 import PrivateLayout from '@/components/privateLayout';
 import { useRouter } from 'next/router'; 
+import createApiClient from '@/axios/axios';
 
 
 export default function CollectionList() {
   const [collections, setCollections] = useState([]);
   const router = useRouter();
+  const api = createApiClient();
 
   useEffect(() => {
     const fetchCollections = async () => {
       try {
-        const response = await fetch(`${API_URL}coleccion/`);
-        if (response.ok) {
-          const data = await response.json();
-          setCollections(data.results);
+        const response = await api.get('coleccion/');
+        console.log(response)
+        if (response.status === 200 ) {
+          setCollections(response.data.results);
         } else {
           console.error('Error:', response.statusText);
         }

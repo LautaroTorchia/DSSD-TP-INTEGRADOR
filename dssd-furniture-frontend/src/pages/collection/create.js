@@ -5,30 +5,27 @@ import { API_URL } from '@/../config';
 import { listBonitaProcesses } from '@/endpoints/fetchProcesses';
 import PrivateLayout from '@/components/privateLayout';
 import { instantiateBonita } from '@/endpoints/instantiateProcess';
+import createApiClient from '@/axios/axios';
 
 export default function CreateColeccionPage() {
   const router = useRouter();
+  const api = createApiClient();
 
   const handleSubmit = async (coleccionData) => {
     try {
-      if (response.ok) {
-        const bonitaProcessesResponse = await listBonitaProcesses();
-        const foundItem = bonitaProcessesResponse.find(item => item.displayName === "Muebles");
-        const bonitaInstantiationResponse = instantiateBonita(foundItem.id, {
-          "ticket_account": "string",
-          "ticket_description": "string",
-          "ticket_subject": "string"
-        })
-      } else {
-        throw new Error(response.statusText)
-      }
-      const response = await fetch(`${API_URL}coleccion/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(coleccionData),
+
+      const bonitaProcessesResponse = await listBonitaProcesses();
+      const foundItem = bonitaProcessesResponse.find(item => item.displayName === "Muebles");
+      const bonitaInstantiationResponse = await instantiateBonita(foundItem.id, {
+        "ticket_account": "string",
+        "ticket_description": "string",
+        "ticket_subject": "string"
       })
+      console.log(bonitaInstantiationResponse.data)
+      console.log(bonitaInstantiationResponse.data.caseId)
+      coleccionData.instancia_bonita = bonitaInstantiationResponse.data.caseId
+      console.log(coleccionData)
+      const response = await api.post(`${API_URL}coleccion/`, JSON.stringify(coleccionData))
       router.push('/collection/list')
     } catch (error) {
       console.error('Error:', error)
