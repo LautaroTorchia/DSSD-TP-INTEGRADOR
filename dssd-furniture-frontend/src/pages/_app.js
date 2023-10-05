@@ -1,6 +1,10 @@
-// add bootstrap css 
-import 'bootstrap/dist/css/bootstrap.css'
-// own css files here
-export default function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
-}
+import dynamic from "next/dynamic";
+import React from "react";
+
+const App = ({ Component, pageProps }) => {
+  return <Component {...pageProps} />;
+};
+
+export default dynamic(() => Promise.resolve(App), {
+  ssr: false,
+});
