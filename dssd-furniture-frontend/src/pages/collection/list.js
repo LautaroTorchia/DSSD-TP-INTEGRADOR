@@ -4,10 +4,13 @@ import { API_URL } from '@/../config';
 import PrivateLayout from '@/components/privateLayout';
 import { useRouter } from 'next/router'; 
 import createApiClient from '@/axios/axios';
+import { executeBonitaTask, listBonitaUserTask } from '@/endpoints/usertask';
+import { editCollection } from '@/endpoints/collection';
 
 
 export default function CollectionList() {
   const [collections, setCollections] = useState([]);
+  const [refreshCollections, setRefreshCollections] = useState(false);
   const router = useRouter();
   const api = createApiClient();
 
@@ -15,8 +18,8 @@ export default function CollectionList() {
     const fetchCollections = async () => {
       try {
         const response = await api.get('coleccion/');
-        console.log(response)
-        if (response.status === 200 ) {
+        console.log(response);
+        if (response.status === 200) {
           setCollections(response.data.results);
         } else {
           console.error('Error:', response.statusText);
@@ -25,9 +28,9 @@ export default function CollectionList() {
         console.error('Error:', error);
       }
     };
-
+  
     fetchCollections();
-  }, []);
+  }, [refreshCollections]);
 
   const handleEdit = (collection) => {
     localStorage.setItem(`${collection.id}`, JSON.stringify(collection))
@@ -43,6 +46,21 @@ export default function CollectionList() {
     localStorage.setItem(`${collection.id}`, JSON.stringify(collection))
     router.push(`/furniture/list?collectionid=${collection.id}`)
   }
+
+  const handleFinishCollection = async (collection) => {
+    const UserTasksResponse = await listBonitaUserTask()
+
+    const foundTask = UserTasksResponse.find(task => task.rootContainerId == collection.instancia_bonita);
+    const ExecuteTaskResponse = await executeBonitaTask(foundTask.id,{
+      "ticket_comment": `Se ha ejecutado la tarea ${foundTask.displayName}`
+    })
+
+    const updateCollectionResponse = await editCollection(collection.id,{"terminada":"true"})
+
+    setRefreshCollections(true);
+    router.push(`/collection/list`)
+  }
+
 
   return (
     <PrivateLayout>
@@ -68,6 +86,11 @@ export default function CollectionList() {
               <div onClick={() => handleListFurniture(collection) } >
               Ver muebles {collection.nombre}
               </div>
+              {!collection.terminada ? (
+                <div onClick={() => handleFinishCollection(collection)}>
+                  Finalizar coleccion {collection.nombre}
+                </div>
+              ) : null}
 
             </div>
           ))}
