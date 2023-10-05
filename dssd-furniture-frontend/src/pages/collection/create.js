@@ -11,7 +11,6 @@ export default function CreateColeccionPage() {
 
   const handleSubmit = async (coleccionData) => {
     try {
-      // Send a POST request to the /coleccion/muebles/ endpoint with the form data
       const response = await fetch(`${API_URL}coleccion/`, {
         method: 'POST',
         headers: {
@@ -28,7 +27,7 @@ export default function CreateColeccionPage() {
           "ticket_description": "string",
           "ticket_subject": "string"
         })
-        console.log(bonitaInstantiationResponse);
+
 
         router.push('/collection/list')
       } else {

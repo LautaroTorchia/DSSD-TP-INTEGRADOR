@@ -1,6 +1,12 @@
 import { useState } from 'react';
 
 export default function ColeccionForm({ onSubmit, collection }) {
+  if (!collection) {
+    collection = {
+      nombre: '',
+      descripcion: '',
+    };
+  }
   const [nombre, setNombre] = useState(collection.nombre);
   const [descripcion, setDescripcion] = useState(collection.descripcion);
 
