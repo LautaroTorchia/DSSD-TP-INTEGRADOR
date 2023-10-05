@@ -7,7 +7,6 @@ export const listBonitaProcesses = async () => {
     const response = await api.get('bonita/list-processes/');
 
     if (response.status === 200) {
-      // Return the response data or handle as needed
       return response.data;
     } else {
       throw new Error(`Error: ${response.statusText}`);
