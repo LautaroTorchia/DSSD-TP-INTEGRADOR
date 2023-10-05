@@ -3,7 +3,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import BonitaAPICall,BonitaCookies
-from .utils import bonita_login,bonita_check_processes,bonita_instantiate_process,bonita_user_tasks,bonita_execute_user_task,update_cookie_header
+from .utils import bonita_login,bonita_check_processes,bonita_instantiate_process,bonita_user_tasks,bonita_execute_user_task
+from .utils import update_cookie_header,bonita_get_variable,change_bonita_variable
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework import permissions
@@ -38,7 +39,7 @@ class BonitaLogin(APIView):
         password = request.data.get('password')
 
         response = bonita_login(username, password)
-        print(response.status_code)
+
         if response.status_code == 204:
             cookies = response.cookies
             cookies_data = [{'name': cookie.name, 'value': cookie.value} for cookie in cookies]
@@ -89,6 +90,7 @@ class BonitaCheckProcesses(APIView):
         try:
             # Retrieve the BonitaCookies associated with the user
             bonita_cookies = BonitaCookies.objects.filter(user__email=user_identifier).latest('created_at')
+            print("hola",bonita_cookies.X_Bonita_API_Token)
         except BonitaCookies.DoesNotExist:
             return Response("Unauthorized", status=status.HTTP_401_UNAUTHORIZED)
         
@@ -100,11 +102,11 @@ class BonitaCheckProcesses(APIView):
         bonita_api_call = BonitaAPICall(
             endpoint_called='/bonita/API/bpm/process?c=100&p=0',
             request_data='',
-            response_data=response.json()  # Store the response data
+            response_data=''  # Store the response data
         )
         bonita_api_call.save()
 
-        return Response(response.json(), status=status.HTTP_200_OK)
+        return response
 
 class BonitaInstantiateProcess(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -152,11 +154,11 @@ class BonitaInstantiateProcess(APIView):
         bonita_api_call = BonitaAPICall(
             endpoint_called=f'/bonita/API/bpm/process/{process_id}/instantiation',
             request_data=request_data,
-            response_data=response.json()  # Store the response data
+            response_data='' # Store the response data
         )
         bonita_api_call.save()
 
-        return Response(response.json(), status=status.HTTP_200_OK)
+        return response
 
 class BonitaUserTasks(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -178,11 +180,11 @@ class BonitaUserTasks(APIView):
         bonita_api_call = BonitaAPICall(
             endpoint_called='/bonita/API/bpm/userTask?c=100&p=0',
             request_data='',
-            response_data=response.json()  # Assuming Bonita API returns JSON response
+            response_data=''  # Assuming Bonita API returns JSON response
         )
         bonita_api_call.save()
 
-        return Response(response.json(), status=status.HTTP_200_OK)
+        return response
 
 class BonitaExecuteUserTask(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -216,4 +218,56 @@ class BonitaExecuteUserTask(APIView):
 
         response = bonita_execute_user_task(task_id, request_data, headers,bonita_header_cookies)
 
-        return Response(response.json(), status=status.HTTP_200_OK)
+        return response
+
+
+class BonitaCaseVariable(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, id_instancia, variablename):
+        user_identifier = request.user.email
+
+        try:
+            # Retrieve the BonitaCookies associated with the user
+            bonita_cookies = BonitaCookies.objects.filter(user__email=user_identifier).latest('created_at')
+        except BonitaCookies.DoesNotExist:
+            return Response("Unauthorized", status=status.HTTP_401_UNAUTHORIZED)
+
+        bonita_header_cookies = update_cookie_header(bonita_cookies)
+
+        return bonita_get_variable(id_instancia,variablename,bonita_header_cookies)
+
+
+
+class BonitaUpdateCaseVariable(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    @swagger_auto_schema(
+        operation_description="Update a Bonita case variable",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "type": openapi.Schema(type=openapi.TYPE_STRING, description="The variable type"),
+                "value": openapi.Schema(type=openapi.TYPE_STRING, description="The new value"),
+            },
+            required=["type", "value"],
+        ),
+        responses={
+            200: "Variable updated successfully",
+            401: "Unauthorized",
+            500: "Internal Server Error",
+        },
+    )
+    
+    def put(self, request, id_instancia, variablename):
+        user_identifier = request.user.email
+
+        try:
+            # Retrieve the BonitaCookies associated with the user
+            bonita_cookies = BonitaCookies.objects.filter(user__email=user_identifier).latest('created_at')
+        except BonitaCookies.DoesNotExist:
+            return Response("Unauthorized", status=status.HTTP_401_UNAUTHORIZED)
+
+        bonita_header_cookies = update_cookie_header(bonita_cookies)
+        data = request.data
+        print(data)
+        return change_bonita_variable(id_instancia,variablename,bonita_cookies,bonita_header_cookies,data)

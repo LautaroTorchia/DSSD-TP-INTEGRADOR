@@ -17,4 +17,4 @@ class BonitaCookies(models.Model):
     BOS_Locale = models.CharField(max_length=255)
     JSESSIONID = models.CharField(max_length=255)
     X_Bonita_API_Token = models.CharField(max_length=255)
-    created_at =  models.DateField(auto_now_add=True,null=True)
+    created_at =  models.DateTimeField(auto_now_add=True,null=True)

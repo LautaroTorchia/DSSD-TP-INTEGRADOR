@@ -9,6 +9,6 @@ class BonitaAPICallAdmin(admin.ModelAdmin):
 
 @admin.register(BonitaCookies)
 class BonitaCookiesAdmin(admin.ModelAdmin):
-    list_display = ('user', 'BOS_Locale', 'JSESSIONID','X_Bonita_API_Token')
-    list_filter = ('user', 'BOS_Locale')
+    list_display = ('user', 'BOS_Locale', 'JSESSIONID','X_Bonita_API_Token','created_at')
+    list_filter = ('user', 'BOS_Locale','created_at')
     search_fields = ('user', 'BOS_Locale')

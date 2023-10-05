@@ -1,7 +1,7 @@
 # bonita_integration/urls.py
 
 from django.urls import path
-from .views import BonitaLogin,BonitaCheckProcesses,BonitaInstantiateProcess,BonitaUserTasks,BonitaExecuteUserTask
+from .views import BonitaLogin,BonitaCheckProcesses,BonitaInstantiateProcess,BonitaUserTasks,BonitaExecuteUserTask,BonitaCaseVariable,BonitaUpdateCaseVariable
 
 urlpatterns = [
     path('login/', BonitaLogin.as_view(), name='bonita-login'),
@@ -9,4 +9,6 @@ urlpatterns = [
     path('instantiate/<int:process_id>/', BonitaInstantiateProcess.as_view(), name='bonita-instantiate-process'),
     path('user-tasks/', BonitaUserTasks.as_view(), name='bonita-user-tasks'),
     path('execute-user-task/<int:task_id>/', BonitaExecuteUserTask.as_view(), name='execute-user-task'),
+    path('case-variable/<int:id_instancia>/<str:variablename>/', BonitaCaseVariable.as_view(), name='bonita-case-variable'),
+    path('update-case-variable/<int:id_instancia>/<str:variablename>/', BonitaUpdateCaseVariable.as_view(), name='bonita-update-case-variable'),
 ]
