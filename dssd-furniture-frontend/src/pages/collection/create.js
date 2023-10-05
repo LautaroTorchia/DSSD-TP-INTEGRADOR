@@ -35,12 +35,14 @@ export default function CreateColeccionPage() {
   return (
     <PrivateLayout>
       <div>
-        <div>
-          <Navbar />
-        </div>
-        <div>
-          <h2>Crear Nueva Colección</h2>
-          <CollectionForm onSubmit={handleSubmit} />
+        <Navbar />
+        <div className="container mt-5">
+        <h1 className="text-center mb-4 display-4 font-weight-bold">Crear nueva coleccion</h1>
+          <div className="row justify-content-center">
+            <div className="col-md-6">
+              <CollectionForm onSubmit={handleSubmit} />
+            </div>
+          </div>
         </div>
       </div>
     </PrivateLayout>

@@ -33,7 +33,7 @@ export default function CreateFurniturenPage() {
                     <Navbar />
                 </div>
                 <div>
-                    <h2>Agregar mueble</h2>
+                <h2 className="text-center mb-4 display-4 font-weight-bold">Agregar mueble</h2>
                     <FurnitureForm onSubmit={handleSubmit} collection={collection} />
                 </div>
             </div>

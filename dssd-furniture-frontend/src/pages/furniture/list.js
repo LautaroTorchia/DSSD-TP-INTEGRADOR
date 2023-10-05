@@ -9,6 +9,7 @@ import FurnitureList from '@/components/FurnitureList';
 export default function ListFurniture() {
     const router = useRouter();
     const api = createApiClient();
+    const [refreshFurniture, setRefreshFurniture] = useState(false);
     const { collectionid } = router.query;
     const collection = JSON.parse(localStorage.getItem(`${collectionid}`))
     const [furniture, setFurniture] = useState([]);
@@ -34,7 +35,7 @@ export default function ListFurniture() {
             .catch((error) => {
                 console.error('Error fetching furniture:', error);
             });
-    }, [collectionid]);
+    }, [collectionid,refreshFurniture]);
 
     const handleReturn = (collection) => {
         localStorage.removeItem(`${collection.id}`)
@@ -48,6 +49,8 @@ export default function ListFurniture() {
         try {
             if (confirm(`¿Estás seguro que quieres borrar el mueble ${furniture_item.nombre}?`)) {
                 const response = await api.delete(`/coleccion/muebles/${furniture_item.id}/`)
+                setRefreshFurniture(true)
+                router.push(`/furniture/list?collectionid=${collectionid}`)
             }
         } catch (error) {
             throw error;
@@ -55,16 +58,14 @@ export default function ListFurniture() {
     }
     return (
         <PrivateLayout>
-            <div>
-                <div>
-                    <Navbar />
-                </div>
-                <h1>Muebles de {collection.name}</h1>
-                <FurnitureList furniture={furniture} handleUpdate={handleUpdate} handleDelete={handleDelete} />
-                <div onClick={() => handleReturn(collection)} >
-                    Volver
-                </div>
+            <Navbar />
+            <h1 className="text-center mb-4">Muebles de {collection.name}</h1>
+            <FurnitureList furniture={furniture} handleUpdate={handleUpdate} handleDelete={handleDelete} />
+            <div className="text-center mt-4">
+              <button className="btn btn-primary" onClick={() => handleReturn(collection)}>
+                Volver
+              </button>
             </div>
         </PrivateLayout>
-    );
-}
+      );
+    }

@@ -29,15 +29,13 @@ export default function UpdateColeccionPage() {
 
     return (
         <PrivateLayout>
-            <div>
-                <div>
-                    <Navbar />
-                </div>
-                <div>
-                    <h2>Editando Colección {collection.nombre}</h2>
-                    <CollectionForm onSubmit={handleSubmit} collection={collection} />
-                </div>
+          <div>
+            <Navbar />
+            <div className="container mt-4">
+              <h2 className="mb-4">Editando Colección: {collection.nombre}</h2>
+              <CollectionForm onSubmit={handleSubmit} collection={collection} />
             </div>
+          </div>
         </PrivateLayout>
-    );
-}
+      );
+    }

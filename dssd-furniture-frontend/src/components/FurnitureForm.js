@@ -27,46 +27,119 @@ const FurnitureForm = ({ onSubmit, collection }) => {
     }
 
 
-  return (
-    <form onSubmit={handleSubmit(furnitureData)}>
-      <label>
-        Nombre:
-        <input type="text" name="nombre" value={furnitureData.nombre} onChange={handleChange} />
-      </label>
-
-      <label>
-        Plazo de Fabricación (días):
-        <input type="number" name="plazo_fabricacion" value={furnitureData.plazo_fabricacion} onChange={handleChange} />
-      </label>
-
-      <label>
-        Fecha de Lanzamiento Estimada:
-        <input type="date" name="fecha_lanzamiento_estimada" value={furnitureData.fecha_lanzamiento_estimada} onChange={handleChange} />
-      </label>
-
-      <label>
-        Descripción:
-        <textarea name="descripcion" value={furnitureData.descripcion} onChange={handleChange} />
-      </label>
-
-      <label>
-        Imagen (URL):
-        <input type="url" name="imagen" value={furnitureData.imagen} onChange={handleChange} />
-      </label>
-
-      <label>
-        Plan de Fabricación (URL):
-        <input type="url" name="plan_fabricacion" value={furnitureData.plan_fabricacion} onChange={handleChange} />
-      </label>
-
-      <label>
-        Materiales:
-        <textarea name="materiales" value={furnitureData.materiales} onChange={handleChange} />
-      </label>
-
-      <button type="submit">Create Furniture</button>
-    </form>
-  );
-};
-
-export default FurnitureForm;
+    return (
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="col-md-6">
+            <form onSubmit={handleSubmit(furnitureData)} className="mb-4 p-5 border rounded">
+              <div className="mb-3">
+                <label htmlFor="nombre" className="form-label text-primary fw-bold">
+                  Nombre:
+                </label>
+                <input
+                  type="text"
+                  id="nombre"
+                  name="nombre"
+                  value={furnitureData.nombre}
+                  onChange={handleChange}
+                  className="form-control rounded-pill"
+                  required
+                />
+              </div>
+  
+              <div className="mb-3">
+                <label htmlFor="plazo_fabricacion" className="form-label text-primary fw-bold">
+                  Plazo de Fabricación (días):
+                </label>
+                <input
+                  type="number"
+                  id="plazo_fabricacion"
+                  name="plazo_fabricacion"
+                  value={furnitureData.plazo_fabricacion}
+                  onChange={handleChange}
+                  className="form-control rounded-pill"
+                  required
+                />
+              </div>
+  
+              <div className="mb-3">
+                <label htmlFor="fecha_lanzamiento_estimada" className="form-label text-primary fw-bold">
+                  Fecha de Lanzamiento Estimada:
+                </label>
+                <input
+                  type="date"
+                  id="fecha_lanzamiento_estimada"
+                  name="fecha_lanzamiento_estimada"
+                  value={furnitureData.fecha_lanzamiento_estimada}
+                  onChange={handleChange}
+                  className="form-control rounded-pill"
+                  required
+                />
+              </div>
+  
+              <div className="mb-3">
+                <label htmlFor="descripcion" className="form-label text-primary fw-bold">
+                  Descripción:
+                </label>
+                <textarea
+                  id="descripcion"
+                  name="descripcion"
+                  value={furnitureData.descripcion}
+                  onChange={handleChange}
+                  className="form-control rounded-pill"
+                  required
+                />
+              </div>
+  
+              <div className="mb-3">
+                <label htmlFor="imagen" className="form-label text-primary fw-bold">
+                  Imagen (URL):
+                </label>
+                <input
+                  type="url"
+                  id="imagen"
+                  name="imagen"
+                  value={furnitureData.imagen}
+                  onChange={handleChange}
+                  className="form-control rounded-pill"
+                />
+              </div>
+  
+              <div className="mb-3">
+                <label htmlFor="plan_fabricacion" className="form-label text-primary fw-bold">
+                  Plan de Fabricación (URL):
+                </label>
+                <input
+                  type="url"
+                  id="plan_fabricacion"
+                  name="plan_fabricacion"
+                  value={furnitureData.plan_fabricacion}
+                  onChange={handleChange}
+                  className="form-control rounded-pill"
+                />
+              </div>
+  
+              <div className="mb-3">
+                <label htmlFor="materiales" className="form-label text-primary fw-bold">
+                  Materiales:
+                </label>
+                <textarea
+                  id="materiales"
+                  name="materiales"
+                  value={furnitureData.materiales}
+                  onChange={handleChange}
+                  className="form-control rounded-pill"
+                />
+              </div>
+  
+              <button type="submit" className="btn btn-primary btn-lg">
+                Crear mueble
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  
+  export default FurnitureForm;

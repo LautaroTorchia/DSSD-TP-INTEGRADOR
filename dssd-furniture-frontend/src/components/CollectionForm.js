@@ -24,29 +24,35 @@ export default function ColeccionForm({ onSubmit, collection }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
+    <form onSubmit={handleSubmit} className="rounded p-4 border">
+      <div className="form-group">
         <label htmlFor="nombre">Nombre:</label>
         <input
           type="text"
           id="nombre"
+          className="form-control"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           required
         />
       </div>
-      <div>
+      <div className="form-group">
         <label htmlFor="descripcion">Descripción:</label>
         <textarea
           id="descripcion"
+          className="form-control"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
+          rows="5"
           required
         ></textarea>
       </div>
-      <div>
-        <button type="submit">Guardar</button>
+      <div className="text-center">
+        <button type="submit" className="btn btn-primary btn-lg">
+          Guardar
+        </button>
       </div>
     </form>
   );
 }
+
