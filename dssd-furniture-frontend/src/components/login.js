@@ -1,53 +1,54 @@
 // components/LoginForm.js
 import { useState } from 'react';
-import { login } from '@/endpoints/login'; 
-import { useRouter } from 'next/router'; // Import useRouter
+import { login } from '@/endpoints/login';
+import { useRouter } from 'next/router'; // Importa useRouter
 
 export default function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const router = useRouter(); // Initialize router
+  const router = useRouter(); // Inicializa el enrutador
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-  
-      
     try {
       await login(username, password);
-      router.push("/");
+      router.push('/');
     } catch (err) {
-      setError('Invalid credentials. Please try again.');
+      setError('Credenciales inválidas. Por favor, inténtalo de nuevo.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="username">Username:</label>
+    <form onSubmit={handleSubmit} className="container mt-5"> {/* Agrega la clase 'container' de Bootstrap */}
+      <div className="mb-3"> {/* Agrega la clase 'mb-3' para el margen inferior */}
+        <label htmlFor="username" className="form-label">Username:</label> {/* Agrega la clase 'form-label' */}
         <input
           type="text"
           id="username"
+          className="form-control" 
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
         />
       </div>
-      <div>
-        <label htmlFor="password">Password:</label>
+      <div className="mb-3"> {/* Agrega la clase 'mb-3' para el margen inferior */}
+        <label htmlFor="password" className="form-label">Password:</label> {/* Agrega la clase 'form-label' */}
         <input
           type="password"
           id="password"
+          className="form-control" 
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
       </div>
       <div>
-        <button type="submit">Login</button>
+        <button type="submit" className="btn btn-primary">Login</button> {/* Agrega las clases 'btn' y 'btn-primary' */}
       </div>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="error mt-3">{error}</p>} {/* Agrega la clase 'mt-3' para el margen superior */}
     </form>
   );
 }
+
