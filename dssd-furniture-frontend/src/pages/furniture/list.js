@@ -42,7 +42,7 @@ export default function ListFurniture() {
     }
     const handleUpdate = (furniture_item) => {
         localStorage.setItem(`${furniture_item.id}`, JSON.stringify(furniture_item))
-        router.push(`/furniture/edit/${furniture_item.id}`)
+        router.push(`/furniture/update/${furniture_item.id}`)
     }
     const handleDelete = async (furniture_item) => {
         try {

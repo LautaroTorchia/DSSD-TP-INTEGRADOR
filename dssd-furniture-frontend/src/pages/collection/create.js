@@ -11,14 +11,6 @@ export default function CreateColeccionPage() {
 
   const handleSubmit = async (coleccionData) => {
     try {
-      const response = await fetch(`${API_URL}coleccion/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(coleccionData),
-      });
-
       if (response.ok) {
         const bonitaProcessesResponse = await listBonitaProcesses();
         const foundItem = bonitaProcessesResponse.find(item => item.displayName === "Muebles");
@@ -27,12 +19,17 @@ export default function CreateColeccionPage() {
           "ticket_description": "string",
           "ticket_subject": "string"
         })
-
-
-        router.push('/collection/list')
       } else {
-        console.error('Error:', response.statusText)
+        throw new Error(response.statusText)
       }
+      const response = await fetch(`${API_URL}coleccion/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(coleccionData),
+      })
+      router.push('/collection/list')
     } catch (error) {
       console.error('Error:', error)
     }

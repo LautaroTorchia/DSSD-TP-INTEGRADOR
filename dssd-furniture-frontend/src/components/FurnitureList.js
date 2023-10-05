@@ -32,7 +32,6 @@ const FurnitureList = ({ furniture ,handleUpdate,handleDelete}) => {
                         Borrar
                     </div>
                 </FurnitureItem>
-
             ))}
         </FurnitureListWrapper>
     );

@@ -1,11 +1,12 @@
 import axios from 'axios';
-import { API_URL } from '@/../config'; // Replace with your API URL
+import { API_URL } from '@/../config';
+
 
 const createApiClient = () => {
     return axios.create({
         baseURL: `${API_URL}`,
         headers: {
-            Authorization: `Bearer ${sessionStorage.getItem('token')}`, // Use the provided token
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`, 
             'Content-Type': 'application/json',
         },
     });
