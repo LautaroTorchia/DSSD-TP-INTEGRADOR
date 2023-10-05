@@ -75,12 +75,12 @@ def bonita_user_tasks(cookies):
 
 def bonita_execute_user_task(task_id, data, headers,cookies):
     # Define the Bonita execute user task endpoint URL
-    bonita_execute_user_task_url = f'{BONITA_URL}/bonita/API/bpm/userTask/{task_id}/execution'
+    bonita_execute_user_task_url = f'{BONITA_URL}/bonita/API/bpm/userTask/{task_id}/execution?assign=true'
 
     response = requests.post(bonita_execute_user_task_url, json=data, headers=headers, cookies=cookies)
     
-    if response.status_code == 200:
-        return Response(response.json(), status=status.HTTP_200_OK)
+    if response.status_code == 204:
+        return Response(status=status.HTTP_204_NO_CONTENT)
     else:
         Response(f"Failed to execute user task: {response.text}", status=response.status_code)
 

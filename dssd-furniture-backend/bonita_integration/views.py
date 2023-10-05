@@ -217,7 +217,7 @@ class BonitaExecuteUserTask(APIView):
         }
 
         response = bonita_execute_user_task(task_id, request_data, headers,bonita_header_cookies)
-
+        
         return response
 
 

@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import createApiClient from '@/axios/axios';
 import { executeBonitaTask, listBonitaUserTask } from '@/endpoints/usertask';
 import { editCollection } from '@/endpoints/collection';
+import { updateBonitaCaseVariable } from '@/endpoints/getvariable';
 
 
 export default function CollectionList() {
@@ -54,8 +55,12 @@ export default function CollectionList() {
     const ExecuteTaskResponse = await executeBonitaTask(foundTask.id,{
       "ticket_comment": `Se ha ejecutado la tarea ${foundTask.displayName}`
     })
-
-    const updateCollectionResponse = await editCollection(collection.id,{"terminada":"true"})
+    const UpdateBonitaCaseVariableResponse = await updateBonitaCaseVariable(collection.instancia_bonita,"collection_id",{
+      "type": "java.lang.String",
+      "value":`${collection.id}`
+    })
+    console.log(collection.instancia_bonita)
+    const UpdateCollectionResponse = await editCollection(collection.id,{"terminada":"true"})
 
     setRefreshCollections(true);
     router.push(`/collection/list`)
