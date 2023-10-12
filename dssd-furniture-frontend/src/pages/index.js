@@ -10,9 +10,6 @@ export default function Home() {
         <p className={styles.subtitle}>Descubre nuestras colecciones de muebles sostenibles.</p>
       </header>
 
-      <footer className={styles.footer}>
-        {/* Add footer content here */}
-      </footer>
     </div>
   );
 }
