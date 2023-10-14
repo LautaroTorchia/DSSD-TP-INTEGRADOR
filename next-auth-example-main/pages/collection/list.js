@@ -1,7 +1,7 @@
 import { Button, Card, ListGroup } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
-import { API_URL } from '@/../config';
+import { NEXT_PUBLIC_API_URL } from '@/../config';
 import PrivateLayout from '@/components/privateLayout';
 import { useRouter } from 'next/router'; 
 import createApiClient from '@/axios/axios';

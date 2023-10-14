@@ -1,16 +1,6 @@
-
-
-
-export const listBonitaProcesses = async () => {
-  const api = axios.create({
-    baseURL: `${process.env.API_URL}`,
-    headers: {
-        Authorization: `Bearer ${data.accessToken}`, 
-        'Content-Type': 'application/json',
-    },
-})
+export const listBonitaProcesses = async (api) => {
   try {
-    const response = await api.get('bonita/list-processes/');
+    const response = await api.get('/bonita/list-processes/');
 
     if (response.status === 200) {
       return response.data;

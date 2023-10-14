@@ -18,7 +18,7 @@ export const config = {
         password: { label: "Contraseña", type: "password" },
       },
       authorize: async (credentials) => {
-        const response = await axios.post(`${process.env.API_URL}/auth/login/`, {
+        const response = await axios.post("http://localhost:8000/api/auth/login/", {
           email: credentials.username,
           password: credentials.password,
         })

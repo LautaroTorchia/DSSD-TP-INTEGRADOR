@@ -3,42 +3,40 @@ import { useRouter } from 'next/router'
 import { listBonitaProcesses } from '../api/endpoints/fetchProcesses'
 import Layout from '@/components/layout'
 import { instantiateBonita } from '../api/endpoints/instantiateProcess'
-import axios from 'axios'
 import { useSession } from "next-auth/react"
+import axios from 'axios'
 
 export default function CreateColeccionPage() {
+  const router = useRouter();
   const { data } = useSession()
-  console.log("data", data)
-  if (data) {
 
-    const router = useRouter();
+  const handleSubmit = async (coleccionData) => {
     const api = axios.create({
-      baseURL: `${process.env.API_URL}`,
+      baseURL: "http://localhost:8000/api",
       headers: {
         Authorization: `Bearer ${data.accessToken}`,
         'Content-Type': 'application/json',
       },
 
     })
-  }
 
 
-  const handleSubmit = async (coleccionData) => {
     try {
-      const bonitaProcessesResponse = await listBonitaProcesses();
+      const bonitaProcessesResponse = await listBonitaProcesses(api);
       const foundItem = bonitaProcessesResponse.find(item => item.displayName === "Muebles");
-      const bonitaInstantiationResponse = await instantiateBonita(foundItem.id, {
+      const bonitaInstantiationResponse = await instantiateBonita(api,foundItem.id, {
         "ticket_account": "string",
         "ticket_description": "string",
         "ticket_subject": "string"
       })
       coleccionData.instancia_bonita = bonitaInstantiationResponse.data.caseId
-      const response = await api.post(`${process.env.API_URL}/coleccion/`, JSON.stringify(coleccionData))
+      const response = await api.post("http://localhost:8000/api/coleccion/", JSON.stringify(coleccionData))
       router.push('/collection/list')
     } catch (error) {
       console.error('Error:', error)
+      return error
     }
-  };
+  }
 
   return (
     <Layout>
