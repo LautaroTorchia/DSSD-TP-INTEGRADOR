@@ -1,4 +1,3 @@
-# Use tech_user/secret as user/password credentials
 version: '3'
 
 services:
@@ -10,13 +9,10 @@ services:
     command:
       - -c
       - max_prepared_transactions=100
-
       
   bonita:
-    image: bonitasoft.jfrog.io/docker/bonita-subscription:2023.1
-    hostname: <hostname>
-    volumes:
-      - ~/bonita-lic:/opt/bonita_lic/
+    image: bonita:7.14.0
+    hostname: custom-hostname.example.com
     ports:
       - 8080:8080
     environment:
@@ -33,8 +29,6 @@ services:
       - TENANT_PASSWORD=secret
       - PLATFORM_LOGIN=pfadmin
       - PLATFORM_PASSWORD=pfsecret
-      - MONITORING_USERNAME=monitorAdmin
-      - MONITORING_PASSWORD=monitor_Secr3t-P455w0rD
     restart: on-failure:2
     depends_on:
       - db
