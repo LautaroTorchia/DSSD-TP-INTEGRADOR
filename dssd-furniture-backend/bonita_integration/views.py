@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import BonitaAPICall,BonitaCookies
+from general_permissions.permissions import IsPermittedRBAC
 from .utils import bonita_login,bonita_check_processes,bonita_instantiate_process,bonita_user_tasks,bonita_execute_user_task
 from .utils import update_cookie_header,bonita_get_variable,change_bonita_variable
 from drf_yasg.utils import swagger_auto_schema
@@ -11,7 +12,7 @@ from rest_framework import permissions
 from .models import BonitaCookies
 
 class BonitaCheckProcesses(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
     @swagger_auto_schema(
         operation_description="Check Bonita processes",
         responses={
@@ -46,7 +47,7 @@ class BonitaCheckProcesses(APIView):
         return response
 
 class BonitaInstantiateProcess(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
     @swagger_auto_schema(
         operation_description="Instantiate a Bonita process",
         request_body=openapi.Schema(
@@ -98,7 +99,7 @@ class BonitaInstantiateProcess(APIView):
         return response
 
 class BonitaUserTasks(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
     def get(self, request):
         user_identifier = request.user.email 
         
@@ -124,7 +125,7 @@ class BonitaUserTasks(APIView):
         return response
 
 class BonitaExecuteUserTask(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -159,7 +160,7 @@ class BonitaExecuteUserTask(APIView):
 
 
 class BonitaCaseVariable(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
 
     def get(self, request, id_instancia, variablename):
         user_identifier = request.user.email
@@ -177,7 +178,7 @@ class BonitaCaseVariable(APIView):
 
 
 class BonitaUpdateCaseVariable(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
     @swagger_auto_schema(
         operation_description="Update a Bonita case variable",
         request_body=openapi.Schema(

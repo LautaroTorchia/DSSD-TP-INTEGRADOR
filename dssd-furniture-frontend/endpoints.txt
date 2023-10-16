@@ -31,6 +31,7 @@ http://localhost:8080/bonita/API/bpm/userTask?c=100&p=0
 curl --location 'http://localhost:8080/bonita/API/bpm/userTask?c=100&p=0' \
 --header 'Cookie: BOS_Locale=en; JSESSIONID=A22341664C8BFD409FAF4640C54B372A; X-Bonita-API-Token=d1dc4a9b-1123-4e6a-a087-70a187798f26'
 
+Ejecutar UserTask
 curl --location 'http://localhost:8080/bonita/API/bpm/userTask/20007/execution' \
 --header 'X-Bonita-API-Token: d1dc4a9b-1123-4e6a-a087-70a187798f26' \
 --header 'Content-Type: application/json' \
