@@ -51,4 +51,5 @@ urlpatterns = [
     path('api/coleccion/', include('furniture_collection.urls')),
     path('api/bonita/', include('bonita_integration.urls')),
     path('api/proveedores/',include('proveedores.urls')),
+    path('api/reservas/',include('reservas.urls'))
 ]

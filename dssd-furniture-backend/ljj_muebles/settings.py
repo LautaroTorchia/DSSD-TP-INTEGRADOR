@@ -66,7 +66,8 @@ INSTALLED_APPS = [
     'resources',
     'furniture_collection',
     'bonita_integration',
-    'proveedores'
+    'proveedores',
+    'reservas'
 ]
 
 MIDDLEWARE = [
