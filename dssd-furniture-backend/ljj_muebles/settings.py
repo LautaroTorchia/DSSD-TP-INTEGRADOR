@@ -130,8 +130,8 @@ CORS_ALLOW_METHODS = [
     'PUT',
 ]
 
-#BONITA_URL= os.environ.get("BONITA_URL","http://localhost:8080")
-BONITA_URL="http://localhost:8080"
+BONITA_URL= os.environ.get("BONITA_URL","http://localhost:8080")
+#BONITA_URL="http://localhost:8080"
 
 DATABASES = {
     "default": {

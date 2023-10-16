@@ -6,7 +6,7 @@ class Coleccion(models.Model):
     descripcion = models.TextField()
     fecha_creacion = models.DateField(auto_now_add=True)
     terminada = models.BooleanField(default=False)
-    instancia_bonita = models.IntegerField()
+    instancia_bonita = models.IntegerField(null=True)
 
     def __str__(self):
         return self.nombre
