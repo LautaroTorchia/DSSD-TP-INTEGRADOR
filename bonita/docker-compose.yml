@@ -9,7 +9,7 @@ services:
     command:
       - -c
       - max_prepared_transactions=100
-      
+
   bonita:
     image: bonita:7.14.0
     hostname: custom-hostname.example.com
@@ -25,6 +25,9 @@ services:
       - BIZ_DB_NAME=business_data
       - BIZ_DB_USER=business_data
       - BIZ_DB_PASS=bpm
+      - HTTP_API=true
+      - HTTP_API_USERNAME=pfadmin
+      - HTTP_API_PASSWORD=pfsecret
       - TENANT_LOGIN=tech_user
       - TENANT_PASSWORD=secret
       - PLATFORM_LOGIN=pfadmin
