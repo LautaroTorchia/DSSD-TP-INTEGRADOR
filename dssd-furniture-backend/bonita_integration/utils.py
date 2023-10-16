@@ -2,7 +2,7 @@ import requests
 from rest_framework.response import Response
 from rest_framework import status
 from ljj_muebles.settings import BONITA_URL
-import json
+from .models import BonitaAPICall,BonitaCookies
 
 def update_cookie_header(bonita_cookies):
     
@@ -14,7 +14,7 @@ def update_cookie_header(bonita_cookies):
     return bonita_cookies_data
 
 
-def bonita_login(username, password):
+def bonita_login(username, password,user):
     # Define the Bonita login endpoint URL
     print(f'{BONITA_URL}/bonita/loginservice')
     bonita_login_url = f'{BONITA_URL}/bonita/loginservice'
@@ -32,7 +32,33 @@ def bonita_login(username, password):
     response = requests.post(bonita_login_url, data=data, headers=headers)
 
     if response.status_code == 204:
-        return response
+        cookies = response.cookies
+        cookies_data = [{'name': cookie.name, 'value': cookie.value} for cookie in cookies]
+
+        bonita_api_call = BonitaAPICall(
+            endpoint_called='/bonita/loginservice',
+            request_data=f"username={username}&password={password}",
+            response_data=cookies_data 
+        )
+        bonita_api_call.save()
+        
+        # Save the cookies into the BonitaCookies table
+        print(cookies_data)
+        for cookie in cookies_data:
+            if cookie['name'] == 'BOS_Locale':
+                BOS_Locale = cookie['value']
+            elif cookie['name'] == 'JSESSIONID':
+                JSESSIONID = cookie['value']
+            elif cookie['name'] == 'X-Bonita-API-Token':
+                X_Bonita_API_Token = cookie['value']
+        
+        BonitaCookies.objects.create(
+            user=user,  
+            BOS_Locale=BOS_Locale,
+            JSESSIONID=JSESSIONID,
+            X_Bonita_API_Token=X_Bonita_API_Token
+        )
+        return Response(status=status.HTTP_204_NO_CONTENT)
     else:
         return Response(f"Failed to login: {response.text}", status=response.status_code)
     

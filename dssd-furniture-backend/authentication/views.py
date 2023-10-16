@@ -78,9 +78,10 @@ class LoginAPIView(LoggingMixin, generics.GenericAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        self.perform_authentication(request)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
+    
+    
 class RequestPasswordResetEmail(LoggingMixin, generics.GenericAPIView):
     serializer_class = ResetPasswordEmailRequestSerializer
 

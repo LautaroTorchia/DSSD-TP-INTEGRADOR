@@ -8,70 +8,7 @@ from .utils import update_cookie_header,bonita_get_variable,change_bonita_variab
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework import permissions
-
-# Import the BonitaCookies model
 from .models import BonitaCookies
-
-# ...
-
-class BonitaLogin(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    @swagger_auto_schema(
-        operation_description="Authenticate with Bonita",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                'username': openapi.Schema(type=openapi.TYPE_STRING),
-                'password': openapi.Schema(type=openapi.TYPE_STRING),
-            },
-            required=['username', 'password'],
-        ),
-        responses={
-            204: "Authentication successful",
-            400: "Bad Request",
-            401: "Unauthorized",
-            500: "Internal Server Error",
-        },
-    )
-    def post(self, request):
-        
-        username = request.data.get('username')
-        password = request.data.get('password')
-
-        response = bonita_login(username, password)
-
-        if response.status_code == 204:
-            cookies = response.cookies
-            cookies_data = [{'name': cookie.name, 'value': cookie.value} for cookie in cookies]
-
-            bonita_api_call = BonitaAPICall(
-                endpoint_called='/bonita/loginservice',
-                request_data=f"username={username}&password={password}",
-                response_data=cookies_data 
-            )
-            bonita_api_call.save()
-            
-            # Save the cookies into the BonitaCookies table
-            print(cookies_data)
-            for cookie in cookies_data:
-                if cookie['name'] == 'BOS_Locale':
-                    BOS_Locale = cookie['value']
-                elif cookie['name'] == 'JSESSIONID':
-                    JSESSIONID = cookie['value']
-                elif cookie['name'] == 'X-Bonita-API-Token':
-                    X_Bonita_API_Token = cookie['value']
-            
-            BonitaCookies.objects.create(
-                user=request.user,  
-                BOS_Locale=BOS_Locale,
-                JSESSIONID=JSESSIONID,
-                X_Bonita_API_Token=X_Bonita_API_Token
-            )
-            
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        
-        return response
-
 
 class BonitaCheckProcesses(APIView):
     permission_classes = (permissions.IsAuthenticated,)

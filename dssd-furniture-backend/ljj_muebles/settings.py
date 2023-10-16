@@ -65,7 +65,8 @@ INSTALLED_APPS = [
     'progralog',
     'resources',
     'furniture_collection',
-    'bonita_integration'
+    'bonita_integration',
+    'proveedores'
 ]
 
 MIDDLEWARE = [

@@ -8,11 +8,12 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from bonita_integration.utils import bonita_login
 
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
-        max_length=68, min_length=6, write_only=True)
+        max_length=68, min_length=3, write_only=True)
 
     default_error_messages = {
         'username': 'The username should only contain alphanumeric characters'}
@@ -79,11 +80,17 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed('Account disabled, contact admin')
         if not user.is_verified:
             raise AuthenticationFailed('Email is not verified')
+        
+        # Invoke the bonita_login function with the user's details
+        response = bonita_login(user.email,password,user)
+        
+        if response.status_code != 204:
+            raise AuthenticationFailed('Failed login to Bonita')
 
         return {
             'email': user.email,
             'username': user.username,
-            'tokens': user.tokens
+            'tokens': user.tokens,
         }
 
         return super().validate(attrs)

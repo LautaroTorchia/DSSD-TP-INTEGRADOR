@@ -11,8 +11,6 @@ const login = async (username, password) => {
     });
     sessionStorage.setItem('token', response.data.tokens.access);
     sessionStorage.setItem('refreshToken', response.data.tokens.refresh);
-    const bonitaLoginResponse = await loginToBonita('anthony.nichols', 'bpm',response.data.tokens.access);
-    console.log(bonitaLoginResponse)
     return response.data.access;
   } catch (error) {
     throw error;

@@ -1,10 +1,10 @@
 # bonita_integration/urls.py
 
 from django.urls import path
-from .views import BonitaLogin,BonitaCheckProcesses,BonitaInstantiateProcess,BonitaUserTasks,BonitaExecuteUserTask,BonitaCaseVariable,BonitaUpdateCaseVariable
+from .views import BonitaCheckProcesses,BonitaInstantiateProcess,BonitaUserTasks,BonitaExecuteUserTask,BonitaCaseVariable,BonitaUpdateCaseVariable
 
 urlpatterns = [
-    path('login/', BonitaLogin.as_view(), name='bonita-login'),
+    
     path('list-processes/',BonitaCheckProcesses.as_view(),name='bonita-list-processes'),
     path('instantiate/<int:process_id>/', BonitaInstantiateProcess.as_view(), name='bonita-instantiate-process'),
     path('user-tasks/', BonitaUserTasks.as_view(), name='bonita-user-tasks'),
