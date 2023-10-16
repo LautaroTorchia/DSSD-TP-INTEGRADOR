@@ -1,7 +1,3 @@
-###########
-# BUILDER #
-###########
-
 # pull official base image
 FROM python:3.9.6-alpine as builder
 
@@ -17,7 +13,6 @@ RUN apk update \
     && apk add postgresql-dev gcc python3-dev musl-dev yaml-dev
 
 COPY . .
-#RUN flake8 --ignore=E501,F401 .
 
 # install dependencies
 COPY ./requirements.txt .
