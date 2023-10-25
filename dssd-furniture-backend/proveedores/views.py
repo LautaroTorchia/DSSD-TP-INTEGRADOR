@@ -38,9 +38,9 @@ class MaterialDeleteView(generics.DestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
     queryset = Material.objects.all()
 
-class ActorMaterialDeleteView(generics.DestroyAPIView):
-    permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
+class ActorMaterialRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ActorMaterial.objects.all()
+    serializer_class = ActorMaterialSerializer
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
