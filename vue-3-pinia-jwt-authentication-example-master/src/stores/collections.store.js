@@ -18,19 +18,6 @@ export const useCollectionsStore = defineStore({
         collections: {}
     }),
     actions: {
-        async delete(id) {
-            fetchWrapper.delete(`${baseUrl}/coleccion/${id}/`).catch(error => this.collections = { error })
-        },
-        async create(values) {
-            this.collections = { loading: true }
-            const data ={
-                nombre: values.name,
-                descripcion: values.description
-            }
-            const response = await fetchWrapper.post(`${baseUrl}/coleccion/`, data).catch(error => this.collections = { error })
-            const caseId = await createBonitaInstance()
-            const patchResponse = await fetchWrapper.patch(`${baseUrl}/coleccion/${response.id}/`, { instancia_bonita: caseId }).catch(error => this.collections = { error })
-        },
         async getAll() {
             this.collections = { loading: true }
             fetchWrapper.get(`${baseUrl}/coleccion/`)
@@ -39,12 +26,30 @@ export const useCollectionsStore = defineStore({
                         return {
                             id: collection.id,
                             name: collection.nombre,
-                            description: collection.descripcion
+                            description: collection.descripcion,
+                            finished: collection.terminada
                         }
                     })
                     this.collections = collections
+                    console.log(this.collections)
                 })
                 .catch(error => this.collections = { error })
-        }
+        },
+        async delete(id) {
+            fetchWrapper.delete(`${baseUrl}/coleccion/${id}/`).catch(error => this.collections = { error })
+        },
+        async create(values) {
+            this.collections = { loading: true }
+            const data = {
+                nombre: values.name,
+                descripcion: values.description
+            }
+            const response = await fetchWrapper.post(`${baseUrl}/coleccion/`, data).catch(error => this.collections = { error })
+            const caseId = await createBonitaInstance()
+            const patchResponse = await fetchWrapper.patch(`${baseUrl}/coleccion/${response.id}/`, { instancia_bonita: caseId }).catch(error => this.collections = { error })
+        },
+        async finish(id) {
+            const patchResponse = await fetchWrapper.patch(`${baseUrl}/coleccion/${id}/`, { terminada: true }).catch(error => this.collections = { error })
+        },
     }
 })

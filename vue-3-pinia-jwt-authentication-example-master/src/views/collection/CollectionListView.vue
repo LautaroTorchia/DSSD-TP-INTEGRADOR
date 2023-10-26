@@ -7,16 +7,31 @@ const { collections } = storeToRefs(collectionStore);
 collectionStore.getAll();
 
 const deleteCollection = async (id) => {
-    const confirmed = confirm('Are you sure you want to delete this collection?');
+    const confirmed = confirm('¿Desea borrar la colección?')
     if (confirmed) {
         try {
             collectionStore.delete(id);
             collectionStore.getAll();
         } catch (error) {
+            alert('Error al borrar la colección')
             console.error(error);
         }
     }
-};
+}
+
+const finishCollection = async (collection) => {
+    const confirmed = confirm('¿Desea terminar la colección?');
+    if (confirmed) {
+        try {
+            collection.finished = true
+            collectionStore.finish(collection.id);
+            collectionStore.getAll();
+        } catch (error) {
+            alert('Error al terminar la colección')
+            console.error(error);
+        }
+    }
+}
 
 </script>
 
@@ -29,7 +44,14 @@ const deleteCollection = async (id) => {
             <template v-for="collection in collections" :key="collection.id">
                 <li>Nombre: {{ collection.name }} </li>
                 <li>Descripción: {{ collection.description }}</li>
-                <button @click="deleteCollection(collection.id)">Delete</button>
+                <li v-if="collection.finished">
+                    Terminada: Sí
+                </li>
+                <li v-else>
+                    Terminada: No
+                </li>
+                <button @click="deleteCollection(collection.id)">Borrar</button>
+                <button v-if="!collection.finished" @click="finishCollection(collection)">Terminar</button>
             </template>
         </ul>
         <div v-else-if="collections.loading" class="spinner-border spinner-border-sm"></div>
