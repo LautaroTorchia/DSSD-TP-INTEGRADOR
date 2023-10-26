@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import ActorListCreateView, MaterialListCreateView, ActorMaterialListCreateView,PossibleActorsForMaterialView
-from .views import MaterialDeleteView,ActorDeleteView,ActorMaterialDeleteView
+from .views import MaterialDeleteView,ActorDeleteView,ActorMaterialRetrieveUpdateDestroyView
 
 urlpatterns = [
     path('proveedores/', ActorListCreateView.as_view(), name='actor-list-create'),
@@ -10,7 +10,7 @@ urlpatterns = [
     path('materiales/<int:pk>/', MaterialDeleteView.as_view(), name='material-delete'),
     
     path('proveedores-materiales/', ActorMaterialListCreateView.as_view(), name='actor-material-list-create'),
-    path('actor-materials/<int:pk>/', ActorMaterialDeleteView.as_view(), name='actor-material-delete'),
+    path('actor-materials/<int:pk>/', ActorMaterialRetrieveUpdateDestroyView.as_view(), name='actor-material-delete'),
     
     path('<int:material_id>/', PossibleActorsForMaterialView.as_view(), name='possible-actors-for-material'),
 ]
