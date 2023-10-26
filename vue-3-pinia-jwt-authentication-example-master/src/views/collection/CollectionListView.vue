@@ -4,7 +4,6 @@ import { useCollectionsStore } from '@/stores'
 
 const collectionStore = useCollectionsStore();
 const { collections } = storeToRefs(collectionStore);
-
 collectionStore.getAll();
 
 const deleteCollection = async (id) => {
@@ -12,6 +11,7 @@ const deleteCollection = async (id) => {
     if (confirmed) {
         try {
             collectionStore.delete(id);
+            collectionStore.getAll();
         } catch (error) {
             console.error(error);
         }

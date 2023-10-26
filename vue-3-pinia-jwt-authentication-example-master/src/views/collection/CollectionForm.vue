@@ -10,9 +10,10 @@
           <textarea id="description" v-model="formData.description"></textarea>
         </div>
         <div class="form-group">
-          <button type="submit">Submit</button>
+          <button type="submit">Crear</button>
         </div>
       </form>
+      <router-link :to="{ name: 'collections' }">Volver</router-link>
     </div>
   </template>
   

@@ -6,7 +6,8 @@
   </template>
   
   <script>
-  import CollectionForm from './CollectionForm.vue';
+  import { router } from '../../helpers/router';
+import CollectionForm from './CollectionForm.vue';
   import { useCollectionsStore } from '@/stores'
 
   export default {
@@ -25,6 +26,7 @@
       handleFormSubmission(formData) {
         const collectionStore = useCollectionsStore()
         collectionStore.create(formData)
+        router.push({ name: 'collections' })
       },
     },
   };

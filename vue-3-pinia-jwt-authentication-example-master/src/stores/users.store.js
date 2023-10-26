@@ -21,7 +21,6 @@ export const useUsersStore = defineStore({
                             username: user.username
                         }
                     })
-                    console.log(users)
                     this.users = users
                 })
                 .catch(error => this.users = { error })

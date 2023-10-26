@@ -53,7 +53,6 @@ function handleResponse(response) {
             return Promise.reject(error);
         }
         
-        console.log(data)
         return data;
     });
 }    

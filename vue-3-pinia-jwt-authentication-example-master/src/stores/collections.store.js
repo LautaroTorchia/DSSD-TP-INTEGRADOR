@@ -19,7 +19,6 @@ export const useCollectionsStore = defineStore({
     }),
     actions: {
         async delete(id) {
-            this.collections = { loading: true }
             fetchWrapper.delete(`${baseUrl}/coleccion/${id}/`).catch(error => this.collections = { error })
         },
         async create(values) {
@@ -36,7 +35,6 @@ export const useCollectionsStore = defineStore({
             this.collections = { loading: true }
             fetchWrapper.get(`${baseUrl}/coleccion/`)
                 .then(data => {
-                    console.log(data)
                     const collections = data.map(collection => {
                         return {
                             id: collection.id,
@@ -44,7 +42,6 @@ export const useCollectionsStore = defineStore({
                             description: collection.descripcion
                         }
                     })
-                    console.log(collections)
                     this.collections = collections
                 })
                 .catch(error => this.collections = { error })

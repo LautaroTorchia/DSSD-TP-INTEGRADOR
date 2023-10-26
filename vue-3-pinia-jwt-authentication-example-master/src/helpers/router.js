@@ -10,7 +10,7 @@ export const router = createRouter({
     routes: [
         { path: '/', component: HomeView },
         { path: '/login', component: LoginView },
-        { path: '/collections', component: CollectionListView },
+        { path: '/collections', component: CollectionListView, name : 'collections' },
         { path: '/collection/create', component: CollectionCreateView , name: 'collection-create' },
     ]
 });
