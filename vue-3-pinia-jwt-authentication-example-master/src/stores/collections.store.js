@@ -27,6 +27,7 @@ export const useCollectionsStore = defineStore({
                             id: collection.id,
                             name: collection.nombre,
                             description: collection.descripcion,
+                            caseId: collection.instancia_bonita,
                             finished: collection.terminada
                         }
                     })
@@ -48,8 +49,9 @@ export const useCollectionsStore = defineStore({
             const caseId = await createBonitaInstance()
             const patchResponse = await fetchWrapper.patch(`${baseUrl}/coleccion/${response.id}/`, { instancia_bonita: caseId }).catch(error => this.collections = { error })
         },
-        async finish(id) {
-            const patchResponse = await fetchWrapper.patch(`${baseUrl}/coleccion/${id}/`, { terminada: true }).catch(error => this.collections = { error })
+        async finish(collection) {
+            
+            const patchResponse = await fetchWrapper.patch(`${baseUrl}/coleccion/${collection.id}/`, { terminada: true }).catch(error => this.collections = { error })
         },
     }
 })

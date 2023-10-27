@@ -24,7 +24,7 @@ const finishCollection = async (collection) => {
     if (confirmed) {
         try {
             collection.finished = true
-            collectionStore.finish(collection.id);
+            collectionStore.finish(collection);
             collectionStore.getAll();
         } catch (error) {
             alert('Error al terminar la colección')

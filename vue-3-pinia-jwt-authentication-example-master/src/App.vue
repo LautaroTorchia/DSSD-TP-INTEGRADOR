@@ -2,7 +2,6 @@
 import { RouterLink, RouterView } from 'vue-router';
 
 import { useAuthStore } from '@/stores';
-
 const authStore = useAuthStore();
 </script>
 

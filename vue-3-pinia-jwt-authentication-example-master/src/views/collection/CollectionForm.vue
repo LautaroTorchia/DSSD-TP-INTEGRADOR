@@ -18,7 +18,6 @@
   </template>
   
   <script>
-  import BackButton from '@/components/backButton.vue';
   export default {
     data() {
       return {
