@@ -10,6 +10,7 @@ export const fetchWrapper = {
 };
 
 function request(method) {
+  //change it to async for better code readability
     return (url, body) => {
         const requestOptions = {
             method,
