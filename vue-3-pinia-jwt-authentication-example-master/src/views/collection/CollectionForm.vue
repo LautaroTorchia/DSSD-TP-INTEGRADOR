@@ -10,14 +10,15 @@
           <textarea id="description" v-model="formData.description"></textarea>
         </div>
         <div class="form-group">
-          <button type="submit">Crear</button>
+          <button type="submit">Confirmar</button>
         </div>
       </form>
-      <router-link :to="{ name: 'collections' }">Volver</router-link>
+        <BackButton />
     </div>
   </template>
   
   <script>
+  import BackButton from '@/components/backButton.vue';
   export default {
     data() {
       return {
