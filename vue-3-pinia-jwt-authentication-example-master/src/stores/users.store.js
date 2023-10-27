@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
-import { fetchWrapper } from '@/helpers';
+import { fetchWrapper } from '@/helpers'
 
-const baseUrl = `${import.meta.env.VITE_API_URL}`;
+const baseUrl = `${import.meta.env.VITE_API_URL}`
 
 export const useUsersStore = defineStore({
     id: 'users',
@@ -26,4 +26,4 @@ export const useUsersStore = defineStore({
                 .catch(error => this.users = { error })
         }
     }
-});
+})

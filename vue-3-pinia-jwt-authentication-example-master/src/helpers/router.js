@@ -1,7 +1,7 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router'
 
-import { useAuthStore } from '@/stores';
-import { HomeView, LoginView, CollectionListView, CollectionCreateView } from '@/views';
+import { useAuthStore } from '@/stores'
+import { HomeView, LoginView, CollectionListView, CollectionCreateView, CollectionUpdateView } from '@/views'
 
 
 export const router = createRouter({
@@ -12,17 +12,18 @@ export const router = createRouter({
         { path: '/login', component: LoginView },
         { path: '/collections', component: CollectionListView, name : 'collections' },
         { path: '/collection/create', component: CollectionCreateView , name: 'collection-create' },
+        { path: '/collection/:collection/update', component: CollectionUpdateView , name: 'collection-update' },
     ]
-});
+})
 
 router.beforeEach(async (to) => {
     // redirect to login page if not logged in and trying to access a restricted page
-    const publicPages = ['/login'];
-    const authRequired = !publicPages.includes(to.path);
-    const auth = useAuthStore();
+    const publicPages = ['/login']
+    const authRequired = !publicPages.includes(to.path)
+    const auth = useAuthStore()
 
     if (authRequired && !auth.user) {
-        auth.returnUrl = to.fullPath;
-        return '/login';
+        auth.returnUrl = to.fullPath
+        return '/login'
     }
-});
+})

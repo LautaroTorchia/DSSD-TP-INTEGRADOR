@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
-import { fetchWrapper } from '@/helpers';
+import { fetchWrapper } from '@/helpers'
 
-const baseUrl = `${import.meta.env.VITE_API_URL}`;
+const baseUrl = `${import.meta.env.VITE_API_URL}`
 
 
 const createBonitaInstance = async () => {
@@ -50,8 +50,21 @@ export const useCollectionsStore = defineStore({
             const patchResponse = await fetchWrapper.patch(`${baseUrl}/coleccion/${response.id}/`, { instancia_bonita: caseId }).catch(error => this.collections = { error })
         },
         async finish(collection) {
-            
-            const patchResponse = await fetchWrapper.patch(`${baseUrl}/coleccion/${collection.id}/`, { terminada: true }).catch(error => this.collections = { error })
+            try {
+                const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
+                const task = tasks.find(task => task.rootCaseId === collection.caseId.toString())
+                await fetchWrapper.post(`${baseUrl}/bonita/execute-user-task/${task.id}/`)
+                await fetchWrapper.patch(`${baseUrl}/coleccion/${collection.id}/`, { terminada: true })
+            } catch (error) {
+                this.collections = { error }
+            }
+        },
+        async update(collection) {
+            const data = {
+                nombre: collection.name,
+                descripcion: collection.description
+            }
+            fetchWrapper.patch(`${baseUrl}/coleccion/${collection.id}/`, data).catch(error => this.collections = { error })
         },
     }
 })
