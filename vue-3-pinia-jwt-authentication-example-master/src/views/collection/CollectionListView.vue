@@ -11,8 +11,7 @@ const deleteCollection = async (id) => {
     const confirmed = confirm('¿Desea borrar la colección?')
     if (confirmed) {
         try {
-            collectionStore.delete(id);
-            collectionStore.getAll();
+            await collectionStore.delete(id);
         } catch (error) {
             alert('Error al borrar la colección')
             console.error(error);
@@ -49,6 +48,8 @@ const finishCollection = async (collection) => {
             <template v-for="collection in collections" :key="collection.id">
                 <li>Nombre: {{ collection.name }} </li>
                 <li>Descripción: {{ collection.description }}</li>
+                <router-link :to="`/${collection.id}/furniture`">Ver muebles</router-link>
+
                 <li v-if="collection.finished">
                     Terminada: Sí
                 </li>

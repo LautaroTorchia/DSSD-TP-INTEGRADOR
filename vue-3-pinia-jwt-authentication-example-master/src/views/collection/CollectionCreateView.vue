@@ -31,4 +31,3 @@ import CollectionForm from './CollectionForm.vue';
     },
   };
   </script>
-  

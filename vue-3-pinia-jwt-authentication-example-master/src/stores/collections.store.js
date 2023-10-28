@@ -17,6 +17,11 @@ export const useCollectionsStore = defineStore({
     state: () => ({
         collections: {}
     }),
+    getters: {
+        getCollection: (state) => (id) => {
+            return state.collections.find(collection => collection.id === id)
+        }
+    },
     actions: {
         async getAll() {
             try {
@@ -43,7 +48,12 @@ export const useCollectionsStore = defineStore({
             }
         },
         async delete(id) {
-            fetchWrapper.delete(`${baseUrl}/coleccion/${id}/`).catch(error => this.collections = { error })
+            try {
+                await fetchWrapper.delete(`${baseUrl}/coleccion/${id}/`);
+                this.collections.splice(this.collections.findIndex(collection => collection.id === id), 1);
+            } catch (error) {
+                this.collections = { error };
+            }
         },
         async create(values) {
             this.collections = { loading: true }
@@ -71,6 +81,7 @@ export const useCollectionsStore = defineStore({
                 descripcion: collection.description
             }
             fetchWrapper.patch(`${baseUrl}/coleccion/${collection.id}/`, data).catch(error => this.collections = { error })
+            localStorage.removeItem(collection.id)
         },
     }
 })
