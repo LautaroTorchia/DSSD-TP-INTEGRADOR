@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-
+import { useFurnitureStore} from './furniture.store'
 import { fetchWrapper } from '@/helpers'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
@@ -19,22 +19,28 @@ export const useCollectionsStore = defineStore({
     }),
     actions: {
         async getAll() {
-            this.collections = { loading: true }
-            fetchWrapper.get(`${baseUrl}/coleccion/`)
-                .then(data => {
-                    const collections = data.map(collection => {
-                        return {
-                            id: collection.id,
-                            name: collection.nombre,
-                            description: collection.descripcion,
-                            caseId: collection.instancia_bonita,
-                            finished: collection.terminada
-                        }
-                    })
-                    this.collections = collections
-                    console.log(this.collections)
+            try {
+                this.collections = { loading: true }
+                const data = await fetchWrapper.get(`${baseUrl}/coleccion/`)
+                const furnitureStore = useFurnitureStore()
+                const furnitureData = await furnitureStore.getAll()
+
+                const collections = data.map(collection => {
+                    const furniture = furnitureData.filter(furniture => furniture.coleccion === collection.id.toString())
+                    return {
+                        id: collection.id,
+                        name: collection.nombre,
+                        description: collection.descripcion,
+                        caseId: collection.instancia_bonita,
+                        finished: collection.terminada,
+                        furniture: furniture,
+                    }
                 })
-                .catch(error => this.collections = { error })
+                this.collections = collections
+                console.log(this.collections)
+            } catch (error) {
+                this.collections = { error }
+            }
         },
         async delete(id) {
             fetchWrapper.delete(`${baseUrl}/coleccion/${id}/`).catch(error => this.collections = { error })
