@@ -18,7 +18,7 @@ export default defineComponent({
     setup() {
         const collectionStore = useCollectionsStore();
         const collectionId = router.currentRoute.value.params.collection;
-        const collection = JSON.parse(localStorage.getItem(collectionId))
+        const collection = collectionStore.getById(collectionId);
         const formData = {
             name: collection.name,
             description: collection.description,

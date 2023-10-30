@@ -19,11 +19,6 @@ const deleteCollection = async (id) => {
     }
 }
 
-const updateCollection = (collection) => {
-    localStorage.setItem(collection.id, JSON.stringify(collection));
-    router.push({ name: 'collection-update', params: { collection: collection.id } });
-}
-
 const finishCollection = async (collection) => {
     const confirmed = confirm('¿Desea terminar la colección?');
     if (confirmed) {
@@ -56,7 +51,11 @@ const finishCollection = async (collection) => {
                 <li v-else>
                     Terminada: No
                     <button @click="deleteCollection(collection.id)">Borrar</button>
-                    <button @click="updateCollection(collection)">Editar</button>
+                    <router-link :to="{ name: 'collection-update', params: { collection: collection.id } }">
+                        <button class="btn btn-primary">
+                            <slot>Editar</slot>
+                        </button>
+                    </router-link>
                     <button @click="finishCollection(collection)">Terminar</button>
                 </li>
             </template>

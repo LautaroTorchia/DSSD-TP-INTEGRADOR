@@ -41,10 +41,12 @@ export const useCollectionsStore = defineStore({
                     }
                 }))
                 this.collections = collections
-                console.log(this.collections)
             } catch (error) {
                 this.collections = { error }
             }
+        },
+        getById(id) {
+            return this.collections.find(collection => collection.id == id)
         },
         async delete(id) {
             try {
