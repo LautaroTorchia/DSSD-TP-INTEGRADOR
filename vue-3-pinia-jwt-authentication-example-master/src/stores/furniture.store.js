@@ -5,7 +5,7 @@ import { fetchWrapper } from '@/helpers'
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 
 export const useFurnitureStore = defineStore({
-    id: 'furnitures',
+    id: 'furniture',
     state: () => ({
         furniture: {}
     }),
@@ -15,6 +15,9 @@ export const useFurnitureStore = defineStore({
             const filteredFurniture = response.filter(furniture => furniture.collection_id === collectionId.toStrting())
             this.furniture = filteredFurniture
             return filteredFurniture
+        },
+        async getById(id) {
+            return this.furniture.find(furniture => furniture.id == id)
         },
         async delete(id) {
             try {

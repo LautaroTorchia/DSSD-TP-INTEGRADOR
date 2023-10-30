@@ -28,10 +28,9 @@ export const useCollectionsStore = defineStore({
                 this.collections = { loading: true }
                 const data = await fetchWrapper.get(`${baseUrl}/coleccion/`)
                 const furnitureStore = useFurnitureStore()
-                const furnitureData = await furnitureStore.getAll()
 
-                const collections = data.map(collection => {
-                    const furniture = furnitureData.filter(furniture => furniture.coleccion === collection.id.toString())
+                const collections = await Promise.all(data.map(async collection => {
+                    const furniture = await furnitureStore.getCollectionFurniture(collection.id)
                     return {
                         id: collection.id,
                         name: collection.nombre,
@@ -40,7 +39,7 @@ export const useCollectionsStore = defineStore({
                         finished: collection.terminada,
                         furniture: furniture,
                     }
-                })
+                }))
                 this.collections = collections
                 console.log(this.collections)
             } catch (error) {
