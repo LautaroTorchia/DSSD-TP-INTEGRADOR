@@ -2,7 +2,7 @@
 from rest_framework import generics
 from general_permissions.permissions import IsPermittedRBAC
 from .models import ReservaMaterial, ReservaLugarFabricacion,LugarDeFabricacion
-from .serializers import ReservaMaterialSerializer, ReservaLugarFabricacionSerializer
+from .serializers import ReservaMaterialSerializer, ReservaLugarFabricacionSerializer,LugarDeFabricacionSerializer
 from rest_framework import permissions
 import requests
 from rest_framework import status
@@ -15,12 +15,12 @@ from datetime import date, timedelta
 class LugarDeFabricacionListCreateView(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
     queryset = LugarDeFabricacion.objects.all()
-    serializer_class = ReservaMaterialSerializer
+    serializer_class = LugarDeFabricacionSerializer
 
 class LugarDeFabricacionDestroyView(generics.DestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
     queryset = LugarDeFabricacion.objects.all()
-    serializer_class = ReservaMaterialSerializer
+    serializer_class = LugarDeFabricacionSerializer
     
 class ReservaMaterialListView(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
