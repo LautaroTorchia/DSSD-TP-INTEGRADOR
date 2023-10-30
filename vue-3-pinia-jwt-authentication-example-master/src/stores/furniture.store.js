@@ -7,26 +7,19 @@ const baseUrl = `${import.meta.env.VITE_API_URL}`
 export const useFurnitureStore = defineStore({
     id: 'furnitures',
     state: () => ({
-        furniture: {},
-        collectionFurniture: {}
+        furniture: {}
     }),
     actions: {
-        async getAll() {
-            const furniture = await fetchWrapper.get(`${baseUrl}/coleccion/muebles/`)
-            this.furniture = furniture
-            return furniture
-        },
         async getCollectionFurniture(collectionId) {
             const response = await fetchWrapper.get(`${baseUrl}/coleccion/muebles/`)
             const filteredFurniture = response.filter(furniture => furniture.collection_id === collectionId.toStrting())
-            this.collectionFurniture = filteredFurniture
+            this.furniture = filteredFurniture
             return filteredFurniture
         },
         async delete(id) {
             try {
                 await fetchWrapper.delete(`${baseUrl}/coleccion/muebles/${id}/`);
                 this.furniture = this.furniture.filter(furniture => furniture.id !== id);
-                this.collectionFurniture = this.collectionFurniture.filter(furniture => furniture.id !== id);
             } catch (error) {
                 this.furniture = { error };
             }
