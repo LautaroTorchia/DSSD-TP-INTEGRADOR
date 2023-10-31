@@ -17,12 +17,12 @@ class MaterialListCreateView(generics.ListCreateAPIView):
     serializer_class = MaterialSerializer
 
 class ActorMaterialListCreateView(generics.ListCreateAPIView):
-    permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
+    #permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
     queryset = ActorMaterial.objects.all()
     serializer_class = ActorMaterialSerializer
 
 class PossibleActorsForMaterialView(generics.ListAPIView):
-    permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
+    #permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
     serializer_class = ActorMaterialSerializer
 
     def get_queryset(self):
