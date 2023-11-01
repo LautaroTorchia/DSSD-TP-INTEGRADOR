@@ -1,7 +1,7 @@
 # reservas/serializers.py
 
 from rest_framework import serializers
-from .models import ReservaMaterial, ReservaLugarFabricacion,LugarDeFabricacion
+from .models import ReservaMaterial, ReservaLugarFabricacion,LugarDeFabricacion,MaterialEntregado
 
 class ReservaMaterialSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,4 +17,10 @@ class ReservaLugarFabricacionSerializer(serializers.ModelSerializer):
 class LugarDeFabricacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = LugarDeFabricacion
+        fields = '__all__'
+
+
+class MaterialEntregadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MaterialEntregado
         fields = '__all__'

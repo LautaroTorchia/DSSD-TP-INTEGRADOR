@@ -9,6 +9,7 @@ class Actor(models.Model):
     nombre = models.CharField(max_length=100)
     tipo_actor = models.CharField(max_length=10, choices=TIPO_CHOICES)
     ubicacion = models.CharField(max_length=100)
+    internacional = models.BooleanField()
     
     class Meta:
         unique_together = ('nombre','tipo_actor')

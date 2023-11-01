@@ -1,8 +1,8 @@
 # reservas/views.py
 from rest_framework import generics
 from general_permissions.permissions import IsPermittedRBAC
-from .models import ReservaMaterial, ReservaLugarFabricacion,LugarDeFabricacion
-from .serializers import ReservaMaterialSerializer, ReservaLugarFabricacionSerializer,LugarDeFabricacionSerializer
+from .models import ReservaMaterial, ReservaLugarFabricacion,LugarDeFabricacion,MaterialEntregado
+from .serializers import ReservaMaterialSerializer, ReservaLugarFabricacionSerializer,LugarDeFabricacionSerializer,MaterialEntregadoSerializer
 from rest_framework import permissions
 import requests
 from rest_framework import status
@@ -40,7 +40,11 @@ class ReservaMaterialCreateView(APIView):
             'cantidad_pactada': openapi.Schema(
                 type=openapi.TYPE_INTEGER,
                 description='Cantidad de material a reservar.',
-            )
+            ),
+            'sede_entrega': openapi.Schema(
+                type=openapi.TYPE_INTEGER,
+                description='Sede a la cual se va a entregar.',
+            ),
         },
     ),
     responses={
@@ -51,6 +55,7 @@ class ReservaMaterialCreateView(APIView):
     def post(self, request, format=None):
         id_venta_proveedor = request.data.get('id_venta_proveedor')
         cantidad = request.data.get('cantidad_pactada')
+        sede_entrega = request.data.get('sede_entrega')
         # Make a request to the other application's API to get the supplier's ID
         
         supplier_api_url = f'http://localhost:8000/api/proveedores/actor-materials/{id_venta_proveedor}/'
@@ -64,10 +69,11 @@ class ReservaMaterialCreateView(APIView):
                 fecha_entrega_pactada= date.today() + timedelta(days=supplier_data.get('plazo_entrega_dias'))
                 proveedor = supplier_data.get('actor_nombre')
                 material = supplier_data.get('material_nombre')
-
+                sede=LugarDeFabricacion.objects.get(id=sede_entrega)
                 reserva_material = ReservaMaterial.objects.create(id_venta_proveedor=supplier_id,
                                                                 nombre_proveedor=proveedor,nombre_material=material,
-                                                                cantidad_pactada=cantidad,fecha_entrega_pactada=fecha_entrega_pactada)
+                                                                cantidad_pactada=cantidad,fecha_entrega_pactada=fecha_entrega_pactada,
+                                                                sede_a_entregar=sede)
                 serializer = ReservaMaterialSerializer(reserva_material)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
@@ -88,3 +94,8 @@ class ReservaLugarFabricacionDestroyView(generics.DestroyAPIView):
     permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
     queryset = ReservaLugarFabricacion.objects.all()
     serializer_class = ReservaLugarFabricacionSerializer
+    
+class MaterialEntregadoListCreateView(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
+    queryset = MaterialEntregado.objects.all()
+    serializer_class = MaterialEntregadoSerializer
