@@ -11,7 +11,12 @@ export default defineComponent({
     setup() {
         const formData = {
             name: '',
+            deadline: '',
+            estimated_release: '',
             description: '',
+            image: '',
+            manufacturing_plan: '',
+            materials: '',
         };
 
         const collectionStore = useCollectionsStore();
