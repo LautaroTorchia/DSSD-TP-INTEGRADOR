@@ -22,9 +22,21 @@ export default {
     },
     methods: {
         handleFormSubmission(formData) {
-            console.log("create form: ", formData)
+            let formObj = new FormData();
+            formObj.append('nombre', formData.name);
+            formObj.append('plazo_fabricacion', formData.estimated_days);
+            formObj.append('fecha_lanzamiento_estimada', formData.estimated_release);
+            formObj.append('descripcion', formData.description);
+            formObj.append('imagen', formData.image);
+            formObj.append('plan_fabricacion', formData.manufacturing_plan);
+            formObj.append('materiales', formData.materials);
+            console.log("collection_id: ", this.$route.params.collection)
+            let collection_id = Number(this.$route.params.collection);
+            console.log("collection_id_assigned: ", collection_id)
+            formObj.append('coleccion', collection_id);
+            console.log("create form: ", formObj)
             const furnitureStore = useFurnitureStore()
-            furnitureStore.create(formData)
+            furnitureStore.create(formObj)
             router.push({ name: 'furniture' })
         },
     },
@@ -33,6 +45,6 @@ export default {
 <template>
     <div>
         <h2>Crear Mueble de la collección</h2>
-        <FurnitureForm @form-submitted="handleFormSubmission" />
+        <FurnitureForm @form-submitted="handleFormSubmission"/>
     </div>
 </template>

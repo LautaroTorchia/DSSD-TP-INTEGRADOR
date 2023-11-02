@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="submitForm" enctype="multipart/form-data">
       <div class="form-group">
         <label for="name">Name:</label>
         <input type="text" id="name" class="form-control" v-model="formData.name" maxlength="100" />
