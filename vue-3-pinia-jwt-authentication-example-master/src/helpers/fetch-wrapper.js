@@ -9,6 +9,14 @@ export const fetchWrapper = {
     patch: request('PATCH')
 }
 
+export const sendFile = {
+    get: requestFile('GET'),
+    post: requestFile('POST'),
+    put: requestFile('PUT'),
+    delete: requestFile('DELETE'),
+    patch: requestFile('PATCH')
+}
+
 function request(method) {
   //change it to async for better code readability
     return (url, body) => {
@@ -21,6 +29,21 @@ function request(method) {
             requestOptions.body = JSON.stringify(body)
         }
         console.log(requestOptions,url,body)
+        return fetch(url, requestOptions).then(handleResponse)
+    }
+}
+
+// request for files
+
+function requestFile(method) {
+    return (url, body) => {
+        const requestOptions = {
+            method,
+            headers: authHeader(url)
+        }
+        if (body) {
+            requestOptions.body = body
+        }
         return fetch(url, requestOptions).then(handleResponse)
     }
 }

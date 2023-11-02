@@ -8,7 +8,6 @@ const { furniture } = storeToRefs(furnitureStore);
 const collection_id = router.currentRoute.value.params.collection
 furnitureStore.getCollectionFurniture(collection_id)
 
-
 const deleteFurniture = async (id) => {
     const confirmed = confirm('¿Desea borrar el mueble?')
     if (confirmed) {
@@ -32,9 +31,13 @@ const deleteFurniture = async (id) => {
         </div>
         <ul v-if="furniture.length">
             <template v-for="furniture in furniture" :key="furniture.id">
-                <li>Nombre: {{ furniture.name }} </li>
-                <li>Descripción: {{ furniture.description }}</li>
-                <button @click="deleteFurniture(furniture.id)">Borrar</button>
+                <li>Nombre: {{ furniture.nombre }} </li>
+                <li>Plazo de fabricación: {{ furniture.plazo_fabricacion }}</li>
+                <li>Fecha de lanzamiento estimada: {{ furniture.fecha_lanzamiento_estimada }}</li>
+                <li>Descripción: {{ furniture.descripcion }}</li>
+                <li>Plan de fabricación: {{ furniture.plan_fabricacion }}</li>
+                <li>Materiales: {{ furniture.materiales }}</li>
+                <button @click="detailFurniture(furniture.id)">Ver</button>
                 <button @click="updateFurniture(furniture.id)">Editar</button>
             </template>
         </ul>

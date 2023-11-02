@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-import { fetchWrapper } from '@/helpers'
+import { fetchWrapper, sendFile } from '@/helpers'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 
@@ -31,17 +31,7 @@ export const useFurnitureStore = defineStore({
             await fetchWrapper.patch(`${baseUrl}/coleccion/muebles/${id}/`, furniture)
         },
         async create(furniture) {
-            const furnitureRequest = {
-                nombre: furniture.name,
-                plazo_fabricacion: furniture.estimated_days,
-                fecha_lanzamiento_estimada: furniture.estimated_release,
-                descripcion: furniture.description,
-                imagen: furniture.image,
-                plan_fabricacion: furniture.manufacturing_plan,
-                materiales: furniture.materials,
-                coleccion: furniture.collection_id
-            }
-            const response = await fetchWrapper.post(`${baseUrl}/coleccion/muebles/`, furnitureRequest)
+            const response = await sendFile.post(`${baseUrl}/coleccion/muebles/`, furniture)
             return response
         }
     }

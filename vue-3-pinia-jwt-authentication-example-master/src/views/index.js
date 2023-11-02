@@ -5,4 +5,4 @@ export { default as CollectionCreateView } from './collection/CollectionCreateVi
 export { default as CollectionUpdateView } from './collection/CollectionUpdateView.vue'
 export { default as FurnitureListView } from './furniture/FurnitureListView.vue'
 export { default as FurnitureCreateView } from './furniture/FurnitureCreateView.vue'
-
+export { default as FurnitureDetailView } from './furniture/FurnitureDetailView.vue'
