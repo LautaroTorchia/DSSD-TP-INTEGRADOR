@@ -3,12 +3,12 @@
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label for="name">Name:</label>
-        <input type="text" id="name" class="form-control" v-model="formData.name" />
+        <input type="text" id="name" class="form-control" v-model="formData.name" maxlength="100" />
       </div>
       <div class="form-group">
-        <label for="deadline">Deadline:</label>
-        <input type="date" id="deadline" class="form-control" v-model="formData.deadline" @change="updateDeadline" />
-        <div class="text-danger" ref="deadlineError"></div>
+        <label for="estimated-days">Estimated Days:</label>
+        <input type="number" id="estimated-days" class="form-control" v-model="formData.estimated_days" @input="validateEstimatedDays" />
+        <div class="text-danger" ref="estimatedDaysError"></div>
       </div>
       <div class="form-group">
         <label for="estimated-release">Estimated Release:</label>
@@ -52,13 +52,13 @@ export default {
   },
   props: {
     formData: {
-      default: () => ({ name: '', deadline: '', estimated_release: '', description: '', image: '', manufacturing_plan: '', materials: '' }),
+      default: () => ({ name: '', estimated_days: '', estimated_release: '', description: '', image: '', manufacturing_plan: '', materials: '' }),
     },
   },
   setup(props) {
     const formData = reactive({
       name: props.formData.name,
-      deadline: props.formData.deadline,
+      estimated_days: props.formData.estimated_days,
       estimated_release: props.formData.estimated_release,
       description: props.formData.description,
       image: props.formData.image,
@@ -77,16 +77,15 @@ export default {
   },
 
   methods: {
-    updateDeadline() {
-      const currentDate = new Date();
-      const selectedDate = new Date(this.formData.deadline);
-      const deadlineErrorElement = this.$refs.deadlineError;
+    validateEstimatedDays() {
+      const estimatedDaysErrorElement = this.$refs.estimatedDaysError;
+      const estimatedDays = this.formData.estimated_days;
 
-      if (selectedDate <= currentDate) {
-        this.displayErrorMessage(deadlineErrorElement, "Deadline must be a date after today.");
-        this.formData.deadline = ''; // Clear the input
+      if (estimatedDays === null || estimatedDays === '' || isNaN(estimatedDays) || estimatedDays <= 0) {
+        this.displayErrorMessage(estimatedDaysErrorElement, "Please enter a positive integer.");
+        this.formData.estimated_days = null;
       } else {
-        this.clearErrorMessage(deadlineErrorElement);
+        this.clearErrorMessage(estimatedDaysErrorElement);
       }
     },
     updateEstimatedRelease() {
