@@ -22,8 +22,8 @@ class Mueble(models.Model):
     plazo_fabricacion = models.PositiveIntegerField()  # En días
     fecha_lanzamiento_estimada = models.DateField()
     descripcion = models.TextField()
-    imagen = models.URLField(blank=True)  # URL de la imagen en el repositorio documental
-    plan_fabricacion = models.URLField(blank=True)  # URL del plan de fabricación en el repositorio documental
+    imagen = models.CharField(max_length=100)
+    plan_fabricacion = models.CharField(max_length=100) 
     materiales = models.TextField()
     
     class Meta:

@@ -29,6 +29,7 @@ export const useCollectionsStore = defineStore({
                 const data = await fetchWrapper.get(`${baseUrl}/coleccion/`)
                 const furnitureStore = useFurnitureStore()
 
+                console.log(data)
                 const collections = await Promise.all(data.map(async collection => {
                     const furniture = await furnitureStore.getCollectionFurniture(collection.id)
                     return {

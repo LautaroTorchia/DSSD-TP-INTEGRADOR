@@ -60,7 +60,19 @@ const FurnitureForm = ({ onSubmit, collection }) => {
                   required
                 />
               </div>
-  
+              <div className="mb-3">
+                <label htmlFor="imagen" className="form-label text-primary fw-bold">
+                Imagen:
+                </label>
+                <input
+                type="file"
+                id="imagen"
+                name="imagen"
+                value={furnitureData.imagen}
+                onChange={handleChange}
+                className="form-control rounded-pill"
+                />
+              </div>
               <div className="mb-3">
                 <label htmlFor="fecha_lanzamiento_estimada" className="form-label text-primary fw-bold">
                   Fecha de Lanzamiento Estimada:

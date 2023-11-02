@@ -12,7 +12,7 @@ export const useFurnitureStore = defineStore({
     actions: {
         async getCollectionFurniture(collectionId) {
             const response = await fetchWrapper.get(`${baseUrl}/coleccion/muebles/`)
-            const filteredFurniture = response.filter(furniture => furniture.collection_id === collectionId.toStrting())
+            const filteredFurniture = response.filter(furniture => furniture.collection_id == collectionId)
             this.furniture = filteredFurniture
             return filteredFurniture
         },
@@ -27,11 +27,21 @@ export const useFurnitureStore = defineStore({
                 this.furniture = { error };
             }
         },
-        async updateFurniture(id, furniture) {
+        async update(id, furniture) {
             await fetchWrapper.patch(`${baseUrl}/coleccion/muebles/${id}/`, furniture)
         },
-        async createFurniture(furniture) {
-            const response = await fetchWrapper.post(`${baseUrl}/coleccion/muebles/`, furniture)
+        async create(furniture) {
+            const furnitureRequest = {
+                nombre: furniture.name,
+                plazo_fabricacion: furniture.estimated_days,
+                fecha_lanzamiento_estimada: furniture.estimated_release,
+                descripcion: furniture.description,
+                imagen: furniture.image,
+                plan_fabricacion: furniture.manufacturing_plan,
+                materiales: furniture.materials,
+                coleccion: furniture.collection_id
+            }
+            const response = await fetchWrapper.post(`${baseUrl}/coleccion/muebles/`, furnitureRequest)
             return response
         }
     }

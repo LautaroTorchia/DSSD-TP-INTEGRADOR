@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import ReservaMaterialListView, ReservaLugarFabricacionListCreateView, \
     ReservaMaterialDestroyView, ReservaLugarFabricacionDestroyView,ReservaMaterialCreateView, \
-    LugarDeFabricacionListCreateView,LugarDeFabricacionDestroyView
+    LugarDeFabricacionListCreateView,LugarDeFabricacionDestroyView,MaterialEntregadoListCreateView
 
 urlpatterns = [
     path('reservas-materiales/', ReservaMaterialListView.as_view(), name='reserva-material-list'),
@@ -11,4 +11,5 @@ urlpatterns = [
     path('reservar-material/', ReservaMaterialCreateView.as_view(), name='reserva-material-create'),
     path('lugar-fabricacion/', LugarDeFabricacionListCreateView.as_view(), name='lugar-fabricacion-list-create'),
     path('lugar-fabricacion/<int:pk>/', LugarDeFabricacionDestroyView.as_view(), name='lugar-fabricacion-destroy'),
+    path('material-entregado/',MaterialEntregadoListCreateView.as_view(), name='material-entregado-list-view')
 ]
