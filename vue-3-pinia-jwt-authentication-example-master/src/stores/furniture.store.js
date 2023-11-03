@@ -4,27 +4,50 @@ import { fetchWrapper, sendFile } from '@/helpers'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 
+
 export const useFurnitureStore = defineStore({
     id: 'furniture',
-    state: () => ({
-        furniture: {}
+    state: () => (
+        {furniture: {}
     }),
+    persist: true,//https://prazdevs.github.io/pinia-plugin-persistedstate/guide/config.html
+    getters: {
+        getCollections: (state) => {
+            return state.furniture
+        }
+    },
     actions: {
         async getCollectionFurniture(collectionId) {
-            const response = await fetchWrapper.get(`${baseUrl}/coleccion/muebles/`)
-            const filteredFurniture = response.filter(furniture => furniture.collection_id == collectionId)
-            this.furniture = filteredFurniture
+            if (!(this.furniture)) {
+                await this.getAll()  
+                console.log(this.furniture)
+            } 
+            const filteredFurniture = this.furniture.filter(furniture => furniture.coleccion == collectionId)
             return filteredFurniture
         },
+        async getAll() {
+            try {
+                this.furniture = { loading: true }
+                const data = await fetchWrapper.get(`${baseUrl}/coleccion/muebles/`)
+                this.furniture = data
+            } catch (error) {
+                this.furniture = { error }
+            }
+        },
+        async getFurnitureDetail(id) {
+            const response = await fetchWrapper.get(`${baseUrl}/coleccion/muebles/${id}/`)
+            return response
+        },
+
         async getById(id) {
             return this.furniture.find(furniture => furniture.id == id)
         },
         async delete(id) {
             try {
-                await fetchWrapper.delete(`${baseUrl}/coleccion/muebles/${id}/`);
-                this.furniture = this.furniture.filter(furniture => furniture.id !== id);
+                await fetchWrapper.delete(`${baseUrl}/coleccion/muebles/${id}/`)
+                this.furniture = this.furniture.filter(furniture => furniture.id !== id)
             } catch (error) {
-                this.furniture = { error };
+                this.furniture = { error }
             }
         },
         async update(id, furniture) {

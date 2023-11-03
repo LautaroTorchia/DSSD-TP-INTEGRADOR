@@ -1,8 +1,8 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router';
+import { RouterLink, RouterView } from 'vue-router'
 
-import { useAuthStore } from '@/stores';
-const authStore = useAuthStore();
+import { useAuthStore } from '@/stores'
+const authStore = useAuthStore()
 </script>
 
 <template>
@@ -20,5 +20,5 @@ const authStore = useAuthStore();
 </template>
 
 <style>
-@import '@/assets/base.css';
+@import '@/assets/base.css'
 </style>

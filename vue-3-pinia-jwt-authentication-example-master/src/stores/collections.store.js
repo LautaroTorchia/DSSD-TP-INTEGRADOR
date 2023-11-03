@@ -17,10 +17,12 @@ export const useCollectionsStore = defineStore({
     state: () => ({
         collections: {}
     }),
+    persist: true,//https://prazdevs.github.io/pinia-plugin-persistedstate/guide/config.html
     getters: {
-        getCollection: (state) => (id) => {
-            return state.collections.find(collection => collection.id === id)
+        getCollections: (state) => {
+            return state.collections
         }
+        
     },
     actions: {
         async getAll() {
@@ -29,7 +31,6 @@ export const useCollectionsStore = defineStore({
                 const data = await fetchWrapper.get(`${baseUrl}/coleccion/`)
                 const furnitureStore = useFurnitureStore()
 
-                console.log(data)
                 const collections = await Promise.all(data.map(async collection => {
                     const furniture = await furnitureStore.getCollectionFurniture(collection.id)
                     return {
@@ -46,15 +47,15 @@ export const useCollectionsStore = defineStore({
                 this.collections = { error }
             }
         },
-        getById(id) {
+        getById (id) {
             return this.collections.find(collection => collection.id == id)
         },
         async delete(id) {
             try {
-                await fetchWrapper.delete(`${baseUrl}/coleccion/${id}/`);
-                this.collections.splice(this.collections.findIndex(collection => collection.id === id), 1);
+                await fetchWrapper.delete(`${baseUrl}/coleccion/${id}/`)
+                this.collections.splice(this.collections.findIndex(collection => collection.id === id), 1)
             } catch (error) {
-                this.collections = { error };
+                this.collections = { error }
             }
         },
         async create(values) {
@@ -68,10 +69,11 @@ export const useCollectionsStore = defineStore({
             const patchResponse = await fetchWrapper.patch(`${baseUrl}/coleccion/${response.id}/`, { instancia_bonita: caseId }).catch(error => this.collections = { error })
         },
         async finish(collection) {
+            collection.finished = true
             try {
                 const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
                 const task = tasks.find(task => task.rootCaseId === collection.caseId.toString())
-                await fetchWrapper.post(`${baseUrl}/bonita/execute-user-task/${task.id}/`)
+                //await fetchWrapper.post(`${baseUrl}/bonita/execute-user-task/${task.id}/`) TODO fix backend
                 await fetchWrapper.patch(`${baseUrl}/coleccion/${collection.id}/`, { terminada: true })
             } catch (error) {
                 this.collections = { error }

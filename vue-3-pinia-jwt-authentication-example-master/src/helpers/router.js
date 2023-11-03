@@ -1,21 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuthStore } from '@/stores'
-import { HomeView, LoginView, CollectionListView, CollectionCreateView, CollectionUpdateView, FurnitureListView, FurnitureCreateView, FurnitureDetailView } from '@/views'
+import { Home, Login, CollectionList, CollectionCreate, CollectionUpdate, FurnitureList, FurnitureCreate, FurnitureDetail, FinishedCollectionList, MaterialAnalysis  } from '@/views'
 
 
 export const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     linkActiveClass: 'active',
     routes: [
-        { path: '/', component: HomeView },
-        { path: '/login', component: LoginView },
-        { path: '/collections', component: CollectionListView, name : 'collections' },
-        { path: '/collection/create', component: CollectionCreateView , name: 'collection-create' },
-        { path: '/collection/:collection/update', component: CollectionUpdateView , name: 'collection-update' },
-        { path: '/:collection/furniture', component: FurnitureListView, name: 'furniture' },
-        { path: '/:collection/furniture/create', component: FurnitureCreateView , name: 'furniture-create' },
-        { path: '/:collection/furniture/:id', component: FurnitureDetailView , name: 'furniture-detail' },
+        { path: '/', component: Home, name: 'home' },
+        { path: '/login', component: Login, name: 'login' },
+        { path: '/collections', component: CollectionList, name : 'collections' },
+        { path: '/collection/create', component: CollectionCreate , name: 'collection-create' },
+        { path: '/collection/:collection/update', component: CollectionUpdate , name: 'collection-update' },
+        { path: '/:collection/furniture', component: FurnitureList, name: 'furniture' },
+        { path: '/:collection/furniture/create', component: FurnitureCreate , name: 'furniture-create' },
+        { path: '/:collection/furniture/:id', component: FurnitureDetail , name: 'furniture-detail' },
+        { path: '/finished-collections', component: FinishedCollectionList , name: 'finished-collections' },
+        { path: '/:collection/material-analysis', component: MaterialAnalysis , name: 'material-analysis' },
     ]
 })
 

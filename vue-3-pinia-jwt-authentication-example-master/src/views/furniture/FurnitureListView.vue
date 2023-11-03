@@ -2,20 +2,21 @@
 import { storeToRefs } from 'pinia'
 import { useFurnitureStore } from '@/stores'
 import { router } from '@/helpers'
+import BackButton from '@/components/BackButton.vue'
 
-const furnitureStore = useFurnitureStore();
-const { furniture } = storeToRefs(furnitureStore);
-const collection_id = router.currentRoute.value.params.collection
-furnitureStore.getCollectionFurniture(collection_id)
+const furnitureStore = useFurnitureStore()
+const { furniture } = storeToRefs(furnitureStore)
+const collectionId = router.currentRoute.value.params.collection
+await furnitureStore.getCollectionFurniture(collectionId)
 
 const deleteFurniture = async (id) => {
     const confirmed = confirm('¿Desea borrar el mueble?')
     if (confirmed) {
         try {
-            furnitureStore.delete(id);
+            furnitureStore.delete(id)
         } catch (error) {
             alert('Error al borrar el mueble')
-            console.error(error);
+            console.error(error)
         }
     }
 }
@@ -32,17 +33,15 @@ const deleteFurniture = async (id) => {
         <ul v-if="furniture.length">
             <template v-for="furniture in furniture" :key="furniture.id">
                 <li>Nombre: {{ furniture.nombre }} </li>
-                <li>Plazo de fabricación: {{ furniture.plazo_fabricacion }}</li>
                 <li>Fecha de lanzamiento estimada: {{ furniture.fecha_lanzamiento_estimada }}</li>
-                <li>Descripción: {{ furniture.descripcion }}</li>
-                <li>Plan de fabricación: {{ furniture.plan_fabricacion }}</li>
-                <li>Materiales: {{ furniture.materiales }}</li>
-                <button @click="detailFurniture(furniture.id)">Ver</button>
+                <router-link :to="{ name: 'furniture-detail', params: { collection: collectionId, id: furniture.id } }">Ver</router-link>
+                <button @click="deleteFurniture(furniture.id)">Borrar</button>
                 <button @click="updateFurniture(furniture.id)">Editar</button>
             </template>
         </ul>
         <div v-else-if="furniture.loading" class="spinner-border spinner-border-sm"></div>
         <div v-else-if="furniture.error" class="text-danger">Error loading furniture: {{ furniture.error }}</div>
         <div v-else>No hay muebles en la coleccion</div>
+        <BackButton/>
     </div>
 </template>

@@ -18,9 +18,9 @@
 </template>
 
 <script>
-import { reactive } from 'vue';
-import BackButton from '@/components/BackButton.vue';
-import { getCurrentInstance } from 'vue';
+import { reactive } from 'vue'
+import BackButton from '@/components/BackButton.vue'
+import { getCurrentInstance } from 'vue'
 
 export default {
   components: {
@@ -35,16 +35,16 @@ export default {
     const formData = reactive({
       name: props.formData.name,
       description: props.formData.description,
-    });
+    })
 
-    const { emit } = getCurrentInstance();
+    const { emit } = getCurrentInstance()
     const submitForm = () => {
-      emit('form-submitted', formData);
-    };
+      emit('form-submitted', formData)
+    }
     return {
       formData,
       submitForm,
-    };
+    }
   },
-};
+}
 </script>

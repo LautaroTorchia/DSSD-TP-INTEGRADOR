@@ -1,33 +1,35 @@
 <script setup>
-import { storeToRefs } from 'pinia';
+import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '@/stores'
-import { router } from '@/helpers/router'
 
-const collectionStore = useCollectionsStore();
-const { collections } = storeToRefs(collectionStore);
-collectionStore.getAll();
+const collectionStore = useCollectionsStore()
+const { collections } = storeToRefs(collectionStore)
+collectionStore.getAll()
 
 const deleteCollection = async (id) => {
     const confirmed = confirm('¿Desea borrar la colección?')
     if (confirmed) {
         try {
-            await collectionStore.delete(id);
+            await collectionStore.delete(id)
         } catch (error) {
             alert('Error al borrar la colección')
-            console.error(error);
+            console.error(error)
         }
     }
 }
 
 const finishCollection = async (collection) => {
-    const confirmed = confirm('¿Desea terminar la colección?');
+    const confirmed = confirm('¿Desea terminar la colección?')
     if (confirmed) {
         try {
-            collection.finished = true
-            await collectionStore.finish(collection);
+            if (collection.furniture.length === 0) {
+                alert('No se puede terminar una colección sin muebles')
+                return
+            }
+            await collectionStore.finish(collection)
         } catch (error) {
             alert('Error al terminar la colección')
-            console.error(error);
+            console.error(error)
         }
     }
 }

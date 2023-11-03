@@ -1,20 +1,20 @@
 <script setup>
-import { Form, Field } from 'vee-validate';
-import * as Yup from 'yup';
+import { Form, Field } from 'vee-validate'
+import * as Yup from 'yup'
 
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/stores'
 
 const schema = Yup.object().shape({
     username: Yup.string().required('Username is required'),
     password: Yup.string().required('Password is required')
-});
+})
 
 function onSubmit(values, { setErrors }) {
-    const authStore = useAuthStore();
-    const { username, password } = values;
+    const authStore = useAuthStore()
+    const { username, password } = values
 
     return authStore.login(username, password)
-        .catch(error => setErrors({ apiError: error }));
+        .catch(error => setErrors({ apiError: error }))
 }
 </script>
 

@@ -6,8 +6,8 @@
   </template>
   
   <script>
-  import { router } from '../../helpers/router';
-import CollectionForm from './CollectionForm.vue';
+  import { router } from '../../helpers/router'
+import CollectionForm from './CollectionForm.vue'
   import { useCollectionsStore } from '@/stores'
 
   export default {
@@ -20,7 +20,7 @@ import CollectionForm from './CollectionForm.vue';
           name: '',
           description: '',
         },
-      };
+      }
     },
     methods: {
       handleFormSubmission(formData) {
@@ -29,5 +29,5 @@ import CollectionForm from './CollectionForm.vue';
         router.push({ name: 'collections' })
       },
     },
-  };
+  }
   </script>

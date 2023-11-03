@@ -42,9 +42,9 @@
 </template>
 
 <script>
-import { reactive } from 'vue';
-import BackButton from '@/components/BackButton.vue';
-import { getCurrentInstance } from 'vue';
+import { reactive } from 'vue'
+import BackButton from '@/components/BackButton.vue'
+import { getCurrentInstance } from 'vue'
 
 export default {
   components: {
@@ -64,83 +64,83 @@ export default {
       image: props.formData.image,
       manufacturing_plan: props.formData.manufacturing_plan,
       materials: props.formData.materials,
-    });
+    })
 
-    const { emit } = getCurrentInstance();
+    const { emit } = getCurrentInstance()
     const submitForm = () => {
-      emit('form-submitted', formData);
-    };
+      emit('form-submitted', formData)
+    }
     return {
       formData,
       submitForm,
-    };
+    }
   },
 
   methods: {
     validateEstimatedDays() {
-      const estimatedDaysErrorElement = this.$refs.estimatedDaysError;
-      const estimatedDays = this.formData.estimated_days;
+      const estimatedDaysErrorElement = this.$refs.estimatedDaysError
+      const estimatedDays = this.formData.estimated_days
 
       if (estimatedDays === null || estimatedDays === '' || isNaN(estimatedDays) || estimatedDays <= 0) {
-        this.displayErrorMessage(estimatedDaysErrorElement, "Please enter a positive integer.");
-        this.formData.estimated_days = null;
+        this.displayErrorMessage(estimatedDaysErrorElement, "Please enter a positive integer.")
+        this.formData.estimated_days = null
       } else {
-        this.clearErrorMessage(estimatedDaysErrorElement);
+        this.clearErrorMessage(estimatedDaysErrorElement)
       }
     },
     updateEstimatedRelease() {
-      const currentDate = new Date();
-      const selectedDate = new Date(this.formData.estimated_release);
-      const estimatedReleaseErrorElement = this.$refs.estimatedReleaseError;
+      const currentDate = new Date()
+      const selectedDate = new Date(this.formData.estimated_release)
+      const estimatedReleaseErrorElement = this.$refs.estimatedReleaseError
 
       if (selectedDate <= currentDate) {
-        this.displayErrorMessage(estimatedReleaseErrorElement, "Estimated Release must be a date after today.");
-        this.formData.estimated_release = ''; // Clear the input
+        this.displayErrorMessage(estimatedReleaseErrorElement, "Estimated Release must be a date after today.")
+        this.formData.estimated_release = '' // Clear the input
       } else {
-        this.clearErrorMessage(estimatedReleaseErrorElement);
+        this.clearErrorMessage(estimatedReleaseErrorElement)
       }
     },
     updateImageFile(event) {
-      const inputField = event.target;
+      const inputField = event.target
       if (inputField.files.length > 0) {
-        const file = inputField.files[0];
-        const allowedExtensions = ["jpg", "jpeg", "png"];
-        const fileExtension = file.name.split('.').pop().toLowerCase();
+        const file = inputField.files[0]
+        const allowedExtensions = ["jpg", "jpeg", "png"]
+        const fileExtension = file.name.split('.').pop().toLowerCase()
 
         if (allowedExtensions.includes(fileExtension)) {
-          this.formData.image = file;
-          this.clearErrorMessage(this.$refs.imageError);
+          this.formData.image = file
+          this.clearErrorMessage(this.$refs.imageError)
         } else {
-          this.displayErrorMessage(this.$refs.imageError, "Invalid file format. Please upload a .jpg, .jpeg, or .png file.");
+          this.displayErrorMessage(this.$refs.imageError, "Invalid file format. Please upload a .jpg, .jpeg, or .png file.")
         }
       }
     },
     updateManufacturingPlanFile(event) {
-      const inputField = event.target;
+      const inputField = event.target
       if (inputField.files.length > 0) {
-        const file = inputField.files[0];
-        const allowedExtension = "pdf";
-        const fileExtension = file.name.split('.').pop().toLowerCase();
+        const file = inputField.files[0]
+        const allowedExtension = "pdf"
+        const fileExtension = file.name.split('.').pop().toLowerCase()
 
         if (fileExtension === allowedExtension) {
-          this.formData.manufacturing_plan = file;
-          this.clearErrorMessage(this.$refs.manufacturingPlanError);
+          this.formData.manufacturing_plan = file
+          this.clearErrorMessage(this.$refs.manufacturingPlanError)
         } else {
-          this.displayErrorMessage(this.$refs.manufacturingPlanError, "Invalid file format. Please upload a .pdf file.");
+          this.displayErrorMessage(this.$refs.manufacturingPlanError, "Invalid file format. Please upload a .pdf file.")
         }
       }
     },
     displayErrorMessage(element, message) {
       if (element) {
-        element.textContent = message;
+        element.textContent = message
       }
     },
     clearErrorMessage(element) {
       if (element) {
-        element.textContent = "";
+        element.textContent = ""
       }
     },
   },
-};
+}
 
 </script>

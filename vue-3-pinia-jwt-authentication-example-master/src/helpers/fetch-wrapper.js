@@ -28,7 +28,7 @@ function request(method) {
             requestOptions.headers['Content-Type'] = 'application/json'
             requestOptions.body = JSON.stringify(body)
         }
-        console.log(requestOptions,url,body)
+        (requestOptions,url,body)
         return fetch(url, requestOptions).then(handleResponse)
     }
 }
@@ -69,7 +69,7 @@ function handleResponse(response) {
             const { user } = useAuthStore()
             if ([401, 403].includes(response.status) && user) {
                 // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-                console.log(response.status)
+                (response.status)
                 router.push("/")
             }
             
