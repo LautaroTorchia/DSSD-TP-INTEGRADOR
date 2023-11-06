@@ -1,11 +1,13 @@
 from django.db import models
 from django.utils import timezone
+from proveedores.models import Material
 
 class Coleccion(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
     fecha_creacion = models.DateField(auto_now_add=True)
-    terminada = models.BooleanField(default=False)
+    diseñada = models.BooleanField(default=False)
+    fabricada = models.BooleanField(default=False)
     instancia_bonita = models.IntegerField(null=True)
 
     def __str__(self):
@@ -24,7 +26,7 @@ class Mueble(models.Model):
     descripcion = models.TextField()
     imagen = models.CharField(max_length=100)
     plan_fabricacion = models.CharField(max_length=100) 
-    materiales = models.TextField()
+    materiales = models.ManyToManyField(Material)  # Update the field to a ManyToMany
     
     class Meta:
         unique_together = ('nombre', 'coleccion')

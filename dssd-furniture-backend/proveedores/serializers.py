@@ -18,4 +18,4 @@ class ActorMaterialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActorMaterial
-        fields = ['id', 'actor', 'actor_nombre', 'material', 'material_nombre', 'cantidad_disponible', 'plazo_entrega_dias']
+        fields = ['id', 'actor', 'actor_nombre', 'material', 'material_nombre', 'cantidad_disponible', 'plazo_entrega_dias',"es_importado"]

@@ -67,7 +67,8 @@ INSTALLED_APPS = [
     'furniture_collection',
     'bonita_integration',
     'proveedores',
-    'reservas'
+    'reservas',
+    'entregas'
 ]
 
 MIDDLEWARE = [
@@ -130,7 +131,7 @@ CORS_ALLOW_METHODS = [
     'PUT',
 ]
 
-BONITA_URL= os.environ.get("BONITA_URL","http://localhost:8080")
+BONITA_URL= os.environ.get("BONITA_URL","http://161.35.225.144:8080")
 #BONITA_URL="http://localhost:8080"
 
 DATABASES = {

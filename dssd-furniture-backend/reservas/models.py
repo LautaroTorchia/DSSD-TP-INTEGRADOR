@@ -1,6 +1,7 @@
 # reservas/models.py
 
 from django.db import models
+from furniture_collection.models import Coleccion
 
 class LugarDeFabricacion(models.Model):
     nombre = models.CharField(max_length=100)
@@ -15,11 +16,13 @@ class ReservaMaterial(models.Model):
     cantidad_pactada= models.IntegerField()
     fecha_entrega_pactada = models.DateField()
     sede_a_entregar = models.ForeignKey(LugarDeFabricacion,on_delete=models.CASCADE)
+    coleccion=models.ForeignKey(Coleccion,on_delete=models.CASCADE)
 
 class ReservaLugarFabricacion(models.Model):
     lugar_de_fabricacion= models.ForeignKey(LugarDeFabricacion,on_delete=models.CASCADE)
     fecha_inicio_reserva = models.DateField()
     fecha_fin_reserva = models.DateField()
+    coleccion=models.ForeignKey(Coleccion,on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Reserva de lugar de fabricación en {self.lugar_de_fabricacion.ubicacion}"

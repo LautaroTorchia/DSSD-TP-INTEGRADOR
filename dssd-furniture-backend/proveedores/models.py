@@ -28,6 +28,7 @@ class ActorMaterial(models.Model):
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
     cantidad_disponible = models.PositiveIntegerField()
     plazo_entrega_dias = models.PositiveIntegerField()
+    es_importado= models.BooleanField()
 
     def __str__(self):
         return f"{self.actor.nombre} - {self.material.nombre}"

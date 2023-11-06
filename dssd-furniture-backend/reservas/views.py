@@ -9,6 +9,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from drf_yasg.utils import swagger_auto_schema
+from furniture_collection.models import Coleccion
 from drf_yasg import openapi
 from datetime import date, timedelta
 
@@ -45,6 +46,10 @@ class ReservaMaterialCreateView(APIView):
                 type=openapi.TYPE_INTEGER,
                 description='Sede a la cual se va a entregar.',
             ),
+            'id_coleccion': openapi.Schema(
+                type=openapi.TYPE_INTEGER,
+                description='Id de la coleccion a la que pertenece.',
+            ),
         },
     ),
     responses={
@@ -56,6 +61,7 @@ class ReservaMaterialCreateView(APIView):
         id_venta_proveedor = request.data.get('id_venta_proveedor')
         cantidad = request.data.get('cantidad_pactada')
         sede_entrega = request.data.get('sede_entrega')
+        id_coleccion = request.data.get("id_coleccion")
         # Make a request to the other application's API to get the supplier's ID
         
         supplier_api_url = f'http://localhost:8000/api/proveedores/actor-materials/{id_venta_proveedor}/'
@@ -70,10 +76,11 @@ class ReservaMaterialCreateView(APIView):
                 proveedor = supplier_data.get('actor_nombre')
                 material = supplier_data.get('material_nombre')
                 sede=LugarDeFabricacion.objects.get(id=sede_entrega)
+                coleccion=Coleccion.objects.get(id=id_coleccion)
                 reserva_material = ReservaMaterial.objects.create(id_venta_proveedor=supplier_id,
                                                                 nombre_proveedor=proveedor,nombre_material=material,
                                                                 cantidad_pactada=cantidad,fecha_entrega_pactada=fecha_entrega_pactada,
-                                                                sede_a_entregar=sede)
+                                                                sede_a_entregar=sede,coleccion=coleccion)
                 serializer = ReservaMaterialSerializer(reserva_material)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:

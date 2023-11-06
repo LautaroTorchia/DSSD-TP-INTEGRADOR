@@ -16,6 +16,12 @@ class ColeccionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Coleccion.objects.all()
     serializer_class = ColeccionSerializer
 
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Mueble
+from .serializers import MuebleSerializer
+
 class MuebleListCreateView(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticated, IsPermittedRBAC)
     queryset = Mueble.objects.all()
@@ -27,7 +33,8 @@ class MuebleListCreateView(generics.ListCreateAPIView):
 
         plan_fabricacion = request.data.get('plan_fabricacion')
         imagen = request.data.get('imagen')
-
+        materiales_data = request.data.getlist('materiales')  # Get materiales data as a list
+        
         plan_fabricacion_file_id = upload_file_to_drive(plan_fabricacion.read(), plan_fabricacion.name)
         imagen_file_id = upload_file_to_drive(imagen.read(), imagen.name)
 
@@ -35,12 +42,16 @@ class MuebleListCreateView(generics.ListCreateAPIView):
             validated_data = serializer.validated_data
             validated_data['plan_fabricacion'] = plan_fabricacion_file_id
             validated_data['imagen'] = imagen_file_id
+            validated_data['materiales'] = materiales_data  # Pass materiales list to serializer
 
-            self.perform_create(serializer)
+            instance = serializer.save()
+
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         else:
             return Response({'error': 'File upload failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 
 class MuebleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
