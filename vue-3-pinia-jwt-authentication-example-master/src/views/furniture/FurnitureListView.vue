@@ -7,7 +7,7 @@ import BackButton from '@/components/BackButton.vue'
 const furnitureStore = useFurnitureStore()
 const { furniture } = storeToRefs(furnitureStore)
 const collectionId = router.currentRoute.value.params.collection
-await furnitureStore.getCollectionFurniture(collectionId)
+
 
 const deleteFurniture = async (id) => {
     const confirmed = confirm('¿Desea borrar el mueble?')

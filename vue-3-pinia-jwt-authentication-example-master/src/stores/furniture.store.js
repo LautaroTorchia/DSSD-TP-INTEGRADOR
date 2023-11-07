@@ -18,11 +18,9 @@ export const useFurnitureStore = defineStore({
     },
     actions: {
         async getCollectionFurniture(collectionId) {
-            if (!(this.furniture)) {
-                await this.getAll()  
-                console.log(this.furniture)
-            } 
+            await this.getAll()  
             const filteredFurniture = this.furniture.filter(furniture => furniture.coleccion == collectionId)
+            this.furniture = filteredFurniture
             return filteredFurniture
         },
         async getAll() {
@@ -54,6 +52,10 @@ export const useFurnitureStore = defineStore({
             await fetchWrapper.patch(`${baseUrl}/coleccion/muebles/${id}/`, furniture)
         },
         async create(furniture) {
+
+            console.log(furniture)
+
+            throw new Error('Not implemented')
             const response = await sendFile.post(`${baseUrl}/coleccion/muebles/`, furniture)
             return response
         }

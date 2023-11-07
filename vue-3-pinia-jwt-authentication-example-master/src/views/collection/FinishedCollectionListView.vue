@@ -1,10 +1,22 @@
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useCollectionsStore } from '@/stores'
+import { useCollectionsStore, useMaterialsStore } from '@/stores'
 
 const collectionStore = useCollectionsStore()
+const materiasStore = useMaterialsStore()
+const material = {
+    nombre: "Madera",
+    // add more properties as needed
+};
+
+
+
+materiasStore.create(material)
+console.log("materiasStore.getAll()")
+console.log(materiasStore.getAll())
 const { collections } = storeToRefs(collectionStore)
 collectionStore.getAll()
+
 
 
 </script>

@@ -29,15 +29,14 @@ export default {
             formObj.append('descripcion', formData.description)
             formObj.append('imagen', formData.image)
             formObj.append('plan_fabricacion', formData.manufacturing_plan)
-            formObj.append('materiales', formData.materials)
-            ("collectionId: ", this.$route.params.collection)
+            formData.materials.split(",").forEach(material => {
+              formObj.append('materiales', material)
+            })
             let collectionId = Number(this.$route.params.collection)
-            ("collectionId_assigned: ", collectionId)
             formObj.append('coleccion', collectionId)
-            ("create form: ", formObj)
             const furnitureStore = useFurnitureStore()
             furnitureStore.create(formObj)
-            router.push({ name: 'furniture' })
+            router.push({ name: 'furniture', params: { collection: collectionId }  })
         },
     },
 }
