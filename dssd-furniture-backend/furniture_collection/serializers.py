@@ -4,7 +4,7 @@ from .models import Coleccion, Mueble
 class MuebleSerializer(serializers.ModelSerializer):
     plan_fabricacion = serializers.FileField(write_only=True)
     imagen = serializers.FileField(write_only=True)
-    materiales = serializers.ListField(write_only=True)
+    #materiales = serializers.ListField()
 
     class Meta:
         model = Mueble
