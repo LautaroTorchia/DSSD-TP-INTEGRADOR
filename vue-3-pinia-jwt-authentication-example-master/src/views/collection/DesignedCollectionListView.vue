@@ -1,19 +1,9 @@
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useCollectionsStore, useMaterialsStore } from '@/stores'
+import { useCollectionsStore } from '@/stores'
 
 const collectionStore = useCollectionsStore()
-const materiasStore = useMaterialsStore()
-const material = {
-    nombre: "Madera",
-    // add more properties as needed
-};
 
-
-
-materiasStore.create(material)
-console.log("materiasStore.getAll()")
-console.log(materiasStore.getAll())
 const { collections } = storeToRefs(collectionStore)
 collectionStore.getAll()
 
@@ -25,7 +15,7 @@ collectionStore.getAll()
     <div>
         <ul v-if="collections.length > 0">
             <template v-for="collection in collections" :key="collection.id">
-                <span v-if="collection.finished">
+                <span v-if="collection.designed">
                     <li>Nombre: {{ collection.name }} </li>
                     <li>Descripción: {{ collection.description }}</li>
                     <router-link :to="{ name: 'material-analysis', params: { collection: collection.id } }">Analizar materiales</router-link>

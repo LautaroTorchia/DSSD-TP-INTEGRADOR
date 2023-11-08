@@ -1,7 +1,7 @@
 <script>
 import { router } from '@/helpers'
 import FurnitureForm from './FurnitureForm.vue'
-import { useFurnitureStore} from '@/stores'
+import { useFurnitureStore, useMaterialsStore} from '@/stores'
 
 export default {
     components: {
@@ -20,6 +20,11 @@ export default {
         },
       }
     },
+    async created(){
+      const materialsStore = useMaterialsStore()
+      const materials = await materialsStore.getAll()
+      localStorage.setItem('materialsList', JSON.stringify(materials))
+    },
     methods: {
         handleFormSubmission(formData) {
             let formObj = new FormData()
@@ -27,11 +32,11 @@ export default {
             formObj.append('plazo_fabricacion', formData.estimated_days)
             formObj.append('fecha_lanzamiento_estimada', formData.estimated_release)
             formObj.append('descripcion', formData.description)
-            formObj.append('imagen', formData.image)
-            formObj.append('plan_fabricacion', formData.manufacturing_plan)
             formData.materials.split(",").forEach(material => {
               formObj.append('materiales', material)
             })
+            formObj.append('plan_fabricacion', formData.manufacturing_plan)
+            formObj.append('imagen', formData.image)
             let collectionId = Number(this.$route.params.collection)
             formObj.append('coleccion', collectionId)
             const furnitureStore = useFurnitureStore()

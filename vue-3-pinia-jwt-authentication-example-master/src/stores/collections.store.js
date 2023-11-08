@@ -38,11 +38,12 @@ export const useCollectionsStore = defineStore({
                         name: collection.nombre,
                         description: collection.descripcion,
                         caseId: collection.instancia_bonita,
-                        finished: collection.terminada,
+                        designed: collection.diseñada,
                         furniture: furniture,
                     }
                 }))
                 this.collections = collections
+                return collections
             } catch (error) {
                 this.collections = { error }
             }
@@ -69,12 +70,12 @@ export const useCollectionsStore = defineStore({
             const patchResponse = await fetchWrapper.patch(`${baseUrl}/coleccion/${response.id}/`, { instancia_bonita: caseId }).catch(error => this.collections = { error })
         },
         async finish(collection) {
-            collection.finished = true
+            collection.designed = true
             try {
                 const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
                 const task = tasks.find(task => task.rootCaseId === collection.caseId.toString())
-                //await fetchWrapper.post(`${baseUrl}/bonita/execute-user-task/${task.id}/`) TODO fix backend
-                await fetchWrapper.patch(`${baseUrl}/coleccion/${collection.id}/`, { terminada: true })
+                await fetchWrapper.post(`${baseUrl}/bonita/execute-user-task/${task.id}/`)
+                await fetchWrapper.patch(`${baseUrl}/coleccion/${collection.id}/`, { diseñada: true })
             } catch (error) {
                 this.collections = { error }
             }

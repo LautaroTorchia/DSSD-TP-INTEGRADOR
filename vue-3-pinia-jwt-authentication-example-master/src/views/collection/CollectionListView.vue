@@ -47,7 +47,7 @@ const finishCollection = async (collection) => {
                 <li>Descripción: {{ collection.description }}</li>
                 <router-link :to="`/${collection.id}/furniture`">Ver muebles</router-link>
 
-                <li v-if="collection.finished">
+                <li v-if="collection.designed">
                     Terminada: Sí
                 </li>
                 <li v-else>

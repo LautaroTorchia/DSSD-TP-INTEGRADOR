@@ -7,6 +7,7 @@ import BackButton from '@/components/BackButton.vue'
 const furnitureStore = useFurnitureStore()
 const { furniture } = storeToRefs(furnitureStore)
 const collectionId = router.currentRoute.value.params.collection
+furnitureStore.getCollectionFurniture(collectionId)
 
 
 const deleteFurniture = async (id) => {
@@ -36,7 +37,7 @@ const deleteFurniture = async (id) => {
                 <li>Fecha de lanzamiento estimada: {{ furniture.fecha_lanzamiento_estimada }}</li>
                 <router-link :to="{ name: 'furniture-detail', params: { collection: collectionId, id: furniture.id } }">Ver</router-link>
                 <button @click="deleteFurniture(furniture.id)">Borrar</button>
-                <button @click="updateFurniture(furniture.id)">Editar</button>
+                <!-- <button @click="updateFurniture(furniture.id)">Editar</button> -->
             </template>
         </ul>
         <div v-else-if="furniture.loading" class="spinner-border spinner-border-sm"></div>

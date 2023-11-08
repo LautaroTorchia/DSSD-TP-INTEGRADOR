@@ -14,6 +14,6 @@ const { user: authUser } = storeToRefs(authStore)
         <h1>GlobalFurniture-LJJ Muebles </h1>
         <h2>Hola {{authUser?.username}}!</h2>
         <router-link :to="{ name: 'collections' }">Ver Colecciones</router-link>
-        <router-link :to="{ name: 'finished-collections' }">Analizar materiales</router-link>
+        <router-link :to="{ name: 'designed-collections' }">Analizar materiales</router-link>
     </div>
 </template>

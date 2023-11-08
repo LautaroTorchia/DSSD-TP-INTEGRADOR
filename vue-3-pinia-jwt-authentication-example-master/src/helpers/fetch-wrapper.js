@@ -10,10 +10,7 @@ export const fetchWrapper = {
 }
 
 export const sendFile = {
-    get: requestFile('GET'),
     post: requestFile('POST'),
-    put: requestFile('PUT'),
-    delete: requestFile('DELETE'),
     patch: requestFile('PATCH')
 }
 
@@ -28,7 +25,6 @@ function request(method) {
             requestOptions.headers['Content-Type'] = 'application/json'
             requestOptions.body = JSON.stringify(body)
         }
-        (requestOptions,url,body)
         return fetch(url, requestOptions).then(handleResponse)
     }
 }
@@ -44,6 +40,7 @@ function requestFile(method) {
         if (body) {
             requestOptions.body = body
         }
+        console.log(requestOptions,url,body)
         return fetch(url, requestOptions).then(handleResponse)
     }
 }

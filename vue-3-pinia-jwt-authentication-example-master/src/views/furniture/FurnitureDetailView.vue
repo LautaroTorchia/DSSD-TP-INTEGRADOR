@@ -18,8 +18,8 @@ export default {
             const id = router.currentRoute.value.params.id
             const collectionId = router.currentRoute.value.params.collection
             furniturePiece.value = await furnitureStore.getFurnitureDetail(id)
-            (collectionsStore.collections)
             collection.value = collectionsStore.getById(collectionId).name
+            console.log(furniturePiece.value)
         })
 
         return {
