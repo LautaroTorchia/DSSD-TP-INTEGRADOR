@@ -9,6 +9,7 @@ class Coleccion(models.Model):
     diseñada = models.BooleanField(default=False)
     fabricada = models.BooleanField(default=False)
     instancia_bonita = models.IntegerField(null=True)
+    fecha_lanzamiento_estimada = models.DateField()
 
     def __str__(self):
         return self.nombre
@@ -22,7 +23,6 @@ class Mueble(models.Model):
     nombre = models.CharField(max_length=100)
     coleccion = models.ForeignKey(Coleccion, on_delete=models.CASCADE)
     plazo_fabricacion = models.PositiveIntegerField()  # En días
-    fecha_lanzamiento_estimada = models.DateField()
     descripcion = models.TextField()
     imagen = models.CharField(max_length=100)
     plan_fabricacion = models.CharField(max_length=100) 
