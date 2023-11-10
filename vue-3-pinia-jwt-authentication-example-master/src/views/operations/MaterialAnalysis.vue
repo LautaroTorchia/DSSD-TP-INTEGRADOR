@@ -6,19 +6,20 @@
                 <h2>{{ piece.nombre }}</h2>
                 <div v-for="(material, index) in piece.materiales" :key="index">
                     <label>{{ material.nombre }}:</label>
-                    <input type="number" v-model="material.amount">
+                    <input type="number" v-model="material.amount" min="1">
+                    kg
                 </div>
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit">Aceptar</button>
         </form>
     </div>
 </template>
 
 <script>
 import { storeToRefs } from 'pinia'
-import { useFurnitureStore, useMaterialsStore } from '@/stores'
+import { useFurnitureStore, useMaterialsStore, useMateriaListStore } from '@/stores'
 import { router } from '@/helpers'
-import { onMounted } from 'vue'
+import { onMounted, toRaw } from 'vue'
 
 export default {
     setup() {
@@ -40,11 +41,17 @@ export default {
                     }
                 })
             })
-            let message = ''
+            let message = {}
             for (const material in materialsAmount) {
-                message += `${material}: ${materialsAmount[material]}\n`
+                message[material] = materialsAmount[material]
             }
-            alert(message)
+            alert("Confirtma estos materiales: \n"+
+                Object.entries(message)
+                    .map(([material, amount]) => `${material}: ${amount}`)
+                    .join('\n')
+            )
+
+            router.push({ name: 'fabrication-plan' })
         }
 
         onMounted(async () => {

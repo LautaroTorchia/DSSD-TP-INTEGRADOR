@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuthStore } from '@/stores'
-import { Home, Login, CollectionList, CollectionCreate, CollectionUpdate, FurnitureList, FurnitureCreate, FurnitureDetail, DesignedCollectionList, MaterialAnalysis  } from '@/views'
+import { Home, Login, CollectionList, CollectionCreate, CollectionUpdate, FurnitureList, FurnitureCreate, FurnitureDetail, DesignedCollectionList, MaterialAnalysis, FabricationPlan  } from '@/views'
 
 
 export const router = createRouter({
@@ -18,6 +18,7 @@ export const router = createRouter({
         { path: '/:collection/furniture/:id', component: FurnitureDetail , name: 'furniture-detail' },
         { path: '/designed-collections', component: DesignedCollectionList , name: 'designed-collections' },
         { path: '/:collection/material-analysis', component: MaterialAnalysis , name: 'material-analysis' },
+        { path: '/:collection/fabrication-plan', component: FabricationPlan , name: 'fabrication-plan' },
     ]
 })
 

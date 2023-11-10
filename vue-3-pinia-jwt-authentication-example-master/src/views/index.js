@@ -11,3 +11,4 @@ export { default as FurnitureCreate } from './furniture/FurnitureCreateView.vue'
 export { default as FurnitureDetail } from './furniture/FurnitureDetailView.vue'
 
 export { default as MaterialAnalysis } from './operations/MaterialAnalysis.vue'
+export { default as FabricationPlan } from './operations/FabricationPlan.vue'
