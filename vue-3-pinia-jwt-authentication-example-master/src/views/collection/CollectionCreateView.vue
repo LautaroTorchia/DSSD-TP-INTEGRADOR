@@ -19,6 +19,7 @@ import CollectionForm from './CollectionForm.vue'
         formData: {
           name: '',
           description: '',
+          estimated_release: '',
         },
       }
     },

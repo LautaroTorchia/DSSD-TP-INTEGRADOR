@@ -34,7 +34,6 @@ const deleteFurniture = async (id) => {
         <ul v-if="furniture.length">
             <template v-for="furniture in furniture" :key="furniture.id">
                 <li>Nombre: {{ furniture.nombre }} </li>
-                <li>Fecha de lanzamiento estimada: {{ furniture.fecha_lanzamiento_estimada }}</li>
                 <router-link :to="{ name: 'furniture-detail', params: { collection: collectionId, id: furniture.id } }">Ver</router-link>
                 <button @click="deleteFurniture(furniture.id)">Borrar</button>
                 <!-- <button @click="updateFurniture(furniture.id)">Editar</button> -->

@@ -11,11 +11,6 @@
         <div class="text-danger" ref="estimatedDaysError"></div>
       </div>
       <div class="form-group">
-        <label for="estimated-release">Estimated Release:</label>
-        <input type="date" id="estimated-release" class="form-control" v-model="formData.estimated_release" @change="updateEstimatedRelease" required/>
-        <div class="text-danger" ref="estimatedReleaseError"></div>
-      </div>
-      <div class="form-group">
         <label for="description">Description:</label>
         <textarea id="description" class="form-control" v-model="formData.description" required></textarea>
       </div>
@@ -59,14 +54,13 @@ export default {
   },
   props: {
     formData: {
-      default: () => ({ name: '', estimated_days: '', estimated_release: '', description: '', image: '', manufacturing_plan: '', materials: '' }),
+      default: () => ({ name: '', estimated_days: '', description: '', image: '', manufacturing_plan: '', materials: '' }),
     }
   },
   setup(props) {
     const formData = reactive({
       name: props.formData.name,
       estimated_days: props.formData.estimated_days,
-      estimated_release: props.formData.estimated_release,
       description: props.formData.description,
       image: props.formData.image,
       manufacturing_plan: props.formData.manufacturing_plan,
@@ -111,18 +105,6 @@ export default {
         this.formData.estimated_days = null
       } else {
         this.clearErrorMessage(estimatedDaysErrorElement)
-      }
-    },
-    updateEstimatedRelease() {
-      const currentDate = new Date()
-      const selectedDate = new Date(this.formData.estimated_release)
-      const estimatedReleaseErrorElement = this.$refs.estimatedReleaseError
-
-      if (selectedDate <= currentDate) {
-        this.displayErrorMessage(estimatedReleaseErrorElement, "Estimated Release must be a date after today.")
-        this.formData.estimated_release = '' // Clear the input
-      } else {
-        this.clearErrorMessage(estimatedReleaseErrorElement)
       }
     },
     updateImageFile(event) {

@@ -32,11 +32,14 @@ export const useCollectionsStore = defineStore({
                 const furnitureStore = useFurnitureStore()
 
                 const collections = await Promise.all(data.map(async collection => {
+                    console.log(collection)
                     const furniture = await furnitureStore.getCollectionFurniture(collection.id)
                     return {
                         id: collection.id,
                         name: collection.nombre,
                         description: collection.descripcion,
+                        created_at: collection.fecha_creacion,
+                        estimated_launch_date: collection.fecha_lanzamiento_estimada,
                         caseId: collection.instancia_bonita,
                         designed: collection.diseñada,
                         furniture: furniture,
@@ -63,7 +66,8 @@ export const useCollectionsStore = defineStore({
             this.collections = { loading: true }
             const data = {
                 nombre: values.name,
-                descripcion: values.description
+                descripcion: values.description,
+                fecha_lanzamiento_estimada: values.estimated_release,
             }
             const response = await fetchWrapper.post(`${baseUrl}/coleccion/`, data).catch(error => this.collections = { error })
             const caseId = await createBonitaInstance()
@@ -74,6 +78,9 @@ export const useCollectionsStore = defineStore({
             try {
                 const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
                 const task = tasks.find(task => task.rootCaseId === collection.caseId.toString())
+                if (!task) {
+                    throw new Error('No se encontró la tarea')
+                }
                 await fetchWrapper.post(`${baseUrl}/bonita/execute-user-task/${task.id}/`)
                 await fetchWrapper.patch(`${baseUrl}/coleccion/${collection.id}/`, { diseñada: true })
             } catch (error) {

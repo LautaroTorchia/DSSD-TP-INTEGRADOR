@@ -45,6 +45,7 @@ const finishCollection = async (collection) => {
             <template v-for="collection in collections" :key="collection.id">
                 <li>Nombre: {{ collection.name }} </li>
                 <li>Descripción: {{ collection.description }}</li>
+                <li>Fecha de lanzamiento estimada: {{ collection.estimated_launch_date }}</li>
                 <router-link :to="`/${collection.id}/furniture`">Ver muebles</router-link>
 
                 <li v-if="collection.designed">
