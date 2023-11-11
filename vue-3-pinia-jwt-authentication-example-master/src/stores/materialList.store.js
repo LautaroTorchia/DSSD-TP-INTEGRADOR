@@ -2,25 +2,29 @@ import { defineStore } from 'pinia'
 
 export function useMaterialListStore(initialList){
     const materialListStore = defineMaterialListStore()
-    materialListStore.setMaterials(initialList)
+    if (initialList){
+        materialListStore.addMaterialList(initialList)
+    }
     return materialListStore
 }
 
  const defineMaterialListStore = defineStore({
     id: 'materialList',
+    persist: true, 
     state: () => ({
-        materials: []
+        materialList: []
     }),
     getters: {
-        getMaterials: state => state.materials
+        getMaterials: state => state.materialList
     },
     actions: {
-        addMaterial(material) {
-            this.materials.push(material)
-        }
-    },
-    setMaterials(materials) {
-        this.materials = materials
+        addMaterialList(newMaterialList) {
+            const index = this.materialList.findIndex(materialList => materialList.id === newMaterialList.id)
+            if (index === -1) {
+                this.materialList.push(newMaterialList)
+            } else {
+                this.materialList.splice(index, 1, newMaterialList)
+            }
+        },
     },
 })
-

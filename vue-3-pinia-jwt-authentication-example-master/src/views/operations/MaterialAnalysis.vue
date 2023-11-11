@@ -17,7 +17,7 @@
 
 <script>
 import { storeToRefs } from 'pinia'
-import { useFurnitureStore, useMaterialsStore, useMateriaListStore } from '@/stores'
+import { useFurnitureStore, useMaterialsStore, useMaterialListStore } from '@/stores'
 import { router } from '@/helpers'
 import { onMounted, toRaw } from 'vue'
 
@@ -31,27 +31,34 @@ export default {
         furnitureStore.getCollectionFurniture(collectionId)
 
         const submitForm = () => {
-            const materialsAmount = {}
+            var materialsAmount = []
+
             furniture.value.forEach((piece) => {
                 piece.materiales.forEach((material) => {
-                    if (materialsAmount[material.nombre]) {
-                        materialsAmount[material.nombre] += material.amount
+                    if (materialsAmount[material.id]) {
+                        materialsAmount[material.id].amount += material.amount
                     } else {
-                        materialsAmount[material.nombre] = material.amount
+                        materialsAmount[material.id] = { id: material.id, name: material.nombre, amount: material.amount }
                     }
                 })
             })
+            materialsAmount = materialsAmount.filter((material) => material)//delete empty slots
             let message = {}
-            for (const material in materialsAmount) {
-                message[material] = materialsAmount[material]
-            }
-            alert("Confirtma estos materiales: \n"+
+            materialsAmount.forEach((material) => {
+                message[material.name] = material.amount
+            })
+
+            const confirmed = confirm("Confirma estos materiales: \n" +
                 Object.entries(message)
                     .map(([material, amount]) => `${material}: ${amount}`)
                     .join('\n')
             )
+            if (confirmed) {
+                const materialListStore = useMaterialListStore({id:collectionId,materials:materialsAmount})
+                router.push({ name: 'fabrication-plan' })
+            }
 
-            router.push({ name: 'fabrication-plan' })
+
         }
 
         onMounted(async () => {
