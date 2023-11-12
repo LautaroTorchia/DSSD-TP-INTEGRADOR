@@ -17,20 +17,22 @@
 
 <script>
 import { storeToRefs } from 'pinia'
-import { useFurnitureStore, useMaterialsStore, useMaterialListStore } from '@/stores'
+import { useFurnitureStore, useMaterialsStore, useCollectionsStore } from '@/stores'
 import { router } from '@/helpers'
-import { onMounted, toRaw } from 'vue'
+import { onMounted } from 'vue'
+import { fetchWrapper } from '../../helpers'
 
 export default {
     setup() {
+        const baseUrl = `${import.meta.env.VITE_API_URL}`
         const furnitureStore = useFurnitureStore()
         const materialsStore = useMaterialsStore()
+        const collectionStore = useCollectionsStore()
         const { furniture } = storeToRefs(furnitureStore)
         const collectionId = router.currentRoute.value.params.collection
 
         furnitureStore.getCollectionFurniture(collectionId)
-
-        const submitForm = () => {
+        const submitForm = async () => {
             var materialsAmount = []
 
             furniture.value.forEach((piece) => {
@@ -54,7 +56,8 @@ export default {
                     .join('\n')
             )
             if (confirmed) {
-                const materialListStore = useMaterialListStore({id:collectionId,materials:materialsAmount})
+                const collection = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId)
+                await fetchWrapper.put(`${baseUrl}/bonita/update-case-variable/${collection.caseId}/cantidad_materiales/`, { type:"java.lang.String",value: JSON.stringify(materialsAmount) })
                 router.push({ name: 'fabrication-plan' })
             }
 
