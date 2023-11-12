@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { useFurnitureStore} from './furniture.store'
+import { useFurnitureStore } from './furniture.store'
 import { fetchWrapper } from '@/helpers'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
@@ -12,6 +12,15 @@ const createBonitaInstance = async () => {
     return response.caseId
 }
 
+const advanceBonitaTask = async (caseId) => {
+    const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
+    const task = tasks.find(task => task.rootCaseId === caseId.toString())
+    if (!task) {
+        throw new Error('No se encontró la tarea')
+    }
+    await fetchWrapper.post(`${baseUrl}/bonita/execute-user-task/${task.id}/`)
+}
+
 export const useCollectionsStore = defineStore({
     id: 'collections',
     state: () => ({
@@ -22,7 +31,7 @@ export const useCollectionsStore = defineStore({
         getCollections: (state) => {
             return state.collections
         }
-        
+
     },
     actions: {
         async getAll() {
@@ -50,7 +59,7 @@ export const useCollectionsStore = defineStore({
                 this.collections = { error }
             }
         },
-        getById (id) {
+        getById(id) {
             return this.collections.find(collection => collection.id == id)
         },
         async delete(id) {
@@ -75,12 +84,7 @@ export const useCollectionsStore = defineStore({
         async finish(collection) {
             collection.designed = true
             try {
-                const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
-                const task = tasks.find(task => task.rootCaseId === collection.caseId.toString())
-                if (!task) {
-                    throw new Error('No se encontró la tarea')
-                }
-                await fetchWrapper.post(`${baseUrl}/bonita/execute-user-task/${task.id}/`)
+                await advanceBonitaTask(collection.caseId)
                 await fetchWrapper.patch(`${baseUrl}/coleccion/${collection.id}/`, { diseñada: true })
             } catch (error) {
                 this.collections = { error }

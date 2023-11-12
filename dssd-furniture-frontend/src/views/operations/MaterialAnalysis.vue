@@ -17,21 +17,34 @@
 
 <script>
 import { storeToRefs } from 'pinia'
-import { useFurnitureStore, useMaterialsStore, useCollectionsStore } from '@/stores'
-import { router } from '@/helpers'
+import { useFurnitureStore, useMaterialsStore } from '@/stores'
+import { router, advanceBonitaTask, fetchWrapper } from '@/helpers'
 import { onMounted } from 'vue'
-import { fetchWrapper } from '../../helpers'
+
+const baseUrl = `${import.meta.env.VITE_API_URL}`
+
+async function getCantidadMateriales(caseId) {
+    try {
+        const response = await fetchWrapper.get(`${baseUrl}/bonita/case-variable/${caseId}/cantidad_materiales/`)
+        if (response.value=="null") {
+            throw new Error('Response data is empty')
+        }
+        return true
+    } catch (error) {
+        return false
+    }
+}
 
 export default {
     setup() {
-        const baseUrl = `${import.meta.env.VITE_API_URL}`
+
         const furnitureStore = useFurnitureStore()
         const materialsStore = useMaterialsStore()
-        const collectionStore = useCollectionsStore()
         const { furniture } = storeToRefs(furnitureStore)
         const collectionId = router.currentRoute.value.params.collection
 
         furnitureStore.getCollectionFurniture(collectionId)
+
         const submitForm = async () => {
             var materialsAmount = []
 
@@ -56,15 +69,23 @@ export default {
                     .join('\n')
             )
             if (confirmed) {
-                const collection = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId)
-                await fetchWrapper.put(`${baseUrl}/bonita/update-case-variable/${collection.caseId}/cantidad_materiales/`, { type:"java.lang.String",value: JSON.stringify(materialsAmount) })
-                router.push({ name: 'fabrication-plan' })
+                try {
+                    const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
+                    await fetchWrapper.put(`${baseUrl}/bonita/update-case-variable/${caseId}/cantidad_materiales/`, { type: "java.lang.String", value: JSON.stringify(materialsAmount) })
+                    await advanceBonitaTask(caseId)
+                    router.push({ name: 'fabrication-plan' })
+                } catch (error) {
+                    console.error(error)
+                }
             }
-
-
         }
 
         onMounted(async () => {
+        const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
+        if(await getCantidadMateriales(caseId)){
+            router.push({ name: 'fabrication-plan' })
+        }
+
             const materials = await materialsStore.getAll()
             furniture.value.forEach((piece) => {
                 piece.materiales.forEach((materialId, index) => {
