@@ -1,26 +1,25 @@
 {
-  "name": "dssd-furniture-frontend",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "autoprefixer": "10.4.16",
-    "axios": "^1.5.1",
-    "bootstrap": "^5.3.2",
-    "eslint": "8.50.0",
-    "eslint-config-next": "13.5.2",
-    "jsonwebtoken": "^9.0.2",
-    "next": "13.5.2",
-    "postcss": "8.4.30",
-    "react": "18.2.0",
-    "react-bootstrap": "^2.9.0",
-    "react-dom": "18.2.0",
-    "styled-components": "^6.0.8",
-    "tailwindcss": "3.3.3"
-  }
+    "name": "vue-3-pinia-jwt-authentication-example",
+    "version": "0.0.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview --port 5050",
+        "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+    },
+    "dependencies": {
+        "pinia": "^2.0.13",
+        "pinia-plugin-persistedstate": "^3.2.0",
+        "vee-validate": "^4.5.11",
+        "vue": "^3.2.33",
+        "vue-awesome-paginate": "^1.1.46",
+        "vue-router": "^4.0.14",
+        "yup": "^0.32.11"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^2.3.1",
+        "eslint": "^8.5.0",
+        "eslint-plugin-vue": "^8.2.0",
+        "vite": "^2.9.5"
+    }
 }
