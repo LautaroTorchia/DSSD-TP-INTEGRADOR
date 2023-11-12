@@ -1,0 +1,83 @@
+<template>
+    <div>
+        <h1>Material Analysis for Collection {{ collectionId }}</h1>
+        <form @submit.prevent="submitForm">
+            <div v-for="(piece, index) in furniture" :key="index">
+                <h2>{{ piece.nombre }}</h2>
+                <div v-for="(material, index) in piece.materiales" :key="index">
+                    <label>{{ material.nombre }}:</label>
+                    <input type="number" v-model="material.amount" min="1">
+                    kg
+                </div>
+            </div>
+            <button type="submit">Aceptar</button>
+        </form>
+    </div>
+</template>
+
+<script>
+import { storeToRefs } from 'pinia'
+import { useFurnitureStore, useMaterialsStore, useMaterialListStore } from '@/stores'
+import { router } from '@/helpers'
+import { onMounted, toRaw } from 'vue'
+
+export default {
+    setup() {
+        const furnitureStore = useFurnitureStore()
+        const materialsStore = useMaterialsStore()
+        const { furniture } = storeToRefs(furnitureStore)
+        const collectionId = router.currentRoute.value.params.collection
+
+        furnitureStore.getCollectionFurniture(collectionId)
+
+        const submitForm = () => {
+            var materialsAmount = []
+
+            furniture.value.forEach((piece) => {
+                piece.materiales.forEach((material) => {
+                    if (materialsAmount[material.id]) {
+                        materialsAmount[material.id].amount += material.amount
+                    } else {
+                        materialsAmount[material.id] = { id: material.id, name: material.nombre, amount: material.amount }
+                    }
+                })
+            })
+            materialsAmount = materialsAmount.filter((material) => material)//delete empty slots
+            let message = {}
+            materialsAmount.forEach((material) => {
+                message[material.name] = material.amount
+            })
+
+            const confirmed = confirm("Confirma estos materiales: \n" +
+                Object.entries(message)
+                    .map(([material, amount]) => `${material}: ${amount}`)
+                    .join('\n')
+            )
+            if (confirmed) {
+                const materialListStore = useMaterialListStore({id:collectionId,materials:materialsAmount})
+                router.push({ name: 'fabrication-plan' })
+            }
+
+
+        }
+
+        onMounted(async () => {
+            const materials = await materialsStore.getAll()
+            furniture.value.forEach((piece) => {
+                piece.materiales.forEach((materialId, index) => {
+                    const material = materials.find((m) => m.id == materialId)
+                    if (material) {
+                        piece.materiales[index] = { ...material, amount: 0 }
+                    }
+                })
+            })
+        })
+
+        return {
+            furniture,
+            collectionId,
+            submitForm
+        }
+    }
+}
+</script>

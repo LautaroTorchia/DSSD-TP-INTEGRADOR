@@ -1,4 +1,4 @@
-# vue-3-pinia-jwt-authentication-example
+# dssd-furniture-frontend
 
 Vue 3 + Pinia - JWT Authentication Tutorial & Example
 
