@@ -1,6 +1,18 @@
 <template>
     <div>
-        <h2>Collection Material List:</h2>
+        <h1>Plan de fabricación</h1>
+        <h2>Lugares de fabricación:</h2>
+        <div class="card">
+            <div class="card-body">
+                <div v-for="(factory, index) in factoryList" :key="index">
+                    <input type="radio" :id="'factory-' + index" :value="factory" v-model="selectedFactory">
+                    <label :for="'factory-' + index">{{ factory.nombre }}</label>
+                </div>
+                <button @click="clearSelection">Clear</button>
+            </div>
+        </div>
+
+        <h2>Lista de materiales:</h2>
         <div class="card">
             <div class="card-body">
                 <div v-for="material in collectionMaterialList" :key="material.id">
@@ -12,6 +24,7 @@
                             <div v-if="material.id === materialFromProvider.material">
                                 <div class="card">
                                     <div class="card-body">
+                                        {{ materialFromProvider }}
                                         <h6 class="card-subtitle mb-2 text-muted"> Proveedor o reciclador: {{
                                             materialFromProvider.actor_nombre }}</h6>
                                         <h6 class="card-subtitle mb-2 text-muted"> Proveedor o reciclador: {{
@@ -32,10 +45,21 @@
                                                 <label for="amount">Amount:</label>
                                                 <input type="number" class="form-control"
                                                     v-model.number="selectedMaterials[material.id][materialFromProvider.id]"
-                                                    min="1">
+                                                    min="1" :max="materialFromProvider.cantidad_disponible">
+
+                                                <label for="deliveryDate">Delivery Date:</label>
+                                                <input type="date" class="form-control"
+                                                    v-model="materialFromProvider.deliveryDate"
+                                                    :min="new Date(Date.now() + materialFromProvider.plazo_entrega_dias * 24 * 60 * 60 * 1000).toISOString().split('T')[0]">
+
                                                 <div v-if="!validateTotalAmount(material.id, material.amount)">
                                                     <p class="text-danger">Total amount for {{ material.name }} must be {{
                                                         material.amount }}, but is {{ getTotalAmount(material.id) }}</p>
+                                                </div>
+
+                                                <div v-if="!validateDeliveryDate(materialFromProvider)">
+                                                    <p class="text-danger">Delivery date is required for selected material
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -48,11 +72,12 @@
             </div>
         </div>
         <button @click="onSubmit">Submit</button>
+
     </div>
 </template>
 
 <script setup>
-import { onMounted, ref, watch, toRaw } from 'vue'
+import { onMounted, ref } from 'vue'
 import { fetchWrapper, router } from '@/helpers'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
@@ -62,6 +87,8 @@ const caseId = JSON.parse(localStorage.getItem('collections')).collections.find(
 const materialsFromProviders = ref([])
 const collectionMaterialList = ref([])
 const selectedMaterials = ref([])
+const factoryList = ref([])
+const selectedFactory = ref(null)
 
 
 const fetchMaterialsFromProviders = async () => {
@@ -70,6 +97,7 @@ const fetchMaterialsFromProviders = async () => {
         materialsFromProviders.value.forEach((material) => {
             material.checked = false
             material.amount = 0
+            material.deliveryDate = null
         })
     } catch (error) {
         console.error(error)
@@ -82,7 +110,7 @@ const validateMaterialPresence = (materialsFromProviders, collectionMaterialList
 }
 
 const validateMaterialAmount = (materialsFromProviders, collectionMaterialList) => {
-    const materialsFromProvidersWithAmount = materialsFromProviders.value.map(({ material, cantidad_disponible, checked, amount }) => ({ id: material, amount_available: cantidad_disponible, checked, amount }))
+    const materialsFromProvidersWithAmount = materialsFromProviders.value.map(({ material, cantidad_disponible, checked, amount, deliveryDate }) => ({ id: material, amount_available: cantidad_disponible, checked, amount, deliveryDate }))
     const collectionMaterialListWithAmount = collectionMaterialList.map(({ id, amount }) => ({ id, amount }))
     return collectionMaterialListWithAmount.every((material) => {
         const availableMaterial = materialsFromProvidersWithAmount.filter((m) => m.id === material.id && m.checked)
@@ -94,8 +122,6 @@ const validateMaterialAmount = (materialsFromProviders, collectionMaterialList) 
 
 const validateAtLeastTwoImported = () => {
     const atLeastTwoImported = materialsFromProviders.value.filter((material) => material.checked && material.es_importado).length >= 2
-    console.log(atLeastTwoImported)
-    console.log(materialsFromProviders.value.filter((material) => material.checked ))
     if (!atLeastTwoImported) {
         alert("Al menos dos materiales importados deben ser seleccionados, " + materialsFromProviders.value.filter((material) => material.checked && material.es_importado).length + " están seleccionados")
         return false
@@ -119,7 +145,7 @@ const validateTotalAmount = (materialId, materialAmount) => {
     let totalMaterials = {}
     let totalAmount = 0
     for (let materialProvided in selectedMaterials.value[materialId]) {
-        if (materialsFromProviders.value.find(m => m.id == materialProvided).checked){
+        if (materialsFromProviders.value.find(m => m.id == materialProvided).checked) {
             totalAmount += selectedMaterials.value[materialId][materialProvided]
         }
     }
@@ -139,46 +165,59 @@ const validateAllMaterials = () => {
     return Object.keys(selectedMaterials.value).every(material => validateTotalAmount(material, collectionMaterialList.value.find(m => m.id == material).amount))
 }
 
-const uncheckMaterialIfAmountIsZero = (materialsFromProviders, selectedMaterials) => {
-    materialsFromProviders.value.forEach((material) => {
-        if (material.checked && selectedMaterials.value[material.material][material.actor] == 0) {
-            material.checked = false
-        }
-    })
+const validateFactorySelected = () => {
+    if (!selectedFactory.value) {
+        alert("Debe seleccionar un lugar de fabricación")
+        return false
+    }
+    return true
 }
 
-
+const validateDeliveryDate = (materialFromProvider) => {
+    return materialFromProvider.checked && materialFromProvider.deliveryDate !== null
+}
 
 const onSubmit = () => {
-    uncheckMaterialIfAmountIsZero(materialsFromProviders, selectedMaterials)
     const atLeastTwoImported = validateAtLeastTwoImported()
     const allMaterialsValid = validateAllMaterials()
+    const factorySelected = validateFactorySelected()
+    const checkedDatesSet = materialsFromProviders.value.filter(material => material.checked).every(material => validateDeliveryDate(material))
+    console.log(checkedDatesSet, "checkedDatesSet")
 
     const finalList = []
-    if (atLeastTwoImported && allMaterialsValid) {
+    if (atLeastTwoImported && allMaterialsValid && factorySelected && checkedDatesSet) {
         for (let materialId in selectedMaterials.value) {
             for (let providerId in selectedMaterials.value[materialId]) {
                 const amount = selectedMaterials.value[materialId][providerId]
                 if (amount > 0) {
                     const material = collectionMaterialList.value.find(m => m.id == materialId)
-                    const provider = materialsFromProviders.value.find(p => p.id == providerId)
+                    const materialFromProvider = materialsFromProviders.value.find(m => m.id == providerId)
                     finalList.push({
-                        actor: provider.actor,
+                        actor: providerId,
                         material: material.id,
-                        amount: amount
+                        amount: amount,
+                        deliveryDate: materialFromProvider.deliveryDate
                     })
                 }
             }
         }
     }
-    if (finalList.length == 0) {
+    if (finalList.length > 0) {
         console.log(finalList)
+        console.log(factorySelected)
     }
 
 }
+
+const clearSelection = () => {
+    selectedFactory.value = null
+}
+
 onMounted(async () => {
     await fetchMaterialsFromProviders()
     collectionMaterialList.value = await fetchWrapper.get(`${baseUrl}/bonita/case-variable/${caseId}/cantidad_materiales/`)
+    factoryList.value = await fetchWrapper.get(`${baseUrl}/reservas/lugar-fabricacion/`)
+    console.log("factoryList", factoryList.value)
     collectionMaterialList.value = JSON.parse(collectionMaterialList.value.value)
     const allMaterialsProvided = validateMaterialPresence(materialsFromProviders, collectionMaterialList.value)
     const canFulfillAllMaterials = validateMaterialAmount(materialsFromProviders, collectionMaterialList.value)
