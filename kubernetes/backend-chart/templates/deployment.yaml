@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: static-volume
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: do-block-storage
+  resources:
+    requests:
+      storage: 1Gi  # Adjust the storage size as needed
+
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: collectstatic-job
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsUser: 0
+      containers:
+      - name: collectstatic-container
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command:
+          - "/bin/sh"
+          - "-c"
+          - "chmod -R 777 /home/app/web/staticfiles && python manage.py collectstatic --noinput"
+        volumeMounts:
+        - name: static-volume
+          mountPath: /home/app/web/staticfiles
+      volumes:
+      - name: static-volume
+        persistentVolumeClaim:
+          claimName: static-volume
+      restartPolicy: Never
+
+
+
+---    
+# templates/backend-deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "backend"
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_NAME
+              value: ljj_muebles
+            - name: DB_USER
+              value: ljj_muebles
+            - name: DB_PASSWORD
+              value: admin
+            - name: DB_HOST
+              value: db
+            - name: DB_PORT
+              value: "5432"
+            - name: BONITA_URL
+              value: http://161.35.225.144:8080
+
+

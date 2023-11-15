@@ -1,0 +1,9 @@
+replicaCount: 1
+
+image:
+  repository: registry.digitalocean.com/ljjmuebles/backend
+  pullPolicy: Always
+  tag: latest
+
+sharedVolume:
+  enabled: true
