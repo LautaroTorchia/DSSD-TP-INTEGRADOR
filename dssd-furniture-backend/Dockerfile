@@ -40,6 +40,8 @@ COPY . $APP_HOME
 
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME
+# grant permissions to the app user
+RUN chmod -R 755 $APP_HOME
 
 RUN apk update && apk add libpq
 

@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from drf_yasg.utils import swagger_auto_schema
 from furniture_collection.models import Coleccion
 from drf_yasg import openapi
-from datetime import date, timedelta
+from ljj_muebles import settings
 
 
 class ReservaMaterialListView(generics.ListAPIView):
@@ -61,7 +61,7 @@ class ReservaMaterialCreateView(APIView):
         fecha_entrega_pactada=request.data.get("fecha_entrega_pactada")
         # Make a request to the other application's API to get the supplier's ID
         
-        supplier_api_url = f'http://localhost:8000/api/proveedores/actor-materials/{id_venta_proveedor}/'
+        supplier_api_url = f'http://{settings.API_PROVEEDORES_URL}:8000/api/proveedores/actor-materials/{id_venta_proveedor}/'
         response = requests.get(supplier_api_url)
 
         if response.status_code == status.HTTP_200_OK:

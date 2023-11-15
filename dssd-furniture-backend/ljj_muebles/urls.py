@@ -20,6 +20,8 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import re_path
+from django.views.static import serve
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -50,7 +52,6 @@ urlpatterns = [
     #Functional endpoints
     path('api/coleccion/', include('furniture_collection.urls')),
     path('api/bonita/', include('bonita_integration.urls')),
-    path('api/proveedores/',include('proveedores.urls')),
     path('api/reservas/',include('reservas.urls')),
     path('api/entregas/',include('entregas.urls'))
 ]

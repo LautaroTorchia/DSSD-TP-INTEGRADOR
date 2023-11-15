@@ -66,7 +66,6 @@ INSTALLED_APPS = [
     'resources',
     'furniture_collection',
     'bonita_integration',
-    'proveedores',
     'reservas',
     'entregas'
 ]
@@ -108,7 +107,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ljj_muebles.wsgi.application'
 
 
-#CORS
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = [
     'accept',
@@ -131,7 +129,30 @@ CORS_ALLOW_METHODS = [
     'PUT',
 ]
 
+
+X_FRAME_OPTIONS = 'DENY'
+
+
+CORS_EXPOSE_HEADERS = [
+    'Content-Type',
+]
+
+CORS_ALLOW_HEADERS += [
+    'application/javascript',
+]
+
+CORS_ALLOW_HEADERS += [
+    'text/css',
+]
+
+CORS_ALLOW_HEADERS += [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+]
+
 BONITA_URL= os.environ.get("BONITA_URL","http://161.35.225.144:8080")
+API_PROVEEDORES_URL = os.environ.get("API_PROVEEDORES_URL","http://161.35.225.144:8080")
 #BONITA_URL="http://localhost:8080"
 
 DATABASES = {
@@ -189,8 +210,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_L10N = True
-
-
 
 
 # Static files (CSS, JavaScript, Images)
