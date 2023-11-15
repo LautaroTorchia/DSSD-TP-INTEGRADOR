@@ -48,6 +48,21 @@ services:
       mynetwork:
         ipv4_address: 172.25.0.4  # Assign the desired IP address
   
+  db2:
+    container_name: db2
+    image: postgres:13
+    ports:
+      - "6432:5432"
+    environment:
+      POSTGRES_DB: api_proveedores
+      POSTGRES_USER: api_proveedores
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - db-volume2:/var/lib/postgresql/data/
+    networks:
+      mynetwork:
+        ipv4_address: 172.25.0.20  # Assign the desired IP address
+  
   nginx:
     container_name: nginx 
     build:
@@ -66,6 +81,7 @@ volumes:
   db-volume:
   static-volume:
   static-media:
+  db-volume2:
 
 networks:
   mynetwork:
