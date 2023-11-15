@@ -34,3 +34,41 @@ spec:
       resources:
         requests:
           storage: 1Gi # Adjust the storage size
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db-statefulset-2
+spec:
+  serviceName: postgres-service # Specify the headless service
+  replicas: 1 # Adjust as needed
+  selector:
+    matchLabels:
+      app: db2
+  template:
+    metadata:
+      labels:
+        app: db2
+    spec:
+      containers:
+      - name: db2
+        image: postgres:latest
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_PASSWORD
+          value: admin
+        - name: POSTGRES_USER
+          value: api_proveedores
+        - name: POSTGRES_DB
+          value: api_proveedores
+  volumeClaimTemplates:
+  - metadata:
+      name: db-data-2
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: do-block-storage
+      resources:
+        requests:
+          storage: 1Gi # Adjust the storage size

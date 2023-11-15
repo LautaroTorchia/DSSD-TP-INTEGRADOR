@@ -152,8 +152,8 @@ CORS_ALLOW_HEADERS += [
 ]
 
 BONITA_URL= os.environ.get("BONITA_URL","http://161.35.225.144:8080")
-API_PROVEEDORES_URL = os.environ.get("API_PROVEEDORES_URL","http://161.35.225.144:8080")
-#BONITA_URL="http://localhost:8080"
+API_PROVEEDORES_URL = os.environ.get("API_PROVEEDORES_URL","http://api-proveedores.com")
+
 
 DATABASES = {
     "default": {

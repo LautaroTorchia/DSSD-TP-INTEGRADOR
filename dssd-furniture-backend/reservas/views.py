@@ -61,7 +61,7 @@ class ReservaMaterialCreateView(APIView):
         fecha_entrega_pactada=request.data.get("fecha_entrega_pactada")
         # Make a request to the other application's API to get the supplier's ID
         
-        supplier_api_url = f'http://{settings.API_PROVEEDORES_URL}:8000/api/proveedores/actor-materials/{id_venta_proveedor}/'
+        supplier_api_url = f'{settings.API_PROVEEDORES_URL}/api/proveedores/actor-materials/{id_venta_proveedor}/'
         response = requests.get(supplier_api_url)
 
         if response.status_code == status.HTTP_200_OK:

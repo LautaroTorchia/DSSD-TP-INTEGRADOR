@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: static-volume
+  name: static-volume-2
 spec:
   accessModes:
     - ReadWriteOnce
@@ -15,7 +15,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: collectstatic-job
+  name: collectstatic-job-2
 spec:
   template:
     spec:
@@ -29,12 +29,12 @@ spec:
           - "-c"
           - "chmod -R 777 /home/app/web/staticfiles && python manage.py collectstatic --noinput"
         volumeMounts:
-        - name: static-volume
+        - name: static-volume-2
           mountPath: /home/app/web/staticfiles
       volumes:
-      - name: static-volume
+      - name: static-volume-2
         persistentVolumeClaim:
-          claimName: static-volume
+          claimName: static-volume-2
       restartPolicy: Never
 
 
@@ -44,39 +44,38 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "backend"
+  name: "api"
   labels:
-    app: backend
+    app: api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend
+      app: api
   template:
     metadata:
       labels:
-        app: backend
+        app: api
     spec:
       containers:
-        - name: backend
+        - name: api
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:
             - containerPort: 8000
           env:
             - name: DB_NAME
-              value: ljj_muebles
+              value: api_proveedores
             - name: DB_USER
-              value: ljj_muebles
+              value: api_proveedores
             - name: DB_PASSWORD
               value: admin
             - name: DB_HOST
-              value: db
+              value: db2
             - name: DB_PORT
               value: "5432"
             - name: BONITA_URL
               value: http://161.35.225.144:8080
-            - name: API_PROVEEDORES_URL
-              value: http://nginx-proveedores
+
 
 
