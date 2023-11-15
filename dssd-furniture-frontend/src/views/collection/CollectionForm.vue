@@ -3,11 +3,11 @@
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label for="name">Name:</label>
-        <input type="text" id="name" v-model="formData.name" />
+        <input type="text" id="name" v-model="formData.name" required/>
       </div>
       <div class="form-group">
         <label for="description">Description:</label>
-        <textarea id="description" v-model="formData.description"></textarea>
+        <textarea id="description" v-model="formData.description" required></textarea>
       </div>
       <div class="form-group">
         <label for="estimated-release">Estimated Release:</label>

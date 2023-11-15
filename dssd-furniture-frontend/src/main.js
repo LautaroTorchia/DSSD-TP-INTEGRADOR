@@ -8,6 +8,8 @@ import piniaPluginPersistedState from "pinia-plugin-persistedstate"
 import  BackButton  from '@/components/BackButton.vue'
 import ConfirmationService from 'primevue/confirmationservice';
 import PrimeVue from 'primevue/config';
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap/dist/js/bootstrap.js'
 
 const app = createApp(App)
 const pinia = createPinia()

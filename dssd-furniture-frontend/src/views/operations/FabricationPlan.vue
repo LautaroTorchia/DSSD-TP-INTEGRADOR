@@ -8,7 +8,18 @@
                     <input type="radio" :id="'factory-' + index" :value="factory" v-model="selectedFactory">
                     <label :for="'factory-' + index">{{ factory.nombre }}</label>
                 </div>
+
                 <button @click="clearSelection">Clear</button>
+                {{ estimated_launch_date }}
+                <div class="date-field">
+                    <label for="slot_start_date">Fecha inicio reserva:</label>
+                    <input type="date" id="slot_start_date" v-model="slot_start_date"
+                        :min="new Date().toISOString().split('T')[0]" />
+                </div>
+                <div class="date-field">
+                    <label for="slot_end_date">Fecha fin reserva:</label>
+                    <input type="date" id="slot_end_date" v-model="slot_end_date" />
+                </div>
             </div>
         </div>
 
@@ -24,11 +35,9 @@
                             <div v-if="material.id === materialFromProvider.material">
                                 <div class="card">
                                     <div class="card-body">
-                                        {{ materialFromProvider }}
                                         <h6 class="card-subtitle mb-2 text-muted"> Proveedor o reciclador: {{
                                             materialFromProvider.actor_nombre }}</h6>
-                                        <h6 class="card-subtitle mb-2 text-muted"> Proveedor o reciclador: {{
-                                            materialFromProvider.actor }}</h6>
+
 
                                         <h6 class="card-subtitle mb-2 text-muted"> Cantidad: {{
                                             materialFromProvider.cantidad_disponible }}</h6>
@@ -47,7 +56,8 @@
                                                     v-model.number="selectedMaterials[material.id][materialFromProvider.id]"
                                                     min="1" :max="materialFromProvider.cantidad_disponible">
 
-                                                <label for="deliveryDate">Delivery Date:</label>
+                                                <label for="deliveryDate">Delivery Date (minimo {{
+                                                    materialFromProvider.plazo_entrega_dias }} días):</label>
                                                 <input type="date" class="form-control"
                                                     v-model="materialFromProvider.deliveryDate"
                                                     :min="new Date(Date.now() + materialFromProvider.plazo_entrega_dias * 24 * 60 * 60 * 1000).toISOString().split('T')[0]">
@@ -78,7 +88,8 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { fetchWrapper, router } from '@/helpers'
+import { getBonitaVariable, advanceBonitaTask, fetchWrapper, router } from '@/helpers'
+import { useCollectionsStore } from '@/stores'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 const collectionId = router.currentRoute.value.params.collection
@@ -89,11 +100,16 @@ const collectionMaterialList = ref([])
 const selectedMaterials = ref([])
 const factoryList = ref([])
 const selectedFactory = ref(null)
+const collectionStore = useCollectionsStore()
+const estimated_launch_date = ref(null)
+const slot_start_date = ref(null)
+const slot_end_date = ref(null)
+
 
 
 const fetchMaterialsFromProviders = async () => {
     try {
-        materialsFromProviders.value = await fetchWrapper.get(`${baseUrl}/proveedores/proveedores-materiales/`)
+        materialsFromProviders.value = await fetchWrapper.get(`${baseUrl}/proveedores/proveedores-materiales/`)//TODO cambiar por variable bonita
         materialsFromProviders.value.forEach((material) => {
             material.checked = false
             material.amount = 0
@@ -177,12 +193,39 @@ const validateDeliveryDate = (materialFromProvider) => {
     return materialFromProvider.checked && materialFromProvider.deliveryDate !== null
 }
 
+const validateFabricationDates = (finalList) => {
+    const startDate = new Date(slot_start_date.value)
+    const endDate = new Date(slot_end_date.value)
+    let alertTriggered = false
+    if (startDate >= endDate) {
+        alert("La fecha de inicio debe ser anterior a la fecha de fin")
+        alertTriggered = true
+    }
+    let isOutOfDate = false
+    finalList.forEach(item => {
+        const deliveryDate = new Date(item.deliveryDate)
+        if (deliveryDate > startDate) {
+            isOutOfDate = true
+        }
+    })
+    if (isOutOfDate) {
+        alert("La fecha de inicio debe ser posterior a la fecha de entrega de los materiales")
+        alertTriggered = true
+    }
+    if (endDate > estimated_launch_date.value) {
+        alert("La fecha de fin debe ser anterior a la fecha estimada de lanzamiento de la colección")
+        alertTriggered = true
+    }
+    return alertTriggered
+}
+
 const onSubmit = () => {
     const atLeastTwoImported = validateAtLeastTwoImported()
     const allMaterialsValid = validateAllMaterials()
     const factorySelected = validateFactorySelected()
     const checkedDatesSet = materialsFromProviders.value.filter(material => material.checked).every(material => validateDeliveryDate(material))
-    console.log(checkedDatesSet, "checkedDatesSet")
+
+
 
     const finalList = []
     if (atLeastTwoImported && allMaterialsValid && factorySelected && checkedDatesSet) {
@@ -202,11 +245,22 @@ const onSubmit = () => {
             }
         }
     }
-    if (finalList.length > 0) {
-        console.log(finalList)
-        console.log(factorySelected)
-    }
 
+    const datesValidated = validateFabricationDates(finalList)
+    if (datesValidated && finalList.length > 0) {
+        const fabricationPlan = {
+            factory_slot: {
+                factory: selectedFactory.value.id,
+                slot_start_date: slot_start_date.value,
+                slot_end_date: slot_end_date.value
+            },
+            materials: finalList,
+        }
+        advanceBonitaTask()
+        fetchWrapper.put(`${baseUrl}/bonita/update-case-variable/${caseId}/plan_de_fabricaion/`, 
+        { type: "java.lang.String", value: JSON.stringify(fabricationPlan) })
+        router.push({ name: 'fabrication-plan-confirm' })
+    }
 }
 
 const clearSelection = () => {
@@ -214,10 +268,13 @@ const clearSelection = () => {
 }
 
 onMounted(async () => {
+    await collectionStore.getAll()
+    const estimatedLaunchDate = new Date(collectionStore.getById(collectionId).estimated_launch_date)
+    estimatedLaunchDate.setDate(estimatedLaunchDate.getDate() + 1) // add one day
+    estimated_launch_date.value = new Date(estimatedLaunchDate.getFullYear(), estimatedLaunchDate.getMonth(), estimatedLaunchDate.getDate())
     await fetchMaterialsFromProviders()
-    collectionMaterialList.value = await fetchWrapper.get(`${baseUrl}/bonita/case-variable/${caseId}/cantidad_materiales/`)
-    factoryList.value = await fetchWrapper.get(`${baseUrl}/reservas/lugar-fabricacion/`)
-    console.log("factoryList", factoryList.value)
+    collectionMaterialList.value = await getBonitaVariable(caseId, "cantidad_materiales")
+    factoryList.value = await fetchWrapper.get(`${baseUrl}/reservas/lugar-fabricacion/`)//TODO cambiar por variable bonita
     collectionMaterialList.value = JSON.parse(collectionMaterialList.value.value)
     const allMaterialsProvided = validateMaterialPresence(materialsFromProviders, collectionMaterialList.value)
     const canFulfillAllMaterials = validateMaterialAmount(materialsFromProviders, collectionMaterialList.value)

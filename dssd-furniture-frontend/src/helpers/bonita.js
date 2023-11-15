@@ -9,3 +9,15 @@ export const advanceBonitaTask = async (caseId) => {
     }
     await fetchWrapper.post(`${baseUrl}/bonita/execute-user-task/${task.id}/`)
 }
+
+export async function getBonitaVariable(caseId, variableName) {
+    try {
+        const response = await fetchWrapper.get(`${baseUrl}/bonita/case-variable/${caseId}/${variableName}/`)
+        if (response.value == "null") {
+            throw new Error('Response data is empty')
+        }
+        return true
+    } catch (error) {
+        return false
+    }
+}

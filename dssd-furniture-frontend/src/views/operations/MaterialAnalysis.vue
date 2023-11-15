@@ -18,22 +18,10 @@
 <script>
 import { storeToRefs } from 'pinia'
 import { useFurnitureStore, useMaterialsStore } from '@/stores'
-import { router, advanceBonitaTask, fetchWrapper } from '@/helpers'
+import { router, advanceBonitaTask, fetchWrapper, getBonitaVariable } from '@/helpers'
 import { onMounted } from 'vue'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
-
-async function getCantidadMateriales(caseId) {
-    try {
-        const response = await fetchWrapper.get(`${baseUrl}/bonita/case-variable/${caseId}/cantidad_materiales/`)
-        if (response.value=="null") {
-            throw new Error('Response data is empty')
-        }
-        return true
-    } catch (error) {
-        return false
-    }
-}
 
 export default {
     setup() {
@@ -81,10 +69,10 @@ export default {
         }
 
         onMounted(async () => {
-        const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
-        if(await getCantidadMateriales(caseId)){
-            router.push({ name: 'fabrication-plan' })
-        }
+            const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
+            if (await getBonitaVariable(caseId, "cantidad_materiales")) {
+                router.push({ name: 'fabrication-plan' })
+            }
 
             const materials = await materialsStore.getAll()
             furniture.value.forEach((piece) => {
