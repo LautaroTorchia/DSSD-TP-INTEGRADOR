@@ -1,6 +1,5 @@
 from django.db import models
-from django.utils import timezone
-from proveedores.models import Material
+
 
 class Coleccion(models.Model):
     nombre = models.CharField(max_length=100)
@@ -26,7 +25,7 @@ class Mueble(models.Model):
     descripcion = models.TextField()
     imagen = models.CharField(max_length=100)
     plan_fabricacion = models.CharField(max_length=100) 
-    materiales = models.ManyToManyField(Material)  # Update the field to a ManyToMany
+    materiales = models.CharField(max_length=255)  # Change to CharField
     
     class Meta:
         unique_together = ('nombre', 'coleccion')

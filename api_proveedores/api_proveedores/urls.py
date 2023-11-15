@@ -1,4 +1,4 @@
-"""ljj_muebles URL Configuration
+"""api_proveedores URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.0/topics/http/urls/
@@ -18,16 +18,15 @@ from django.urls import path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import re_path
 from django.views.static import serve
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="API LJJMuebles",
+        title="API Proveedores",
         default_version='v1',
-        description="API de operaciones de LJJMuebles",
+        description="API de operaciones de Proveedores",
         license=openapi.License(name="Test License"),
     ),
     public=True,
@@ -43,15 +42,5 @@ urlpatterns = [
     path('api/api.json/', schema_view.without_ui(cache_timeout=0),name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc',cache_timeout=0), name='schema-redoc'),
     path('api/redoc/', schema_view.with_ui('redoc',cache_timeout=0), name='schema-redoc'),
-
-    #User endpoints
-    path('api/auth/', include('authentication.urls')),
-    path('api/authorization/', include('authorization.urls')),
-    
-    
-    #Functional endpoints
-    path('api/coleccion/', include('furniture_collection.urls')),
-    path('api/bonita/', include('bonita_integration.urls')),
-    path('api/reservas/',include('reservas.urls')),
-    path('api/entregas/',include('entregas.urls'))
+    path('api/proveedores/',include('proveedores.urls')),
 ]

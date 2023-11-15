@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Actor, Material, ActorMaterial
+from .models import Actor, Material, ActorMaterial,LugarDeFabricacion,LugarDeFabricacionEnReserva
 
 class ActorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,6 +11,10 @@ class MaterialSerializer(serializers.ModelSerializer):
         model = Material
         fields = '__all__'
 
+class LugarDeFabricacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LugarDeFabricacion
+        fields = '__all__'
 
 class ActorMaterialSerializer(serializers.ModelSerializer):
     actor_nombre = serializers.CharField(source='actor.nombre', read_only=True)
@@ -19,3 +23,9 @@ class ActorMaterialSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActorMaterial
         fields = ['id', 'actor', 'actor_nombre', 'material', 'material_nombre', 'cantidad_disponible', 'plazo_entrega_dias',"es_importado"]
+        
+
+class LugarDeFabricacionEnReservaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LugarDeFabricacionEnReserva
+        fields = '__all__'

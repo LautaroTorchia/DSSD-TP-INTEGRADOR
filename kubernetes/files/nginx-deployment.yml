@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: static-volume
+          mountPath: /home/app/web/staticfiles
+        - name: static-media
+          mountPath: /home/app/web/mediafiles
+        - name: nginx-conf
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: static-volume
+        persistentVolumeClaim:
+          claimName: static-volume
+          readOnly: false  # Adjust if needed
+      - name: static-media
+        persistentVolumeClaim:
+          claimName: static-media
+          readOnly: false  # Adjust if needed
+      - name: nginx-conf
+        configMap:
+          name: nginx-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |
+    upstream ljj_muebles_api {
+        server backend:8000;
+    }
+    upstream ljj_muebles_front {
+        server frontend:3000;
+    }
+
+    server {
+
+        listen 80;
+
+        location /api {
+            proxy_pass http://ljj_muebles_api;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header Host $host;
+            proxy_redirect off;
+        }
+        
+        location / {
+            proxy_pass http://ljj_muebles_front;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            proxy_redirect off;
+        }
+
+        location /api/static/ {
+            alias /home/app/web/staticfiles/;
+        }
+
+        location /api/media/ {
+            alias /home/app/web/mediafiles/;
+        }
+
+    }

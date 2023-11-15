@@ -39,8 +39,6 @@ SWAGGER_SETTINGS = {
 }
 
 
-AUTH_USER_MODEL = 'authentication.User'
-
 
 # Application definition
 
@@ -56,18 +54,9 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'drf_yasg',
-    'authentication',
     'rest_framework_tracking',
     'import_export',
-    'authorization',
-    'general_permissions',
-    'canonical_system_requests',
-    'progralog',
-    'resources',
-    'furniture_collection',
-    'bonita_integration',
-    'reservas',
-    'entregas'
+    'proveedores',
 ]
 
 MIDDLEWARE = [
@@ -86,7 +75,7 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cache'  # or 'django.contrib.
 SESSION_COOKIE_NAME = 'bonita_session'
 
 
-ROOT_URLCONF = 'ljj_muebles.urls'
+ROOT_URLCONF = 'api_proveedores.urls'
 
 TEMPLATES = [
     {
@@ -104,7 +93,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ljj_muebles.wsgi.application'
+WSGI_APPLICATION = 'api_proveedores.wsgi.application'
 
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -151,18 +140,15 @@ CORS_ALLOW_HEADERS += [
     'image/gif',
 ]
 
-BONITA_URL= os.environ.get("BONITA_URL","http://161.35.225.144:8080")
-API_PROVEEDORES_URL = os.environ.get("API_PROVEEDORES_URL","http://api-proveedores.com")
-
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.environ.get("DB_NAME", "ljj_muebles"),
-        "USER": os.environ.get("DB_USER", "ljj_muebles"),
+        "NAME": os.environ.get("DB_NAME", "api_proveedores"),
+        "USER": os.environ.get("DB_USER", "api_proveedores"),
         "PASSWORD": os.environ.get("DB_PASSWORD", "admin"),
         "HOST": os.environ.get("DB_HOST", "localhost"),
-        "PORT": os.environ.get("DB_PORT", "5432"),
+        "PORT": os.environ.get("DB_PORT", "6432"),
     }
 }
 

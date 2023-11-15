@@ -1,0 +1,5 @@
+image:
+  repository: registry.digitalocean.com/ljjmuebles/frontend
+  pullPolicy: Always
+  tag: latest
+

@@ -13,11 +13,11 @@ RUN npm install
 # Copy the rest of the application code to the container
 COPY . .
 
-# Build the Next.js app
+# Build the Vue.js app
 RUN npm run build
 
-# Expose the port that the Next.js app will run on
+# Expose the port your app runs on
 EXPOSE 3000
 
-# Start the Next.js app
-CMD ["npm", "start"]
+# Start the app with --host 0.0.0.0 to make it externally accessible
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

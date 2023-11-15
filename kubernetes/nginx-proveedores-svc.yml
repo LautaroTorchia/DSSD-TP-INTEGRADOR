@@ -1,0 +1,14 @@
+---
+# templates/nginx-service.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "nginx-proveedores"
+spec:
+  selector:
+    app: nginx-proveedores
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
