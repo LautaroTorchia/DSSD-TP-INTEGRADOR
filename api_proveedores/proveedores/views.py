@@ -1,15 +1,13 @@
 from rest_framework import generics
-from .models import Actor, Material, ActorMaterial,LugarDeFabricacion
-from .serializers import ActorSerializer, MaterialSerializer, ActorMaterialSerializer,LugarDeFabricacionSerializer
+from .models import Actor, Material, ActorMaterial,LugarDeFabricacion,LugarDeFabricacionEnReserva
+from .serializers import ActorSerializer, MaterialSerializer, ActorMaterialSerializer,LugarDeFabricacionSerializer,LugarDeFabricacionEnReservaSerializer
 from rest_framework import generics
-from django.http import HttpResponse
-from rest_framework import status
 
 class LugarDeFabricacionListCreateView(generics.ListCreateAPIView):
     queryset = LugarDeFabricacion.objects.all()
     serializer_class = LugarDeFabricacionSerializer
 
-class LugarDeFabricacionDestroyView(generics.DestroyAPIView):
+class LugarDeFabricacionRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = LugarDeFabricacion.objects.all()
     serializer_class = LugarDeFabricacionSerializer
     
@@ -34,18 +32,16 @@ class PossibleActorsForMaterialView(generics.ListAPIView):
         material_id = self.kwargs.get('material_id')
         return ActorMaterial.objects.filter(material=material_id)
 
-#delete views:
-class ActorDeleteView(generics.DestroyAPIView):
-    queryset = Actor.objects.all()
 
-class MaterialDeleteView(generics.DestroyAPIView):
-    queryset = Material.objects.all()
-
-class ActorMaterialRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class ActorMaterialRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = ActorMaterial.objects.all()
     serializer_class = ActorMaterialSerializer
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.delete()
-        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+
+class LugarDeFabricacionEnReservaListCreateView(generics.ListCreateAPIView):
+    queryset = LugarDeFabricacionEnReserva.objects.all()
+    serializer_class = LugarDeFabricacionEnReservaSerializer
+
+class LugarDeFabricacionEnReservaRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = LugarDeFabricacionEnReserva.objects.all()
+    serializer_class = LugarDeFabricacionEnReservaSerializer

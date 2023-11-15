@@ -5,6 +5,11 @@ class LugarDeFabricacion(models.Model):
     ubicacion = models.CharField(max_length=100)
     internacional = models.BooleanField(default=True)
     
+
+class LugarDeFabricacionEnReserva(models.Model):
+    lugar_de_fabricacion = models.ForeignKey(LugarDeFabricacion,on_delete=models.CASCADE)
+    telefono_reserva = models.CharField(max_length=255)
+    fecha_final_disponible = models.DateField()
     
 class Actor(models.Model):
     TIPO_CHOICES = [
