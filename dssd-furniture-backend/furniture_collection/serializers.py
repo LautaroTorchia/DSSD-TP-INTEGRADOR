@@ -12,13 +12,10 @@ class MuebleSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         plan_fabricacion = validated_data.pop('plan_fabricacion')
         imagen = validated_data.pop('imagen')
-        materiales_data = validated_data.pop('materiales')
         validated_data['plan_fabricacion'] = plan_fabricacion
         validated_data['imagen'] = imagen
         
         instance = Mueble.objects.create(**validated_data)
-        print(materiales_data)
-        instance.materiales.set(materiales_data)  # Associate related materials using the set method
         return instance
 
 
