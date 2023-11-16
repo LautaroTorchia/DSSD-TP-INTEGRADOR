@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '@/stores'
 import { getBonitaVariable } from '@/helpers';
-import { onMounted, ref } from 'vue'; // Import the onMounted hook
+import { onBeforeMount, ref } from 'vue'; // Import the onMounted hook
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 
 const collectionStore = useCollectionsStore()
@@ -17,14 +17,14 @@ async function getCantidadMateriales(caseId) {
 }
 
 async function getPlanDeFabricacion(caseId) {
-    return await getBonitaVariable(caseId, "plan_de_fabricaion")
+    return await getBonitaVariable(caseId, "plan_de_fabricacion")
 }
 
-onMounted(async () => {
+onBeforeMount(async () => {
     await collectionStore.getAll()
     collections.value.forEach(async (collection) => {
         collection.cantidadMateriales = await getCantidadMateriales(collection.caseId)
-        collection.planDeFabricacion = await getPlanDeFabricacion(collection.caseId)
+        collection.planDeFabricacion = JSON.parse(await getPlanDeFabricacion(collection.caseId))
     })
     loading.value = false
 })
@@ -38,19 +38,30 @@ onMounted(async () => {
                 <span v-if="collection.designed">
                     <li>Nombre: {{ collection.name }} </li>
                     <li>Descripción: {{ collection.description }}</li>
-
-                    <div v-if="collection.cantidadMateriales"><router-link
+                    <div v-if="collection.planDeFabricacion">
+                        <div v-if="collection.planDeFabricacion.orders_placed">
+                            Ordenes de materiales y lugar de fabricación reservados
+                            <router-link
+                                :to="{ name: 'materials-delivery', params: { collection: collection.id } }">Controlar entrega de materiales</router-link>
+                        </div>
+                        <div v-else>
+                            <router-link
+                                :to="{ name: 'fabrication-plan-confirm', params: { collection: collection.id } }">Confirmar
+                                plan de fabricación</router-link>
+                        </div>
+                    </div>
+                    <div v-else-if="collection.cantidadMateriales"><router-link
                             :to="{ name: 'fabrication-plan', params: { collection: collection.id } }">Armar plan de
                             fabricación</router-link></div>
-                    <div v-else-if="collection.planDeFabricacion"><router-link
-                            :to="{ name: 'fabrication-plan-confirm', params: { collection: collection.id } }">Confirmar plan de fabricación</router-link></div>
                     <div v-else><router-link
                             :to="{ name: 'material-analysis', params: { collection: collection.id } }">Analizar
                             materiales</router-link></div>
+
                 </span>
             </template>
         </ul>
         <div v-else-if="collections.loading || loading" class="spinner-border spinner-border-sm"></div>
         <div v-else-if="collections.error" class="text-danger">Error loading collections: {{ collections.error }}</div>
         <div v-else>No hay nada</div>
-</div></template>
+    </div>
+</template>

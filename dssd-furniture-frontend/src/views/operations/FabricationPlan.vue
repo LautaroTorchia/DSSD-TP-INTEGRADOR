@@ -87,8 +87,8 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { getBonitaVariable, advanceBonitaTask, fetchWrapper, router } from '@/helpers'
+import { onBeforeMount, ref } from 'vue'
+import { getBonitaVariable, setBonitaVariable, router } from '@/helpers'
 import { useCollectionsStore } from '@/stores'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
@@ -109,7 +109,7 @@ const slot_end_date = ref(null)
 
 const fetchMaterialsFromProviders = async () => {
     try {
-        materialsFromProviders.value = JSON.parse(await getBonitaVariable(caseId,"consulta_materiales"))
+        materialsFromProviders.value = JSON.parse(await getBonitaVariable(caseId, "consulta_materiales"))
         materialsFromProviders.value.forEach((material) => {
             material.checked = false
             material.amount = 0
@@ -121,8 +121,6 @@ const fetchMaterialsFromProviders = async () => {
 }
 
 const validateMaterialPresence = (materialsFromProviders, collectionMaterialList) => {
-    console.log(materialsFromProviders.value)
-    console.log(collectionMaterialList)
     const importedMaterials = materialsFromProviders.value.filter((material) => material.es_importado)
     return importedMaterials.length >= 2 && collectionMaterialList.map((material) => material.id).every((id) => materialsFromProviders.value.map((material) => material.material).includes(id))
 }
@@ -198,10 +196,10 @@ const validateDeliveryDate = (materialFromProvider) => {
 const validateFabricationDates = (finalList) => {
     const startDate = new Date(slot_start_date.value)
     const endDate = new Date(slot_end_date.value)
-    let alertTriggered = false
+    let datesCorrect = true
     if (startDate >= endDate) {
         alert("La fecha de inicio debe ser anterior a la fecha de fin")
-        alertTriggered = true
+        datesCorrect = false
     }
     let isOutOfDate = false
     finalList.forEach(item => {
@@ -212,13 +210,13 @@ const validateFabricationDates = (finalList) => {
     })
     if (isOutOfDate) {
         alert("La fecha de inicio debe ser posterior a la fecha de entrega de los materiales")
-        alertTriggered = true
+        datesCorrect = false
     }
     if (endDate > estimated_launch_date.value) {
         alert("La fecha de fin debe ser anterior a la fecha estimada de lanzamiento de la colección")
-        alertTriggered = true
+        datesCorrect = false
     }
-    return alertTriggered
+    return datesCorrect
 }
 
 const onSubmit = () => {
@@ -249,6 +247,8 @@ const onSubmit = () => {
     }
 
     const datesValidated = validateFabricationDates(finalList)
+
+
     if (datesValidated && finalList.length > 0) {
         const fabricationPlan = {
             factory_slot: {
@@ -258,20 +258,23 @@ const onSubmit = () => {
             },
             materials: finalList,
         }
-        advanceBonitaTask()
-        fetchWrapper.put(`${baseUrl}/bonita/update-case-variable/${caseId}/plan_de_fabricaion/`, 
-        { type: "java.lang.String", value: JSON.stringify(fabricationPlan) })
-        router.push({ name: 'fabrication-plan-confirm' })
+        advanceToConfirm(fabricationPlan)
     }
+
+}
+
+const advanceToConfirm = (fabricationPlan) => {
+    setBonitaVariable(caseId, "plan_de_fabricacion", JSON.stringify(fabricationPlan))
+    router.push({ name: 'fabrication-plan-confirm' })
 }
 
 const clearSelection = () => {
     selectedFactory.value = null
 }
 
-onMounted(async () => {
+onBeforeMount(async () => {
     await collectionStore.getAll()
-    
+
     const estimatedLaunchDate = new Date(collectionStore.getById(collectionId).estimated_launch_date)
     estimatedLaunchDate.setDate(estimatedLaunchDate.getDate() + 1) // add one day
     estimated_launch_date.value = new Date(estimatedLaunchDate.getFullYear(), estimatedLaunchDate.getMonth(), estimatedLaunchDate.getDate())

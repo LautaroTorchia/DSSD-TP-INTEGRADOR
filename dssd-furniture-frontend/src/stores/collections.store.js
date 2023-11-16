@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { useFurnitureStore } from './furniture.store'
-import { fetchWrapper } from '@/helpers'
+import { fetchWrapper, advanceNamedBonitaTask } from '@/helpers'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 
@@ -12,14 +12,6 @@ const createBonitaInstance = async () => {
     return response.caseId
 }
 
-const advanceBonitaTask = async (caseId) => {
-    const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
-    const task = tasks.find(task => task.rootCaseId === caseId.toString())
-    if (!task) {
-        throw new Error('No se encontró la tarea')
-    }
-    await fetchWrapper.post(`${baseUrl}/bonita/execute-user-task/${task.id}/`)
-}
 
 export const useCollectionsStore = defineStore({
     id: 'collections',
@@ -84,7 +76,7 @@ export const useCollectionsStore = defineStore({
         async finish(collection) {
             collection.designed = true
             try {
-                await advanceBonitaTask(collection.caseId)
+                await advanceNamedBonitaTask(collection.caseId, "Diseñar coleccion")
                 await fetchWrapper.patch(`${baseUrl}/coleccion/${collection.id}/`, { diseñada: true })
             } catch (error) {
                 this.collections = { error }

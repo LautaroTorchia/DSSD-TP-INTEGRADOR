@@ -18,7 +18,7 @@
 <script>
 import { storeToRefs } from 'pinia'
 import { useFurnitureStore, useMaterialsStore } from '@/stores'
-import { router, advanceBonitaTask, fetchWrapper, getBonitaVariable } from '@/helpers'
+import { router, advanceNamedBonitaTask, fetchWrapper, getBonitaVariable } from '@/helpers'
 import { onMounted } from 'vue'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
@@ -60,7 +60,7 @@ export default {
                 try {
                     const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
                     await fetchWrapper.put(`${baseUrl}/bonita/update-case-variable/${caseId}/cantidad_materiales/`, { type: "java.lang.String", value: JSON.stringify(materialsAmount) })
-                    await advanceBonitaTask(caseId)
+                    await advanceNamedBonitaTask(caseId, "Analizar materiales")
                     router.push({ name: 'fabrication-plan' })
                 } catch (error) {
                     console.error(error)
