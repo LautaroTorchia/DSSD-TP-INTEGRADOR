@@ -70,12 +70,13 @@ export default {
 
         onMounted(async () => {
             const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
-            if (await getBonitaVariable(caseId, "cantidad_materiales")) {
+            if (await getBonitaVariable(caseId, "consulta_materiales")) {
                 router.push({ name: 'fabrication-plan' })
             }
 
             const materials = await materialsStore.getAll()
             furniture.value.forEach((piece) => {
+                piece.materiales = piece.materiales.split(',').map((material) => Number(material))
                 piece.materiales.forEach((materialId, index) => {
                     const material = materials.find((m) => m.id == materialId)
                     if (material) {

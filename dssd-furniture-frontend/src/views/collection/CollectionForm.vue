@@ -45,7 +45,6 @@ export default {
 
     const { emit } = getCurrentInstance()
     const submitForm = () => {
-      console.log('submitForm', formData)
       emit('form-submitted', formData)
     }
     return {

@@ -52,9 +52,9 @@ export const useFurnitureStore = defineStore({
             await fetchWrapper.patch(`${baseUrl}/coleccion/muebles/${id}/`, furniture)
         },
         async create(furniture) {
-            console.log(furniture)
+
             const response = await sendFile.post(`${baseUrl}/coleccion/muebles/`, furniture)
-            console.log(response)
+
             return response
         }
     }

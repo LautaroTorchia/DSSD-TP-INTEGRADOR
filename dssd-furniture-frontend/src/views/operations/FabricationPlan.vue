@@ -6,7 +6,7 @@
             <div class="card-body">
                 <div v-for="(factory, index) in factoryList" :key="index">
                     <input type="radio" :id="'factory-' + index" :value="factory" v-model="selectedFactory">
-                    <label :for="'factory-' + index">{{ factory.nombre }}</label>
+                    <label :for="'factory-' + index">{{ factory.nombre || factory.telefono_reserva }}</label>
                 </div>
 
                 <button @click="clearSelection">Clear</button>
@@ -27,7 +27,7 @@
         <div class="card">
             <div class="card-body">
                 <div v-for="material in collectionMaterialList" :key="material.id">
-                    <h5 class="card-title">Material: {{ material.name.charAt(0).toUpperCase() + material.name.slice(1) }}
+                    <h5 class="card-title">Material: {{ material.name }}
                     </h5>
                     <h5 class="card-title">Cantidad: {{ material.amount }} </h5>
                     <div class="card-text">
@@ -109,7 +109,7 @@ const slot_end_date = ref(null)
 
 const fetchMaterialsFromProviders = async () => {
     try {
-        materialsFromProviders.value = await fetchWrapper.get(`${baseUrl}/proveedores/proveedores-materiales/`)//TODO cambiar por variable bonita
+        materialsFromProviders.value = JSON.parse(await getBonitaVariable(caseId,"consulta_materiales"))
         materialsFromProviders.value.forEach((material) => {
             material.checked = false
             material.amount = 0
@@ -121,6 +121,8 @@ const fetchMaterialsFromProviders = async () => {
 }
 
 const validateMaterialPresence = (materialsFromProviders, collectionMaterialList) => {
+    console.log(materialsFromProviders.value)
+    console.log(collectionMaterialList)
     const importedMaterials = materialsFromProviders.value.filter((material) => material.es_importado)
     return importedMaterials.length >= 2 && collectionMaterialList.map((material) => material.id).every((id) => materialsFromProviders.value.map((material) => material.material).includes(id))
 }
@@ -269,13 +271,13 @@ const clearSelection = () => {
 
 onMounted(async () => {
     await collectionStore.getAll()
+    
     const estimatedLaunchDate = new Date(collectionStore.getById(collectionId).estimated_launch_date)
     estimatedLaunchDate.setDate(estimatedLaunchDate.getDate() + 1) // add one day
     estimated_launch_date.value = new Date(estimatedLaunchDate.getFullYear(), estimatedLaunchDate.getMonth(), estimatedLaunchDate.getDate())
     await fetchMaterialsFromProviders()
-    collectionMaterialList.value = await getBonitaVariable(caseId, "cantidad_materiales")
-    factoryList.value = await fetchWrapper.get(`${baseUrl}/reservas/lugar-fabricacion/`)//TODO cambiar por variable bonita
-    collectionMaterialList.value = JSON.parse(collectionMaterialList.value.value)
+    collectionMaterialList.value = JSON.parse(await getBonitaVariable(caseId, "cantidad_materiales"))
+    factoryList.value = JSON.parse(await getBonitaVariable(caseId, "consulta_lugares_fabricacion"))
     const allMaterialsProvided = validateMaterialPresence(materialsFromProviders, collectionMaterialList.value)
     const canFulfillAllMaterials = validateMaterialAmount(materialsFromProviders, collectionMaterialList.value)
 

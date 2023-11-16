@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuthStore } from '@/stores'
-import { Home, Login, CollectionList, CollectionCreate, CollectionUpdate, FurnitureList, FurnitureCreate, FurnitureDetail, DesignedCollectionList, MaterialAnalysis, FabricationPlan, FabricationPlanConfirm  } from '@/views'
+import { Home, Login, CollectionList, CollectionCreate, CollectionUpdate, FurnitureList, FurnitureCreate, FurnitureDetail, DesignedCollectionList, MaterialAnalysis, FabricationPlan, FabricationPlanConfirm, Dashboard  } from '@/views'
 
 
 export const router = createRouter({
@@ -10,6 +10,7 @@ export const router = createRouter({
     routes: [
         { path: '/', component: Home, name: 'home' },
         { path: '/login', component: Login, name: 'login' },
+        { path: '/dashboard', component: Dashboard, name: 'dashboard'},
         { path: '/collections', component: CollectionList, name : 'collections' },
         { path: '/collection/create', component: CollectionCreate , name: 'collection-create' },
         { path: '/collection/:collection/update', component: CollectionUpdate , name: 'collection-update' },

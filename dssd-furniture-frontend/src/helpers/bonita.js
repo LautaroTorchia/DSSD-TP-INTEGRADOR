@@ -16,7 +16,7 @@ export async function getBonitaVariable(caseId, variableName) {
         if (response.value == "null") {
             throw new Error('Response data is empty')
         }
-        return true
+        return response.value
     } catch (error) {
         return false
     }

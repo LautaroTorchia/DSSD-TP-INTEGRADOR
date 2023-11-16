@@ -7,7 +7,7 @@
       </div>
       <div class="form-group">
         <label for="estimated-days">Estimated Days:</label>
-        <input type="number" id="estimated-days" class="form-control" v-model="formData.estimated_days" @input="validateEstimatedDays" required/>
+        <input type="number" id="estimated-days" class="form-control" v-model="formData.estimated_days" @input="validateEstimatedDays" required/> Dias
         <div class="text-danger" ref="estimatedDaysError"></div>
       </div>
       <div class="form-group">
