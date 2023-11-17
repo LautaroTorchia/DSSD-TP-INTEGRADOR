@@ -26,6 +26,8 @@ class ActorMaterialSerializer(serializers.ModelSerializer):
         
 
 class LugarDeFabricacionEnReservaSerializer(serializers.ModelSerializer):
+    lugar_de_fabricacion = LugarDeFabricacionSerializer()
+
     class Meta:
         model = LugarDeFabricacionEnReserva
         fields = '__all__'

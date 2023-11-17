@@ -106,7 +106,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ljj_muebles.wsgi.application'
 
-
+#CORS_ALLOW_HEADERS = '*'
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = [
     'accept',
@@ -129,27 +129,6 @@ CORS_ALLOW_METHODS = [
     'PUT',
 ]
 
-
-X_FRAME_OPTIONS = 'DENY'
-
-
-CORS_EXPOSE_HEADERS = [
-    'Content-Type',
-]
-
-CORS_ALLOW_HEADERS += [
-    'application/javascript',
-]
-
-CORS_ALLOW_HEADERS += [
-    'text/css',
-]
-
-CORS_ALLOW_HEADERS += [
-    'image/jpeg',
-    'image/png',
-    'image/gif',
-]
 
 BONITA_URL= os.environ.get("BONITA_URL","http://161.35.225.144:8080")
 API_PROVEEDORES_URL = os.environ.get("API_PROVEEDORES_URL","http://api-proveedores.com")
