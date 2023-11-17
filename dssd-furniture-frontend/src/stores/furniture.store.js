@@ -27,13 +27,18 @@ export const useFurnitureStore = defineStore({
             try {
                 this.furniture = { loading: true }
                 const data = await fetchWrapper.get(`${baseUrl}/coleccion/muebles/`)
-                this.furniture = data
+                const processedData = data.map(item => {
+                    item.materiales = item.materiales.replace(/[\[\]']+/g,'').split(',')
+                    return item
+                })
+                this.furniture = processedData
             } catch (error) {
                 this.furniture = { error }
             }
         },
         async getFurnitureDetail(id) {
             const response = await fetchWrapper.get(`${baseUrl}/coleccion/muebles/${id}/`)
+            response.materiales = response.materiales.replace(/[\[\]']+/g,'').split(',')
             return response
         },
 

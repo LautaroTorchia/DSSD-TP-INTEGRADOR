@@ -8,11 +8,9 @@
         </div>
         <div v-else>
             <div class="row">
-
-
                 <div class="col-md-6">
                     <div class="card mb-4 shadow">
-                        <div class="card-body">
+                        <div v-if="fabricationPlan.factory_slot" class="card-body">
                             <h2 class="card-title">Factory Slot</h2>
                             <p class="card-text">Factory: {{ fabricationPlan.factory_slot.factory }}</p>
                             <p class="card-text">Start Date: {{ fabricationPlan.factory_slot.slot_start_date }}</p>
@@ -46,7 +44,7 @@
 </template>
 
 <script setup>
-import { getBonitaVariable, router, advanceNamedBonitaTask, fetchWrapper, patchBonitaVariable } from '@/helpers'
+import { getBonitaVariable, router, advanceNamedBonitaTask, fetchWrapper, patchBonitaVariable, setBonitaVariable } from '@/helpers'
 import { onBeforeMount, ref } from 'vue'
 
 
@@ -58,9 +56,9 @@ const loading = ref(true)
 
 async function submitForm() {
     try {
-        await placeOrders(fabricationPlan.value)
         await advanceNamedBonitaTask(caseId, "Armar plan de fabricacion")
-        await patchBonitaVariable(caseId, "plan_de_fabricacion", "orders_placed", true)
+        await placeOrders(fabricationPlan.value)
+        loading.value=true
     } catch (error) {
         console.log(error)
     }
@@ -110,11 +108,16 @@ async function placeOrders(fabricationPlan) {
 }
 
 function cancelPlan() {
-    router.push({ name: 'fabrication-plan' })
+    confirm("¿Está seguro que desea cancelar el plan de fabricación?")
+    if (confirm) {
+        setBonitaVariable(caseId, "plan_de_fabricacion", "")
+        router.push({ name: 'fabrication-plan' })
+    }
 }
 
 onBeforeMount(async () => {
     fabricationPlan.value = JSON.parse(await getBonitaVariable(caseId, "plan_de_fabricacion"))
+    console.log(fabricationPlan.value)
     loading.value = false
 })
 

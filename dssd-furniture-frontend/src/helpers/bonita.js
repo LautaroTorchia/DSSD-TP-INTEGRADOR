@@ -12,7 +12,9 @@ export const advanceBonitaTask = async (caseId) => {
 
 export async function advanceNamedBonitaTask(caseId, taskName) {
     const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
-    const task = tasks.find(task => task.rootCaseId === caseId.toString() && task.name === taskName)
+    console.log(tasks,caseId,taskName)
+    const task = tasks.find(task => task.caseId === caseId.toString() && task.name === taskName || console.log(task.name,taskName))
+    console.log(task)
     if (!task) {
         throw new Error('No se encontró la tarea')
     }
@@ -27,7 +29,7 @@ export async function getBonitaVariable(caseId, variableName) {
         }
         return response.value
     } catch (error) {
-        return error
+        return false
     }
 }
 

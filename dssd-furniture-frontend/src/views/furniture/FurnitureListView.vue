@@ -3,11 +3,18 @@ import { storeToRefs } from 'pinia'
 import { useFurnitureStore } from '@/stores'
 import { router } from '@/helpers'
 import BackButton from '@/components/BackButton.vue'
+import { onBeforeMount, ref } from 'vue'
 
 const furnitureStore = useFurnitureStore()
 const { furniture } = storeToRefs(furnitureStore)
 const collectionId = router.currentRoute.value.params.collection
-furnitureStore.getCollectionFurniture(collectionId)
+const loading = ref(true)
+
+onBeforeMount(async () => {
+    await furnitureStore.getCollectionFurniture(collectionId)
+    loading.value = false
+})
+
 
 
 const deleteFurniture = async (id) => {

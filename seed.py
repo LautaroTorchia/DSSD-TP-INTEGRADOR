@@ -4,7 +4,7 @@ import requests
 from datetime import datetime, timedelta
 
 fake = Faker(["es_AR"])
-
+URL_PROVEEDORES="http://143.244.222.100/api/proveedores/"
 
 def generate_material_name():
     materials = [
@@ -56,7 +56,7 @@ def generate_materials():
 
 def generate_providers():
     providers = []
-    for _ in range(10):
+    for _ in range(50):
         providers.append(
             {
                 "nombre": generate_provider_name(),
@@ -84,7 +84,7 @@ def generate_factories():
 def generate_materials_seed():
     materials = generate_materials()
 
-    url = "http://45.55.121.156/api/proveedores/materiales/"
+    url = f"{URL_PROVEEDORES}materiales/"
 
     headers = {
         "accept": "application/json",
@@ -105,7 +105,7 @@ def generate_materials_seed():
 def generate_factories_seed():
     factories = generate_factories()
 
-    url = "http://45.55.121.156/api/proveedores/lugar-fabricacion/"
+    url = f"{URL_PROVEEDORES}lugar-fabricacion/"
 
     headers = {
         "accept": "application/json",
@@ -127,7 +127,7 @@ def generate_factories_seed():
 def generate_providers_seed():
     providers = generate_providers()
 
-    url = "http://45.55.121.156/api/proveedores/proveedores/"
+    url = f"{URL_PROVEEDORES}proveedores/"
 
     headers = {
         "accept": "application/json",
@@ -151,8 +151,8 @@ def generate_providers_seed():
 # ...
 
 def generate_material_provider():
-    url_providers = "http://45.55.121.156/api/proveedores/proveedores/"
-    url_materials = "http://45.55.121.156/api/proveedores/materiales/"
+    url_providers = f"{URL_PROVEEDORES}proveedores/"
+    url_materials = f"{URL_PROVEEDORES}materiales/"
 
     headers = {
         "accept": "application/json",
@@ -169,10 +169,9 @@ def generate_material_provider():
     providers = providers_response.json()
     materials = materials_response.json()
 
-    url = "http://45.55.121.156/api/proveedores/proveedores-materiales/"
+    url = f"{URL_PROVEEDORES}proveedores-materiales/"
 
     for material in materials:
-        # randomly select a subset of providers for this material
         selected_providers = random.sample(providers, k=2)
 
         for provider in selected_providers:
@@ -191,7 +190,7 @@ def generate_material_provider():
 
 
 def generate_factory_reservation():
-    url_factories = "http://45.55.121.156/api/proveedores/lugar-fabricacion/"
+    url_factories = f"{URL_PROVEEDORES}lugar-fabricacion/"
 
     headers = {
         "accept": "application/json",
@@ -206,7 +205,7 @@ def generate_factory_reservation():
 
     factories = factories_response.json()
 
-    url = "http://45.55.121.156/api/proveedores/lugar-fabricacion-en-reserva/"
+    url = f"{URL_PROVEEDORES}lugar-fabricacion-en-reserva/"
 
     for factory in factories:
         payload = {
@@ -221,7 +220,7 @@ def generate_factory_reservation():
 
 if __name__ == "__main__":
     generate_materials_seed()
-    generate_factories_seed()
+    #generate_factories_seed()
     generate_providers_seed()
     generate_material_provider()
-    generate_factory_reservation()
+    #generate_factory_reservation()

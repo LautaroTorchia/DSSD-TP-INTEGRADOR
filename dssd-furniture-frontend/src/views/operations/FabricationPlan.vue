@@ -6,7 +6,7 @@
             <div class="card-body">
                 <div v-for="(factory, index) in factoryList" :key="index">
                     <input type="radio" :id="'factory-' + index" :value="factory" v-model="selectedFactory">
-                    <label :for="'factory-' + index">{{ factory.nombre || factory.telefono_reserva }}</label>
+                    <label :for="'factory-' + index">{{ factory.lugar_de_fabricacion.nombre || factory.telefono_reserva }}</label>
                 </div>
 
                 <button @click="clearSelection">Clear</button>
@@ -27,23 +27,21 @@
         <div class="card">
             <div class="card-body">
                 <div v-for="material in collectionMaterialList" :key="material.id">
-                    <h5 class="card-title">Material: {{ material.name }}
-                    </h5>
-                    <h5 class="card-title">Cantidad: {{ material.amount }} </h5>
+                    <h5 class="card-title">Material: {{ material.name }}</h5>
+                    <h5 class="card-title">Cantidad: {{ material.amount }}</h5>
                     <div class="card-text">
-                        <div v-for="materialFromProvider in materialsFromProviders" :key="materialFromProvider.material">
-                            <div v-if="material.id === materialFromProvider.material">
+                <div v-for="materialFromProvider in materialsFromProviders" :key="materialFromProvider.material">
+                        
+                        <div v-if="material.id == materialFromProvider.material">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="card-subtitle mb-2 text-muted"> Proveedor o reciclador: {{
+                                        <h6 class="card-subtitle mb-2 text-muted">Proveedor o reciclador: {{
                                             materialFromProvider.actor_nombre }}</h6>
-
-
-                                        <h6 class="card-subtitle mb-2 text-muted"> Cantidad: {{
+                                        <h6 class="card-subtitle mb-2 text-muted">Cantidad: {{
                                             materialFromProvider.cantidad_disponible }}</h6>
                                         <h6 class="card-subtitle mb-2 text-muted" v-if="materialFromProvider.es_importado">
-                                            Es importado </h6>
-                                        <h6 class="card-subtitle mb-2 text-muted" v-else> No es importado </h6>
+                                            Es importado</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted" v-else>No es importado</h6>
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox"
                                                 :id="'materialProvided-' + materialFromProvider.id"
@@ -82,7 +80,6 @@
             </div>
         </div>
         <button @click="onSubmit">Submit</button>
-
     </div>
 </template>
 
@@ -91,7 +88,6 @@ import { onBeforeMount, ref } from 'vue'
 import { getBonitaVariable, setBonitaVariable, router } from '@/helpers'
 import { useCollectionsStore } from '@/stores'
 
-const baseUrl = `${import.meta.env.VITE_API_URL}`
 const collectionId = router.currentRoute.value.params.collection
 const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
 
@@ -157,7 +153,6 @@ const fixMatrix = (selectedMaterials) => {
 }
 
 const validateTotalAmount = (materialId, materialAmount) => {
-    fixMatrix(selectedMaterials)
     let totalMaterials = {}
     let totalAmount = 0
     for (let materialProvided in selectedMaterials.value[materialId]) {
@@ -178,6 +173,7 @@ const getTotalAmount = (materialId) => {
 }
 
 const validateAllMaterials = () => {
+    fixMatrix(selectedMaterials)
     return Object.keys(selectedMaterials.value).every(material => validateTotalAmount(material, collectionMaterialList.value.find(m => m.id == material).amount))
 }
 
@@ -279,6 +275,7 @@ onBeforeMount(async () => {
     estimatedLaunchDate.setDate(estimatedLaunchDate.getDate() + 1) // add one day
     estimated_launch_date.value = new Date(estimatedLaunchDate.getFullYear(), estimatedLaunchDate.getMonth(), estimatedLaunchDate.getDate())
     await fetchMaterialsFromProviders()
+    console.log(materialsFromProviders.value)
     collectionMaterialList.value = JSON.parse(await getBonitaVariable(caseId, "cantidad_materiales"))
     factoryList.value = JSON.parse(await getBonitaVariable(caseId, "consulta_lugares_fabricacion"))
     const allMaterialsProvided = validateMaterialPresence(materialsFromProviders, collectionMaterialList.value)

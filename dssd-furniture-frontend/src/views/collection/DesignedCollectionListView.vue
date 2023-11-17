@@ -1,14 +1,13 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '@/stores'
-import { getBonitaVariable } from '@/helpers';
-import { onBeforeMount, ref } from 'vue'; // Import the onMounted hook
+import { getBonitaVariable, fetchWrapper } from '@/helpers';
+import { onMounted, onBeforeMount, ref } from 'vue';
+const collectionStore = useCollectionsStore()
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 
-const collectionStore = useCollectionsStore()
-
 const { collections } = storeToRefs(collectionStore)
-let loading = ref(true)
+const loading = ref(true)
 
 
 
@@ -23,26 +22,30 @@ async function getPlanDeFabricacion(caseId) {
 onBeforeMount(async () => {
     await collectionStore.getAll()
     collections.value.forEach(async (collection) => {
-        collection.cantidadMateriales = await getCantidadMateriales(collection.caseId)
-        collection.planDeFabricacion = JSON.parse(await getPlanDeFabricacion(collection.caseId))
+        try {
+            collection.cantidadMateriales = JSON.parse(await getCantidadMateriales(collection.caseId))
+        } catch (error) {}
+        try {
+            collection.planDeFabricacion = JSON.parse(await getPlanDeFabricacion(collection.caseId))
+        } catch (error) {}
+        collection.orders_placed = !!(await fetchWrapper.get(`${baseUrl}/reservas/reservas-lugares-fabricacion/`)).find((order) => order.coleccion == collection.id)
+        loading.value = false
     })
-    loading.value = false
 })
+
 
 </script>
 
 <template>
     <div>
-        <ul v-if="collections.length > 0 && !loading">
-            <template v-for="collection in collections" :key="collection.id">
+        <template v-for="collection in collections" :key="collection.id">
+        <ul v-if="!loading && collection.orders_placed">
                 <span v-if="collection.designed">
                     <li>Nombre: {{ collection.name }} </li>
                     <li>Descripción: {{ collection.description }}</li>
                     <div v-if="collection.planDeFabricacion">
-                        <div v-if="collection.planDeFabricacion.orders_placed">
+                        <div v-if="collection.orders_placed">
                             Ordenes de materiales y lugar de fabricación reservados
-                            <router-link
-                                :to="{ name: 'materials-delivery', params: { collection: collection.id } }">Controlar entrega de materiales</router-link>
                         </div>
                         <div v-else>
                             <router-link
@@ -50,18 +53,17 @@ onBeforeMount(async () => {
                                 plan de fabricación</router-link>
                         </div>
                     </div>
-                    <div v-else-if="collection.cantidadMateriales"><router-link
+                    <div v-if="!collection.planDeFabricacion && collection.cantidadMateriales"><router-link
                             :to="{ name: 'fabrication-plan', params: { collection: collection.id } }">Armar plan de
                             fabricación</router-link></div>
-                    <div v-else><router-link
+                    <div v-if="!collection.planDeFabricacion && !collection.cantidadMateriales"><router-link
                             :to="{ name: 'material-analysis', params: { collection: collection.id } }">Analizar
                             materiales</router-link></div>
-
                 </span>
-            </template>
-        </ul>
-        <div v-else-if="collections.loading || loading" class="spinner-border spinner-border-sm"></div>
-        <div v-else-if="collections.error" class="text-danger">Error loading collections: {{ collections.error }}</div>
-        <div v-else>No hay nada</div>
+            </ul>
+            <div v-else-if="collections.loading || loading" class="spinner-border spinner-border-sm"></div>
+            <div v-else-if="collections.error" class="text-danger">Error loading collections: {{ collections.error }}</div>
+            <div v-else>No hay nada</div>
+        </template>
     </div>
 </template>

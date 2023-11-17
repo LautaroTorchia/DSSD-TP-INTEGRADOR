@@ -1,38 +1,28 @@
-<script>
-import { ref, onMounted, toRaw } from 'vue'
+<script setup>
+import { ref, onMounted } from 'vue'
 import { useFurnitureStore, useCollectionsStore, useMaterialsStore } from '@/stores'
 import { router } from '@/helpers'
 import BackButton from '@/components/BackButton.vue'
 
-export default {
-    components: {
-        BackButton
-    },
-    setup() {
-        const furniturePiece = ref({})
-        const collection = ref('')
-        const furnitureStore = useFurnitureStore()
-        const collectionsStore = useCollectionsStore()
-        const materialsStore = useMaterialsStore()
+const furniturePiece = ref({})
+const collection = ref('')
+const furnitureStore = useFurnitureStore()
+const collectionsStore = useCollectionsStore()
+const materialsStore = useMaterialsStore()
 
-        onMounted(async () => {
-            const id = router.currentRoute.value.params.id
-            const collectionId = router.currentRoute.value.params.collection
-            furniturePiece.value = await furnitureStore.getFurnitureDetail(id)
-            const materials = await materialsStore.getAll()
-            furniturePiece.value.materiales = furniturePiece.value.materiales.map(material => {
-                const materialData = materials.find(m => m.id == material)
-                return materialData.nombre
-            })
-            collection.value = collectionsStore.getById(collectionId).name
-        })
-
-        return {
-            furniturePiece,
-            collection
-        }
-    }
-}
+onMounted(async () => {
+    const id = router.currentRoute.value.params.id
+    const collectionId = router.currentRoute.value.params.collection
+    furniturePiece.value = await furnitureStore.getFurnitureDetail(id)
+    const materials = await materialsStore.getAll()
+    console.log(furniturePiece.value.materiales)
+    furniturePiece.value.materiales = furniturePiece.value.materiales.map(material => {
+        const materialData = materials.find(m => m.id == material|| console.log(material, m.id))
+        
+        return materialData.nombre
+    })
+    collection.value = collectionsStore.getById(collectionId).name
+})
 </script>
 
 <template>

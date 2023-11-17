@@ -15,82 +15,77 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { storeToRefs } from 'pinia'
 import { useFurnitureStore, useMaterialsStore } from '@/stores'
 import { router, advanceNamedBonitaTask, fetchWrapper, getBonitaVariable } from '@/helpers'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 
-export default {
-    setup() {
+const furnitureStore = useFurnitureStore()
+const materialsStore = useMaterialsStore()
+const { furniture } = storeToRefs(furnitureStore)
+const collectionId = router.currentRoute.value.params.collection
+const materialsAmount = ref([])
 
-        const furnitureStore = useFurnitureStore()
-        const materialsStore = useMaterialsStore()
-        const { furniture } = storeToRefs(furnitureStore)
-        const collectionId = router.currentRoute.value.params.collection
+furnitureStore.getCollectionFurniture(collectionId)
 
-        furnitureStore.getCollectionFurniture(collectionId)
+const submitForm = async () => {
+    materialsAmount.value = []
 
-        const submitForm = async () => {
-            var materialsAmount = []
-
-            furniture.value.forEach((piece) => {
-                piece.materiales.forEach((material) => {
-                    if (materialsAmount[material.id]) {
-                        materialsAmount[material.id].amount += material.amount
-                    } else {
-                        materialsAmount[material.id] = { id: material.id, name: material.nombre, amount: material.amount }
-                    }
-                })
-            })
-            materialsAmount = materialsAmount.filter((material) => material)//delete empty slots
-            let message = {}
-            materialsAmount.forEach((material) => {
-                message[material.name] = material.amount
-            })
-
-            const confirmed = confirm("Confirma estos materiales: \n" +
-                Object.entries(message)
-                    .map(([material, amount]) => `${material}: ${amount}`)
-                    .join('\n')
-            )
-            if (confirmed) {
-                try {
-                    const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
-                    await fetchWrapper.put(`${baseUrl}/bonita/update-case-variable/${caseId}/cantidad_materiales/`, { type: "java.lang.String", value: JSON.stringify(materialsAmount) })
-                    await advanceNamedBonitaTask(caseId, "Analizar materiales")
-                    router.push({ name: 'fabrication-plan' })
-                } catch (error) {
-                    console.error(error)
-                }
+    furniture.value.forEach((piece) => {
+        piece.materiales.forEach((material) => {
+            const existingMaterial = materialsAmount.value.find((m) => m.id === material.id)
+            if (existingMaterial) {
+                existingMaterial.amount += material.amount
+            } else {
+                materialsAmount.value.push({ id: material.id, name: material.nombre, amount: material.amount })
             }
-        }
-
-        onMounted(async () => {
-            const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
-            if (await getBonitaVariable(caseId, "consulta_materiales")) {
-                router.push({ name: 'fabrication-plan' })
-            }
-
-            const materials = await materialsStore.getAll()
-            furniture.value.forEach((piece) => {
-                piece.materiales = piece.materiales.split(',').map((material) => Number(material))
-                piece.materiales.forEach((materialId, index) => {
-                    const material = materials.find((m) => m.id == materialId)
-                    if (material) {
-                        piece.materiales[index] = { ...material, amount: 0 }
-                    }
-                })
-            })
         })
+    })
 
-        return {
-            furniture,
-            collectionId,
-            submitForm
+    materialsAmount.value = materialsAmount.value.filter((material) => material) // delete empty slots
+
+    const message = {}
+    materialsAmount.value.forEach((material) => {
+        message[material.name] = material.amount
+    })
+
+    const confirmed = confirm(
+        "Confirma estos materiales: \n" +
+        Object.entries(message)
+            .map(([material, amount]) => `${material}: ${amount}`)
+            .join('\n')
+    )
+
+    if (confirmed) {
+        try {
+            const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
+            await fetchWrapper.put(`${baseUrl}/bonita/update-case-variable/${caseId}/cantidad_materiales/`, { type: "java.lang.String", value: JSON.stringify(materialsAmount.value) })
+            await advanceNamedBonitaTask(caseId, "Analizar materiales")
+            router.push({ name: 'fabrication-plan' })
+        } catch (error) {
+            console.error(error)
         }
     }
 }
+
+onMounted(async () => {
+    const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
+    if (await getBonitaVariable(caseId, "consulta_materiales")) {
+        router.push({ name: 'fabrication-plan' })
+    }
+
+    const materials = await materialsStore.getAll()
+    furniture.value.forEach((piece) => {
+        piece.materiales = piece.materiales.map((material) => Number(material))
+        piece.materiales.forEach((materialId, index) => {
+            const material = materials.find((m) => m.id == materialId)
+            if (material) {
+                piece.materiales[index] = { ...material, amount: 0 }
+            }
+        })
+    })
+})
 </script>
