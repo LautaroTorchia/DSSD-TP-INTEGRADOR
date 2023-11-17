@@ -98,6 +98,16 @@ def bonita_user_tasks(cookies):
     else:
         Response(f"Failed to retrieve user tasks: {response.text}", status=response.status_code)
 
+def bonita_archived_tasks(cookies):
+    # Define the Bonita user tasks endpoint URL
+    bonita_user_tasks_url = f'{BONITA_URL}/bonita/portal/resource/app/adminAppBonita/admin-task-list/API/bpm/archivedTask?c=10&p=0&d=rootContainerId&d=assigned_id&t=0&f=processId=4742795290944226984&o=caseId+ASC'
+
+    response = requests.get(bonita_user_tasks_url, cookies=cookies)
+
+    if response.status_code == 200:
+        return Response(response.json(), status=status.HTTP_200_OK)
+    else:
+        return Response(f"Failed to retrieve user tasks: {response.text}", status=response.status_code)
 
 def bonita_execute_user_task(task_id, data, headers,cookies):
     # Define the Bonita execute user task endpoint URL

@@ -78,5 +78,14 @@ spec:
               value: http://161.35.225.144:8080
             - name: API_PROVEEDORES_URL
               value: http://nginx-proveedores
+          volumeMounts:
+            - name: service-account-volume
+              mountPath: /opt/dazzling-matrix-394013-047c78eb7abe.json
+              subPath: dazzling-matrix-394013-047c78eb7abe.json
+      volumes:
+        - name: service-account-volume
+          secret:
+            secretName: dazzling-matrix-secret  # Replace with the actual secret name containing your file
+
 
 

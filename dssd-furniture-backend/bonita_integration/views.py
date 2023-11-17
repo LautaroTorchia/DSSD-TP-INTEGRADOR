@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import BonitaAPICall,BonitaCookies
 from general_permissions.permissions import IsPermittedRBAC
-from .utils import bonita_login,bonita_check_processes,bonita_instantiate_process,bonita_user_tasks,bonita_execute_user_task
-from .utils import update_cookie_header,bonita_get_variable,change_bonita_variable
+from .utils import bonita_check_processes,bonita_instantiate_process,bonita_user_tasks,bonita_execute_user_task
+from .utils import update_cookie_header,bonita_get_variable,change_bonita_variable,bonita_archived_tasks
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework import permissions
@@ -124,6 +124,33 @@ class BonitaUserTasks(APIView):
 
         return response
 
+class BonitaArchivedTasksView(APIView):
+    permission_classes = (permissions.IsAuthenticated, IsPermittedRBAC,)
+
+    def get(self, request):
+        user_identifier = request.user.email
+
+        try:
+            # Retrieve the BonitaCookies associated with the user
+            bonita_cookies = BonitaCookies.objects.filter(user__email=user_identifier).latest('created_at')
+        except BonitaCookies.DoesNotExist:
+            return Response("Unauthorized", status=status.HTTP_401_UNAUTHORIZED)
+
+        bonita_header_cookies = update_cookie_header(bonita_cookies)
+
+        # Fetch user tasks from Bonita API using the bonita_user_tasks function
+        response = bonita_archived_tasks(bonita_header_cookies)
+
+        # Save the API call to the database
+        bonita_api_call = BonitaAPICall(
+            endpoint_called='/bonita/API/bpm/archivedTask?c=100&p=0',
+            request_data='',
+            response_data=response.data  # Assuming Bonita API returns JSON response
+        )
+        bonita_api_call.save()
+
+        return response
+    
 class BonitaExecuteUserTask(APIView):
     permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
     @swagger_auto_schema(
