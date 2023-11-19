@@ -15,6 +15,7 @@
                             <p class="card-text">Factory: {{ fabricationPlan.factory_slot.factory }}</p>
                             <p class="card-text">Start Date: {{ fabricationPlan.factory_slot.slot_start_date }}</p>
                             <p class="card-text">End Date: {{ fabricationPlan.factory_slot.slot_end_date }}</p>
+                            <p class="card-text">Cantidad de lotes: {{ fabricationPlan.lotQuantity }}</p>
                         </div>
                     </div>
                 </div>
@@ -44,7 +45,7 @@
 </template>
 
 <script setup>
-import { getBonitaVariable, router, advanceNamedBonitaTask, fetchWrapper, patchBonitaVariable, setBonitaVariable } from '@/helpers'
+import { getBonitaVariable, router, advanceNamedBonitaTask, fetchWrapper, setBonitaVariable } from '@/helpers'
 import { onBeforeMount, ref } from 'vue'
 
 
@@ -58,7 +59,7 @@ async function submitForm() {
     try {
         await advanceNamedBonitaTask(caseId, "Armar plan de fabricacion")
         await placeOrders(fabricationPlan.value)
-        loading.value=true
+        loading.value = true
     } catch (error) {
         console.log(error)
     }
@@ -117,7 +118,6 @@ function cancelPlan() {
 
 onBeforeMount(async () => {
     fabricationPlan.value = JSON.parse(await getBonitaVariable(caseId, "plan_de_fabricacion"))
-    console.log(fabricationPlan.value)
     loading.value = false
 })
 

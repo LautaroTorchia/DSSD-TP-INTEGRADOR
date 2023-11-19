@@ -8,7 +8,6 @@
                     <input type="radio" :id="'factory-' + index" :value="factory" v-model="selectedFactory">
                     <label :for="'factory-' + index">{{ factory.lugar_de_fabricacion.nombre || factory.telefono_reserva }}</label>
                 </div>
-
                 <button @click="clearSelection">Clear</button>
                 {{ estimated_launch_date }}
                 <div class="date-field">
@@ -22,7 +21,10 @@
                 </div>
             </div>
         </div>
-
+        <div class="form-group">
+            <label for="lotQuantity">Cantidad de lotes:</label>
+            <input type="number" class="form-control" v-model.number="lotQuantity" min="1">
+        </div>
         <h2>Lista de materiales:</h2>
         <div class="card">
             <div class="card-body">
@@ -78,8 +80,11 @@
                     </div>
                 </div>
             </div>
+            <div v-if="!validateAllMaterials()">
+                <p class="text-danger text-center">Total amount for each material must be equal to the amount of the material</p>
+            </div>
+            <button @click="onSubmit" style="background-color: blue; color: white; padding: 10px 20px; border: none; cursor: pointer;">Submit</button>
         </div>
-        <button @click="onSubmit">Submit</button>
     </div>
 </template>
 
@@ -100,7 +105,7 @@ const collectionStore = useCollectionsStore()
 const estimated_launch_date = ref(null)
 const slot_start_date = ref(null)
 const slot_end_date = ref(null)
-
+const lotQuantity = ref(1);
 
 
 const fetchMaterialsFromProviders = async () => {
@@ -252,6 +257,7 @@ const onSubmit = () => {
                 slot_start_date: slot_start_date.value,
                 slot_end_date: slot_end_date.value
             },
+            lotQuantity: lotQuantity.value,
             materials: finalList,
         }
         advanceToConfirm(fabricationPlan)

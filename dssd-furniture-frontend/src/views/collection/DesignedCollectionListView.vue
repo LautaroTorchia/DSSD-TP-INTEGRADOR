@@ -24,10 +24,10 @@ onBeforeMount(async () => {
     collections.value.forEach(async (collection) => {
         try {
             collection.cantidadMateriales = JSON.parse(await getCantidadMateriales(collection.caseId))
-        } catch (error) {}
+        } catch (error) { }
         try {
             collection.planDeFabricacion = JSON.parse(await getPlanDeFabricacion(collection.caseId))
-        } catch (error) {}
+        } catch (error) { }
         collection.orders_placed = !!(await fetchWrapper.get(`${baseUrl}/reservas/reservas-lugares-fabricacion/`)).find((order) => order.coleccion == collection.id)
         loading.value = false
     })
@@ -39,26 +39,31 @@ onBeforeMount(async () => {
 <template>
     <div>
         <template v-for="collection in collections" :key="collection.id">
-        <ul v-if="!loading && collection.orders_placed">
+            <ul v-if="!loading">
                 <span v-if="collection.designed">
                     <li>Nombre: {{ collection.name }} </li>
                     <li>Descripción: {{ collection.description }}</li>
-                    <div v-if="collection.planDeFabricacion">
-                        <div v-if="collection.orders_placed">
+
+                    <div v-if="collection.cantidadMateriales">
+                        <div v-if="collection.planDeFabricacion">
                             Ordenes de materiales y lugar de fabricación reservados
+                            <div v-if="collection.orders_placed">
+                                Ordenes de materiales y lugar de fabricación reservados
+                            </div>
+                            <div v-else>
+                                <router-link
+                                    :to="{ name: 'fabrication-plan-confirm', params: { collection: collection.id } }">Confirmar
+                                    plan de fabricación</router-link>
+                            </div>
                         </div>
-                        <div v-else>
-                            <router-link
-                                :to="{ name: 'fabrication-plan-confirm', params: { collection: collection.id } }">Confirmar
-                                plan de fabricación</router-link>
-                        </div>
+                        <div v-else><router-link
+                                :to="{ name: 'fabrication-plan', params: { collection: collection.id } }">Armar plan de
+                                fabricación</router-link></div>
                     </div>
-                    <div v-if="!collection.planDeFabricacion && collection.cantidadMateriales"><router-link
-                            :to="{ name: 'fabrication-plan', params: { collection: collection.id } }">Armar plan de
-                            fabricación</router-link></div>
-                    <div v-if="!collection.planDeFabricacion && !collection.cantidadMateriales"><router-link
+                    <div v-else><router-link
                             :to="{ name: 'material-analysis', params: { collection: collection.id } }">Analizar
                             materiales</router-link></div>
+
                 </span>
             </ul>
             <div v-else-if="collections.loading || loading" class="spinner-border spinner-border-sm"></div>
