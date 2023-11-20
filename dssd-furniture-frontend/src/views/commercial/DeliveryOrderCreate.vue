@@ -32,7 +32,7 @@ onMounted(async () => {
         caseId.value = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
     } catch (error) {
         await collectionStore.getAll()
-        caseId.value = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
+        caseId.value = collections.value.find((collection) => collection.id == collectionId).caseId
     }
     lotQuantity.value = Number(JSON.parse(await getBonitaVariable(caseId.value, 'plan_de_fabricacion')).lotQuantity)
 });
