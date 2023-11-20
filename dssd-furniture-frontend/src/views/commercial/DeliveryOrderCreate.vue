@@ -1,35 +1,31 @@
 <template>
-  <div class="text-center">
     <h1>Delivery Order Create</h1>
     <div v-if="lotQuantity">
       <h2>Ordenes de entrega sin asignar: {{ lotQuantity }}</h2>
-      <div class="mx-auto" style="max-width: 500px;"> <!-- Adjust max-width as needed -->
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <label class="input-group-text" for="distributorDropdown">Distribuidor</label>
+      <form @submit.prevent="submitForm">
+          <div class="form-group">
+            <label for="distributorDropdown">Distribuidor:</label>
+            <select v-model="selectedLocation" class="custom-select" id="distributorDropdown">
+              <option v-for="distributor in distributors" :key="distributor.id" :value="distributor.id">{{ distributor.nombre }}</option>
+            </select>
           </div>
-          <select v-model="selectedLocation" class="custom-select" id="distributorDropdown">
-            <option v-for="distributor in distributors" :key="distributor.id" :value="distributor.id">{{ distributor.nombre }}</option>
-          </select>
-        </div>
-        <div class="input-group mb-3">
-          <label class="input-group-text" for="quantityInput">Cantidad</label>
-          <input
-            type="number"
-            id="quantityInput"
-            class="form-control"
-            v-model="quantity"
-            :min="1"
-            :max="lotQuantity"
-            @input="handleInput"
-          >
-        </div>
-        <div class="d-flex justify-content-end"> <!-- Align buttons to the right -->
-          <button class="btn btn-primary mt-2 mr-2" @click="assignOrders">Asignar</button>
-          <button class="btn btn-danger mt-2" @click="cancel">Cancelar</button>
-        </div>
-      </div>
-    </div>
+          <div class="form-group">
+            <label for="quantityInput">Cantidad:</label>
+            <input
+              type="number"
+              id="quantityInput"
+              class="form-control"
+              v-model="quantity"
+              :min="1"
+              :max="lotQuantity"
+              @input="handleInput"
+            >
+          </div>
+          <div class="d-flex justify-content-end"> <!-- Align buttons to the right -->
+            <button type="submit" class="btn btn-primary mt-2 mr-2">Asignar</button>
+            <button type="button" class="btn btn-danger mt-2" @click="cancel">Cancelar</button>
+          </div>
+      </form>
   </div>
 </template>
 
