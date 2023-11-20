@@ -4,7 +4,12 @@
         <div v-if="!loading">
             <ul v-for="collection in collections" :key="collection.id" class="list-group">
                 <li v-if="collection.orders_placed" class="list-group-item">
-                    {{ collection.name }}
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>{{ collection.name }}</span>
+                        <router-link :to="{ name: 'delivery-order-create', params: { collection: collection.id } }" class="btn btn-primary">
+                            <slot>Crear ordenes de entrega</slot>
+                        </router-link>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -18,7 +23,7 @@
 import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '@/stores'
 import { ref, onMounted } from 'vue'
-import { fetchWrapper } from '@/helpers'
+import { fetchWrapper, getBonitaVariable } from '@/helpers'
 
 const collectionStore = useCollectionsStore()
 const { collections } = storeToRefs(collectionStore)

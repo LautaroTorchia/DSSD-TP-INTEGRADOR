@@ -48,7 +48,6 @@ export async function setBonitaVariable(caseId, variableName, variableValue) {
     }
 }
 
-//TODO: make patchBonitaVariable it retrieves the variable and then updates it
 export async function patchBonitaVariable(caseId, variableName,fieldname, fieldValue) {
     try {
         const field = typeof fieldValue === 'string' ? JSON.parse(fieldValue) : fieldValue;

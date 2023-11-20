@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Material Analysis for Collection {{ collectionId }}</h1>
+        <h1>Material Analysis for Collection {{ collectionName||collectionId }}</h1>
         <form @submit.prevent="submitForm">
             <div v-for="(piece, index) in furniture" :key="index">
                 <h2>{{ piece.nombre }}</h2>
@@ -28,8 +28,15 @@ const materialsStore = useMaterialsStore()
 const { furniture } = storeToRefs(furnitureStore)
 const collectionId = router.currentRoute.value.params.collection
 const materialsAmount = ref([])
+const collectionName = ref('')
 
 furnitureStore.getCollectionFurniture(collectionId)
+
+try{
+    collectionName.value = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).name
+}catch(error){
+    console.error(error)
+}
 
 const submitForm = async () => {
     materialsAmount.value = []

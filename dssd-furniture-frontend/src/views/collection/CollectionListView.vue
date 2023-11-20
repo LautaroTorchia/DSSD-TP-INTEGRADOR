@@ -1,10 +1,20 @@
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useCollectionsStore } from '@/stores'
+import { useCollectionsStore, useFurnitureStore } from '@/stores'
+import { onMounted } from 'vue'
 
 const collectionStore = useCollectionsStore()
+const furnitureStore = useFurnitureStore()
+
 const { collections } = storeToRefs(collectionStore)
-collectionStore.getAll()
+
+
+onMounted(async () => {
+    await collectionStore.getAll()
+    collections.value.forEach(async (collection) => {
+        collection.hasFurniture = !!(await furnitureStore.getCollectionFurniture(collection.id)).length
+    })
+})
 
 const deleteCollection = async (id) => {
     const confirmed = confirm('¿Desea borrar la colección?')
@@ -22,7 +32,7 @@ const finishCollection = async (collection) => {
     const confirmed = confirm('¿Desea terminar la colección?')
     if (confirmed) {
         try {
-            if (collection.furniture.length === 0) {
+            if (!collection.hasFurniture) {
                 alert('No se puede terminar una colección sin muebles')
                 return
             }
