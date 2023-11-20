@@ -47,7 +47,9 @@ onBeforeMount(async () => {
                     <div v-if="collection.cantidadMateriales">
                         <div v-if="collection.planDeFabricacion">
                             <div v-if="collection.orders_placed">
-                                Ordenes de materiales y lugar de fabricación reservados
+                                <router-link
+                                    :to="{ name: 'material-control-list', params: { collection: collection.id } }">Controlar
+                                    entrega de materiales</router-link>
                             </div>
                             <div v-else>
                                 <router-link
