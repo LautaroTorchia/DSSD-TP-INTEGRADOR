@@ -43,7 +43,7 @@
   
 <script setup>
 import { ref, onMounted,computed } from 'vue'
-import { GetBonitaTask,router,fetchWrapper,setBonitaVariable,advanceNamedBonitaTask } from '@/helpers'
+import { getBonitaTask,router,fetchWrapper,setBonitaVariable,advanceNamedBonitaTask } from '@/helpers'
 import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '@/stores'
 
