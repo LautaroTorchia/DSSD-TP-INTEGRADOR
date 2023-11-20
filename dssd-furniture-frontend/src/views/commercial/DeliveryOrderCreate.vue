@@ -17,7 +17,6 @@ import { storeToRefs } from 'pinia'
 import { router } from '@/helpers'
 
 const collectionStore = useCollectionsStore()
-const caseId = ref('')
 const { collections } = storeToRefs(collectionStore)
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
@@ -28,12 +27,13 @@ const lotQuantity = ref(0)
 const planDeFabricacion = ref('');
 
 onMounted(async () => {
+    let caseId
     try {
-        caseId.value = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
+        caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
     } catch (error) {
         await collectionStore.getAll()
-        caseId.value = collections.value.find((collection) => collection.id == collectionId).caseId
+        caseId = collections.value.find((collection) => collection.id == collectionId).caseId
     }
-    lotQuantity.value = Number(JSON.parse(await getBonitaVariable(caseId.value, 'plan_de_fabricacion')).lotQuantity)
+    lotQuantity.value = Number(JSON.parse(await getBonitaVariable(caseId, 'plan_de_fabricacion')).lotQuantity)
 });
 </script>
