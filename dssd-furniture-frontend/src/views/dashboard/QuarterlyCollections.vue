@@ -1,40 +1,3 @@
-<script setup>
-import { ref, onMounted, watch } from 'vue';
-import { storeToRefs } from 'pinia';
-import { useCollectionsStore } from '@/stores';
-const collectionStore = useCollectionsStore();
-const { collections } = storeToRefs(collectionStore);
-const quarterCollections = ref([]);
-
-const selectedQuarter = ref('');
-
-const currentYear = new Date().getFullYear();
-
-const generateQuarters = (startYear, endYear) => {
-  const quarters = [];
-  for (let i = startYear; i <= endYear; i++) {
-    for (let j = 1; j <= 4; j++) {
-      quarters.push(`Q${j} ${i}`);
-    }
-  }
-  return quarters;
-};
-
-const quarters = generateQuarters(currentYear - 2, currentYear + 2);
-
-onMounted(async () => {
-  await collectionStore.getAll()
-  collections.value.forEach(async (collection) => {
-    const launchDate = new Date(collection.estimated_launch_date)
-    collection.quarter = `Q${Math.floor((launchDate.getMonth() + 1) / 3) + 1} ${launchDate.getFullYear()}`;
-  })
-})
-
-watch(selectedQuarter, (newQuarter) => {
-  quarterCollections.value = collections.value.filter((collection) => collection.quarter == newQuarter);
-});
-</script>
-
 <template>
   <div class="container text-center">
     <h1 class="text-center" style="font-size: 20px;">Seleccionar cuatrimestre</h1>
@@ -54,3 +17,31 @@ watch(selectedQuarter, (newQuarter) => {
   </div>
 </template>
 
+<script setup>
+import { ref, onMounted, watch } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useCollectionsStore } from '@/stores';
+const collectionStore = useCollectionsStore();
+const { collections } = storeToRefs(collectionStore);
+const quarterCollections = ref([]);
+const quarters = ref([])
+
+const selectedQuarter = ref('');
+
+onMounted(async () => {
+  await collectionStore.getAll()
+  collections.value.forEach(async (collection) => {
+    const launchDate = new Date(collection.estimated_launch_date)
+    const quarter = `Q${Math.floor((launchDate.getMonth() + 1) / 3) + 1} ${launchDate.getFullYear()}`;
+    collection.quarter = quarter
+    if (!quarters.value.includes(quarter)){
+      quarters.value.push(quarter)
+    }
+  })
+  console.log(quarters)
+})
+
+watch(selectedQuarter, (newQuarter) => {
+  quarterCollections.value = collections.value.filter((collection) => collection.quarter == newQuarter);
+});
+</script>
