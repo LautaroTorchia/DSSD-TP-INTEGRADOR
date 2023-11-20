@@ -24,22 +24,11 @@ import AverageDesignTime from './AverageDesignTime.vue'
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <QuarterlyCollections />
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <MaterialsGraph />
-          </div>
-        </div>
-      </div>
-    </div>
+
+
+            <AverageDesignTime />
+
+
   </div>
 </template>
 
