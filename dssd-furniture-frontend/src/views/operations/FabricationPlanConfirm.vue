@@ -60,6 +60,7 @@ async function submitForm() {
         await advanceNamedBonitaTask(caseId, "Armar plan de fabricacion")
         await placeOrders(fabricationPlan.value)
         loading.value = true
+        router.push({ name: 'designed-collections' })
     } catch (error) {
         console.log(error)
     }
@@ -117,7 +118,8 @@ function cancelPlan() {
 }
 
 onBeforeMount(async () => {
-    fabricationPlan.value = JSON.parse(await getBonitaVariable(caseId, "plan_de_fabricacion"))
+    fabricationPlan.value = await getBonitaVariable(caseId, "plan_de_fabricacion")
+    fabricationPlan.value = JSON.parse(fabricationPlan.value)
     loading.value = false
 })
 

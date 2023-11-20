@@ -1,18 +1,19 @@
 <template>
-  <div>
-    <h1>Plan de Fabricacion</h1>
-    <p>{{ planDeFabricacion }}</p>
-  </div>
+    <div class="medium">
+        <div v-if="loading" class="spinner"></div>
+        <canvas id="myChart" ref="chart"></canvas>
+    </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { getBonitaVariable } from '@/helpers';
+import { ref, onMounted } from 'vue'
+import { getBonitaVariable } from '@/helpers'
 
-const planDeFabricacion = ref('');
+const chart = ref(null)
+const loading = ref(true)
+const planDeFabricacion = ref('')
 
 onMounted(async () => {
-  const caseId = 123; // Replace with the actual case ID
-  planDeFabricacion.value = await getBonitaVariable(caseId, 'plan_de_fabricacion');
-});
+    
+})
 </script>

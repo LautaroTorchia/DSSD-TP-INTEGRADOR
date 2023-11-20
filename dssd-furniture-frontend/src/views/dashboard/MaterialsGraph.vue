@@ -18,7 +18,6 @@ const furnitureStore = useFurnitureStore()
 const { furniture } = storeToRefs(furnitureStore)
 
 const proveedoresUrl = `${import.meta.env.VITE_API_PROVEEDORES_URL}`
-const baseURL = `${import.meta.env.VITE_API_URL}`
 
 onMounted(async () => {
     await furnitureStore.getAll()

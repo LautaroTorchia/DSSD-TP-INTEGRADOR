@@ -2,6 +2,7 @@
 <script setup>
 import MaterialsGraph from './MaterialsGraph.vue'
 import QuarterlyCollections from './QuarterlyCollections.vue'
+import AverageDesignTime from './AverageDesignTime.vue'
 </script>
 
 <template>

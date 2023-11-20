@@ -1,27 +1,12 @@
 <script setup>
 import { router } from '@/helpers'
 import FurnitureForm from './FurnitureForm.vue'
-import { useFurnitureStore, useMaterialsStore } from '@/stores'
-import { onBeforeMount } from 'vue'
+import { useFurnitureStore } from '@/stores'
+import { ref } from 'vue'
 
-const formData = {
-  name: '',
-  estimated_days: '',
-  estimated_release: '',
-  description: '',
-  image: '',
-  manufacturing_plan: '',
-  materials: '',
-}
+const loading = ref(false)
 
-onBeforeMount(async () => {
-  const materialsStore = useMaterialsStore()
-  const materials = await materialsStore.getAll()
-  localStorage.setItem('materialsList', JSON.stringify(materials))
-}
-)
-
-function handleFormSubmission(formData) {
+async function handleFormSubmission(formData) {
   let formObj = new FormData()
   formObj.append('nombre', formData.name)
   formObj.append('plazo_fabricacion', formData.estimated_days)
@@ -34,13 +19,21 @@ function handleFormSubmission(formData) {
   formObj.append('coleccion', collectionId)
 
   const furnitureStore = useFurnitureStore()
-  furnitureStore.create(formObj)
+  loading.value = true
+  await furnitureStore.create(formObj)
   router.push({ name: 'furniture', params: { collection: collectionId } })
 }
 </script>
 <template>
   <div>
-    <h2>Crear Mueble de la collección</h2>
-    <FurnitureForm @form-submitted="handleFormSubmission" />
+    <div v-if="loading" class="spinner-border spinner-border-sm">
+      <div class="spinner-border spinner-border-sm"></div>
+      <h2>Creando mueble</h2>
+    </div>
+    <div v-else>
+      <h2>Crear Mueble de la colección</h2>
+      <FurnitureForm @form-submitted="handleFormSubmission" />
+    </div>
+
   </div>
 </template>

@@ -30,7 +30,6 @@ onMounted(async () => {
         <h2>Mueble {{ furniturePiece.nombre }}</h2>
         <li>Colección: {{ collection }} </li>
         <li>Plazo de fabricación: {{ furniturePiece.plazo_fabricacion }}</li>
-        <li>Fecha de lanzamiento estimada: {{ furniturePiece.fecha_lanzamiento_estimada }}</li>
         <li>Descripción: {{ furniturePiece.descripcion }}</li>
         <li>Imagen:</li>
         <img :src="furniturePiece.imagen" alt="Imagen del mueble">

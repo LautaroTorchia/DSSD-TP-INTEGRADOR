@@ -4,7 +4,7 @@ import requests
 from datetime import datetime, timedelta
 
 fake = Faker(["es_AR"])
-URL_PROVEEDORES="http://143.244.222.100/api/proveedores/"
+URL_PROVEEDORES="http://143.244.222.100/api/"
 
 def generate_material_name():
     materials = [
@@ -218,9 +218,33 @@ def generate_factory_reservation():
         print(response.status_code)
         print(response.json())
 
+def generate_final_vendor():
+    url = "http://138.197.49.27/api/entregas/vendedores-finales/"
+    print(url)
+    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAwNTIzMjAyLCJqdGkiOiJjZjc2NDM4OWEyYjQ0NWFmOWM2MzE4ODQyZjY1OTAxZiIsInVzZXJfaWQiOjN9.caQtkAFJQm7zXtl-OhxglqmwgV7zKCuL5Jx5cY0lNVQ"
+    headers = {
+        "accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization" : f"Bearer {token}"
+    }
+
+
+    for _ in range(10):
+        payload = {
+            "nombre": fake.company(),
+            "ubicacion": fake.city(),
+            "telefono": fake.phone_number()
+        }
+        response = requests.post(url, json=payload, headers=headers)
+        print(response.status_code)
+        print(response.json())
+
+
+
 if __name__ == "__main__":
-    generate_materials_seed()
+    #generate_materials_seed()
     #generate_factories_seed()
-    generate_providers_seed()
-    generate_material_provider()
+    #generate_providers_seed()
+    #generate_material_provider()
     #generate_factory_reservation()
+    generate_final_vendor()
