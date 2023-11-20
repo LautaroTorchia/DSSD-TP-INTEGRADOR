@@ -6,16 +6,16 @@ import { router } from './helpers'
 
 import piniaPluginPersistedState from "pinia-plugin-persistedstate"
 import  BackButton  from '@/components/BackButton.vue'
-import ConfirmationService from 'primevue/confirmationservice';
-import PrimeVue from 'primevue/config';
+import ConfirmationService from 'primevue/confirmationservice'
+import PrimeVue from 'primevue/config'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.js'
 
 const app = createApp(App)
 const pinia = createPinia()
-app.use(PrimeVue);
+app.use(PrimeVue)
 app.component('BackButton', BackButton)
-app.use(ConfirmationService);
+app.use(ConfirmationService)
 app.use(pinia)
 app.use(router)
 

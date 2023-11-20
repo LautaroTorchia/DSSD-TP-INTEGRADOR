@@ -15,9 +15,9 @@ onMounted(async () => {
     const collectionId = router.currentRoute.value.params.collection
     furniturePiece.value = await furnitureStore.getFurnitureDetail(id)
     const materials = await materialsStore.getAll()
-    console.log(furniturePiece.value.materiales)
+    (furniturePiece.value.materiales)
     furniturePiece.value.materiales = furniturePiece.value.materiales.map(material => {
-        const materialData = materials.find(m => m.id == material|| console.log(material, m.id))
+        const materialData = materials.find(m => m.id == material|| (material, m.id))
         
         return materialData.nombre
     })

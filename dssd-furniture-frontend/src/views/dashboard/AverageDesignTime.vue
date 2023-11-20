@@ -11,9 +11,9 @@ import { getBonitaVariable } from '@/helpers'
 
 const chart = ref(null)
 const loading = ref(true)
-const planDeFabricacion = ref('')
+
 
 onMounted(async () => {
-    
+
 })
 </script>

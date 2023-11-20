@@ -38,7 +38,7 @@ onMounted(async () => {
       quarters.value.push(quarter)
     }
   })
-  console.log(quarters)
+  (quarters)
 })
 
 watch(selectedQuarter, (newQuarter) => {

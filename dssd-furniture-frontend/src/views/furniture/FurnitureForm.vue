@@ -81,7 +81,7 @@ const materialsError = ref(null)
 
 onBeforeMount(async () => {
   materialsList.value = await materialsStore.getAll()
-  console.log(materialsList)
+  (materialsList)
 })
 
 const { emit } = getCurrentInstance()

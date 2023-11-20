@@ -280,7 +280,7 @@ onBeforeMount(async () => {
     estimatedLaunchDate.setDate(estimatedLaunchDate.getDate() + 1) // add one day
     estimated_launch_date.value = new Date(estimatedLaunchDate.getFullYear(), estimatedLaunchDate.getMonth(), estimatedLaunchDate.getDate())
     await fetchMaterialsFromProviders()
-    console.log(materialsFromProviders.value)
+    (materialsFromProviders.value)
     collectionMaterialList.value = JSON.parse(await getBonitaVariable(caseId, "cantidad_materiales"))
     factoryList.value = JSON.parse(await getBonitaVariable(caseId, "consulta_lugares_fabricacion"))
     const allMaterialsProvided = validateMaterialPresence(materialsFromProviders, collectionMaterialList.value)
