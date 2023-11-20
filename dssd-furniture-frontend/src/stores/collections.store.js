@@ -33,7 +33,6 @@ export const useCollectionsStore = defineStore({
                 const furnitureStore = useFurnitureStore()
 
                 const collections = await Promise.all(data.map(async collection => {
-                    const furniture = await furnitureStore.getCollectionFurniture(collection.id)
                     return {
                         id: collection.id,
                         name: collection.nombre,
@@ -42,7 +41,6 @@ export const useCollectionsStore = defineStore({
                         estimated_launch_date: collection.fecha_lanzamiento_estimada,
                         caseId: collection.instancia_bonita,
                         designed: collection.diseñada,
-                        furniture: furniture,
                     }
                 }))
                 this.collections = collections

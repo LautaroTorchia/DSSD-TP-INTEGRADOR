@@ -16,5 +16,6 @@ const { user: authUser } = storeToRefs(authStore)
         <router-link :to="{ name: 'collections' }">Ver Colecciones</router-link>
         <router-link :to="{ name: 'designed-collections' }">Analizar materiales</router-link>
         <router-link :to="{ name: 'dashboard' }">Indicadores</router-link>
-    </div>
+        <router-link :to="{ name: 'delivery-order-collection-list' }">Ordenes de entrega</router-link>
+</div>
 </template>

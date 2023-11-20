@@ -15,3 +15,5 @@ export { default as FabricationPlan } from './operations/FabricationPlan.vue'
 export { default as FabricationPlanConfirm } from './operations/FabricationPlanConfirm.vue'
 
 export { default as Dashboard } from './dashboard/Dashboard.vue'
+
+export { default as DeliveryOrderList } from './commercial/DeliveryOrderCollectionList.vue'

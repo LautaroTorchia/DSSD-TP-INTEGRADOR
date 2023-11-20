@@ -46,7 +46,6 @@ onBeforeMount(async () => {
 
                     <div v-if="collection.cantidadMateriales">
                         <div v-if="collection.planDeFabricacion">
-                            Ordenes de materiales y lugar de fabricación reservados
                             <div v-if="collection.orders_placed">
                                 Ordenes de materiales y lugar de fabricación reservados
                             </div>
