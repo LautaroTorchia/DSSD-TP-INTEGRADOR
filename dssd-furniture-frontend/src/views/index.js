@@ -17,3 +17,4 @@ export { default as DesignedCollectionList } from './operations/DesignedCollecti
 export { default as Dashboard } from './dashboard/Dashboard.vue'
 
 export { default as DeliveryOrderList } from './commercial/DeliveryOrderCollectionList.vue'
+export { default as DeliveryOrderCreate } from './commercial/DeliveryOrderCreate.vue'
