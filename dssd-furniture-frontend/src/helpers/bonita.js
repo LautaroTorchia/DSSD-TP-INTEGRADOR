@@ -1,15 +1,6 @@
 import { fetchWrapper } from '@/helpers'
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 
-export const advanceBonitaTask = async (caseId) => {
-    const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
-    const task = tasks.find(task => task.rootCaseId === caseId.toString())
-    if (!task) {
-        throw new Error('No se encontró la tarea')
-    }
-    await fetchWrapper.post(`${baseUrl}/bonita/execute-user-task/${task.id}/`)
-}
-
 export async function advanceNamedBonitaTask(caseId, taskName) {
     const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
     console.log(tasks,caseId,taskName)
@@ -43,7 +34,6 @@ export async function setBonitaVariable(caseId, variableName, variableValue) {
     }
 }
 
-//TODO: make patchBonitaVariable it retrieves the variable and then updates it
 export async function patchBonitaVariable(caseId, variableName,fieldname, fieldValue) {
     try {
         const field = typeof fieldValue === 'string' ? JSON.parse(fieldValue) : fieldValue;
