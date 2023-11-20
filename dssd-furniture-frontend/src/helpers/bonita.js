@@ -9,6 +9,11 @@ export const advanceBonitaTask = async (caseId) => {
     }
     await fetchWrapper.post(`${baseUrl}/bonita/execute-user-task/${task.id}/`)
 }
+export const GetBonitaTask = async (caseId) => {
+    const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
+    const task = tasks.filter(task => task.rootCaseId === caseId.toString())
+    return task
+}
 
 export async function advanceNamedBonitaTask(caseId, taskName) {
     const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
