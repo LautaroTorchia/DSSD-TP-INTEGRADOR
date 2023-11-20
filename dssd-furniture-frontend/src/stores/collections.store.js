@@ -41,6 +41,7 @@ export const useCollectionsStore = defineStore({
                         estimated_launch_date: collection.fecha_lanzamiento_estimada,
                         caseId: collection.instancia_bonita,
                         designed: collection.diseñada,
+                        fabricated: collection.fabricada,
                     }
                 }))
                 this.collections = collections

@@ -24,6 +24,11 @@ import AverageDesignTime from './AverageDesignTime.vue'
         </div>
       </div>
     </div>
+
+
+            <AverageDesignTime />
+
+
   </div>
 </template>
 

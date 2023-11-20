@@ -12,7 +12,7 @@ const loading = ref(true)
 
 onBeforeMount(async () => {
     await furnitureStore.getCollectionFurniture(collectionId)
-    console.log(furniture.value)
+    (furniture.value)
     loading.value = false
 })
 
