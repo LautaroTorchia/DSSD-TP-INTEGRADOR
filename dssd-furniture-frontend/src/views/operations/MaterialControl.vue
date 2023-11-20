@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h1>Arrival Monitoring for Collection {{ collectionId }}</h1>
+      <h1>Control de materiales reservados de la coleccion {{ collectionId }}</h1>
       <table class="table">
         <thead>
           <tr>
@@ -43,7 +43,7 @@
   
 <script setup>
 import { ref, onMounted,computed } from 'vue';
-import { GetBonitaTask,router,fetchWrapper } from '@/helpers';
+import { GetBonitaTask,router,fetchWrapper,setBonitaVariable,advanceNamedBonitaTask } from '@/helpers';
 import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '@/stores'
 
@@ -108,6 +108,26 @@ const confirmMarkAsDelivered = async (reservation) => {
       // Disable the checkbox after marking as delivered
       reservation.markedAsDelivered = true;
     }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const renegociate = async () => {
+  try {
+    await setBonitaVariable(caseId.value,"retraso_materiales","true")
+    await advanceNamedBonitaTask(caseId.value,"Controlar entrega de materiales")
+    router.push("/")
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const advanceToNextStep = async () => {
+  try {
+    await setBonitaVariable(caseId.value,"retraso_materiales","false")
+    await advanceNamedBonitaTask(caseId.value,"Controlar entrega de materiales")
+    router.push("/")
   } catch (error) {
     console.error(error);
   }

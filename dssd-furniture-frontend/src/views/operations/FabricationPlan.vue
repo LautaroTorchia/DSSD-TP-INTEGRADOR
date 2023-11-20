@@ -33,7 +33,6 @@
                     <h5 class="card-title">Cantidad: {{ material.amount }}</h5>
                     <div class="card-text">
                 <div v-for="materialFromProvider in materialsFromProviders" :key="materialFromProvider.material">
-                        
                         <div v-if="material.id == materialFromProvider.material">
                                 <div class="card">
                                     <div class="card-body">
