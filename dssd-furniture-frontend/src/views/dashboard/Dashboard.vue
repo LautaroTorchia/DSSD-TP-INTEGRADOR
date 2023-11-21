@@ -9,7 +9,7 @@ import AverageDesignTime from './AverageDesignTime.vue'
   <div>
     <h1>Dashboard</h1>
 
-    <div class="row">
+    <div class="row row-separator">
       <div class="col-md-6">
         <div class="card">
           <div class="card-body">
@@ -25,15 +25,8 @@ import AverageDesignTime from './AverageDesignTime.vue'
         </div>
       </div>
     </div>
-
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <AverageDesignTime />
-          </div>
-        </div>
-      </div>
+    
+    <div class="row row-separator">
       <div class="col-md-6">
         <div class="card">
           <div class="card-body">
@@ -51,4 +44,20 @@ import AverageDesignTime from './AverageDesignTime.vue'
     </div>
   </div>
 
+  <div class="row row-separator">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <AverageDesignTime />
+          </div>
+        </div>
+      </div>
+    </div>
+
 </template>
+
+<style scoped>
+.row-separator {
+  margin-bottom: 5px;
+}
+</style>
