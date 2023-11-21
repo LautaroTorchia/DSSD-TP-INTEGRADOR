@@ -1,5 +1,5 @@
 <template>
-    <div class="medium">
+    <div class="chart-container" style="position: relative; height:40vh; width:80vw">
         <div v-if="loading" class="spinner"></div>
         <canvas id="myChart" ref="chart"></canvas>
     </div>
@@ -34,11 +34,11 @@ onMounted(async () => {
             }
         })
     })
-    const materialsNameList = await fetchWrapper.get(proveedoresUrl+'/proveedores/materiales/')
+    const materialsNameList = await fetchWrapper.get(proveedoresUrl + '/proveedores/materiales/')
 
     const materialLabels = Object.keys(materialsData).map((materialKey) => {
         const material = materialsNameList.find((m) => m.id == materialKey)
-        return material.nombre 
+        return material.nombre
     })
     const materialValues = Object.values(materialsData)
 

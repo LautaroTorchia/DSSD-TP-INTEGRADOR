@@ -23,6 +23,7 @@ import { storeToRefs } from 'pinia';
 import { useCollectionsStore } from '@/stores';
 const collectionStore = useCollectionsStore();
 const { collections } = storeToRefs(collectionStore);
+const quartersCollections = ref([]);
 const quarterCollections = ref([]);
 const quarters = ref([])
 
@@ -34,14 +35,25 @@ onMounted(async () => {
     const launchDate = new Date(collection.estimated_launch_date)
     const quarter = `Q${Math.floor((launchDate.getMonth() + 1) / 3) + 1} ${launchDate.getFullYear()}`;
     collection.quarter = quarter
-    if (!quarters.value.includes(quarter)){
+    if (!quarters.value.includes(quarter)) {
       quarters.value.push(quarter)
     }
   })
-  (quarters)
+
+  quartersCollections.value = quarters.value.map((quarter) => {
+    return {
+      quarter: quarter,
+      collections: collections.value.filter((collection) => collection.quarter == quarter)
+    }
+  })
+  selectedQuarter.value = quarters.value[0]
 })
 
-watch(selectedQuarter, (newQuarter) => {
-  quarterCollections.value = collections.value.filter((collection) => collection.quarter == newQuarter);
-});
+watch(selectedQuarter, (newValue) => {
+    quartersCollections.value.forEach((quarterCollection) => {
+      if (quarterCollection.quarter == newValue) {
+        quarterCollections.value = quarterCollection.collections
+      }
+    })
+})
 </script>
