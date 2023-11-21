@@ -8,6 +8,7 @@ const baseUrl = `${import.meta.env.VITE_API_URL}`
 
 const { collections } = storeToRefs(collectionStore)
 const loading = ref(true)
+const designedCollections = ref([])
 
 
 
@@ -21,16 +22,24 @@ async function getPlanDeFabricacion(caseId) {
 
 onBeforeMount(async () => {
     await collectionStore.getAll()
-    collections.value.forEach(async (collection) => {
+    designedCollections.value = collections.value.filter((collection) => collection.designed)
+    designedCollections.value.forEach(async (collection) => {
+        collection.loading = true
         try {
-            collection.cantidadMateriales = JSON.parse(await getCantidadMateriales(collection.caseId))
+            const materialAmount = await getCantidadMateriales(collection.caseId)
+            collection.cantidadMateriales = !!materialAmount
+            if (collection.cantidadMateriales) {
+                const fabricationPlan = await getPlanDeFabricacion(collection.caseId)
+                collection.planDeFabricacion = !!fabricationPlan
+            }
+            if (collection.planDeFabricacion) {
+                const ordersPlaced = await fetchWrapper.get(`${baseUrl}/reservas/reservas-lugares-fabricacion/`)
+                collection.planDeFabricacion = !!(ordersPlaced.find((order) => order.coleccion == collection.id))
+            }
         } catch (error) { }
-        try {
-            collection.planDeFabricacion = JSON.parse(await getPlanDeFabricacion(collection.caseId))
-        } catch (error) { }
-        collection.orders_placed = !!(await fetchWrapper.get(`${baseUrl}/reservas/reservas-lugares-fabricacion/`)).find((order) => order.coleccion == collection.id)
-        loading.value = false
+        collection.loading = false
     })
+    loading.value = false
 })
 
 
@@ -38,8 +47,8 @@ onBeforeMount(async () => {
 
 <template>
     <div>
-        <template v-for="collection in collections" :key="collection.id">
-            <ul v-if="!loading">
+        <ul v-if="!loading">
+            <div v-for="collection in designedCollections" :key="collection.id">
                 <span v-if="collection.designed">
                     <li>Nombre: {{ collection.name }} </li>
                     <li>Descripción: {{ collection.description }}</li>
@@ -51,25 +60,25 @@ onBeforeMount(async () => {
                                     :to="{ name: 'material-control-list', params: { collection: collection.id } }">Controlar
                                     entrega de materiales</router-link>
                             </div>
-                            <div v-else>
+                            <div v-else-if="!collection.loading">
                                 <router-link
                                     :to="{ name: 'fabrication-plan-confirm', params: { collection: collection.id } }">Confirmar
                                     plan de fabricación</router-link>
                             </div>
                         </div>
-                        <div v-else><router-link
+                        <div v-else-if="!collection.loading"><router-link
                                 :to="{ name: 'fabrication-plan', params: { collection: collection.id } }">Armar plan de
                                 fabricación</router-link></div>
                     </div>
-                    <div v-else><router-link
+                    <div v-else-if="!collection.loading"><router-link
                             :to="{ name: 'material-analysis', params: { collection: collection.id } }">Analizar
                             materiales</router-link></div>
 
                 </span>
-            </ul>
-            <div v-else-if="collections.loading || loading" class="spinner-border spinner-border-sm"></div>
-            <div v-else-if="collections.error" class="text-danger">Error loading collections: {{ collections.error }}</div>
-            <div v-else>No hay nada</div>
-        </template>
+            </div>
+        </ul>
+        <div v-else-if="collections.loading || loading" class="spinner-border spinner-border-sm"></div>
+        <div v-else-if="collections.error" class="text-danger">Error loading collections: {{ collections.error }}</div>
+        <div v-else>No hay nada</div>
     </div>
 </template>
