@@ -58,7 +58,7 @@ const baseUrl = `${import.meta.env.VITE_API_URL}`
 
 
 const taskIsAvailable= computed(async () => {
-  const bonitaTasks = await GetBonitaTask(caseId.value)
+  const bonitaTasks = await getBonitaTask(caseId.value)
   const controlarMaterialesTaskExists = bonitaTasks.some(task => task.displayName === "Controlar entrega de materiales")
   return controlarMaterialesTaskExists
 })

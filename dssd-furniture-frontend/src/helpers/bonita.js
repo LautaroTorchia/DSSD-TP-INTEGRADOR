@@ -22,9 +22,7 @@ export const getBonitaTasks = async () => {
 
 export async function advanceNamedBonitaTask(caseId, taskName) {
     const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
-    (tasks,caseId,taskName)
     const task = tasks.find(task => task.caseId === caseId.toString() && task.name === taskName || (task.name,taskName))
-    (task)
     if (!task) {
         throw new Error('No se encontró la tarea')
     }
@@ -58,7 +56,6 @@ export async function patchBonitaVariable(caseId, variableName,fieldname, fieldV
         const field = typeof fieldValue === 'string' ? JSON.parse(fieldValue) : fieldValue
         const value = JSON.parse(await getBonitaVariable(caseId, variableName))
         value[fieldname] = field
-        (value)
         const response = await fetchWrapper.put(`${baseUrl}/bonita/update-case-variable/${caseId}/${variableName}/`, { type: "java.lang.String", value })
         return response.value
     } catch (error) {

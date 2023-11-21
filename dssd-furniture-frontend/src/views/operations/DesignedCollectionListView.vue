@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '@/stores'
 import { getBonitaVariable, fetchWrapper } from '@/helpers';
-import { onMounted, onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 const collectionStore = useCollectionsStore()
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 
@@ -23,6 +23,7 @@ async function getPlanDeFabricacion(caseId) {
 onBeforeMount(async () => {
     await collectionStore.getAll()
     designedCollections.value = collections.value.filter((collection) => collection.designed)
+    const ordersPlaced = await fetchWrapper.get(`${baseUrl}/reservas/reservas-lugares-fabricacion/`)
     designedCollections.value.forEach(async (collection) => {
         collection.loading = true
         try {
@@ -33,8 +34,7 @@ onBeforeMount(async () => {
                 collection.planDeFabricacion = !!fabricationPlan
             }
             if (collection.planDeFabricacion) {
-                const ordersPlaced = await fetchWrapper.get(`${baseUrl}/reservas/reservas-lugares-fabricacion/`)
-                collection.planDeFabricacion = !!(ordersPlaced.find((order) => order.coleccion == collection.id))
+                collection.orders_placed = !!(ordersPlaced.find((order) => order.coleccion == collection.id))
             }
         } catch (error) { }
         collection.loading = false

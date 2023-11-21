@@ -2,11 +2,12 @@
     <div>
         <h1>Crear ordenes de entrega</h1>
         <div v-if="!loading">
-            <ul v-for="collection in collections" :key="collection.id" class="list-group">
-                <li v-if="collection.orders_placed" class="list-group-item">
+            <ul v-for="collection in showCollections" :key="collection.id" class="list-group">
+                <li class="list-group-item">
                     <div class="d-flex justify-content-between align-items-center">
                         <span>{{ collection.name }}</span>
-                        <router-link :to="{ name: 'delivery-order-create', params: { collection: collection.id } }" class="btn btn-primary">
+                        <router-link :to="{ name: 'delivery-order-create', params: { collection: collection.id } }"
+                            class="btn btn-primary">
                             <slot>Crear ordenes de entrega</slot>
                         </router-link>
                     </div>
@@ -22,18 +23,23 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '@/stores'
-import { ref, onMounted } from 'vue'
-import { fetchWrapper, getBonitaVariable } from '@/helpers'
+import { ref, onMounted, computed } from 'vue'
+import { fetchWrapper } from '@/helpers'
 
 const collectionStore = useCollectionsStore()
 const { collections } = storeToRefs(collectionStore)
+const showCollections = ref([])
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 const loading = ref(true)
 
 onMounted(async () => {
     await collectionStore.getAll()
-    collections.value.forEach(async (collection) => {
-        collection.orders_placed = !!(await fetchWrapper.get(`${baseUrl}/reservas/reservas-lugares-fabricacion/`)).find((order) => order.coleccion == collection.id)
+    const factoryOrder = await fetchWrapper.get(`${baseUrl}/reservas/reservas-lugares-fabricacion/`)
+    const orders = await fetchWrapper.get(`${baseUrl}/entregas/ordenes/`)
+    showCollections.value = collections.value.filter(collection => {
+        const factoryOrderExists = factoryOrder.some(order => order.coleccion == collection.id)
+        const orderExists = orders.some(order => order.id_coleccion == collection.id)
+        return factoryOrderExists && !orderExists
     })
     loading.value = false
 })

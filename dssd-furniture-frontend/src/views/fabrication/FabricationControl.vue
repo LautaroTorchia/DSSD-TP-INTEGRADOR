@@ -84,7 +84,7 @@
         const confirmed = window.confirm('Are you sure you want to mark this material as delivered?');
         if (confirmed) {
             const plan_fabricacion=await getBonitaVariable(caseId.value, 'plan_de_fabricacion')
-            const deliveryDate = new Date().toISOString().split('T')[0]; // Current date
+            const deliveryDate = new Date().toISOString(); // Current date
             console.log(reservation)
             const data = {
                 fecha_fabricado: deliveryDate,
