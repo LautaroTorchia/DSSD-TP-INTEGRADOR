@@ -1,17 +1,20 @@
 <template>
     <div>
-        <h1>Material Analysis for Collection {{ collectionName||collectionId }}</h1>
-        <form @submit.prevent="submitForm">
-            <div v-for="(piece, index) in furniture" :key="index">
-                <h2>{{ piece.nombre }}</h2>
-                <div v-for="(material, index) in piece.materiales" :key="index">
-                    <label>{{ material.nombre }}:</label>
-                    <input type="number" v-model="material.amount" min="1">
-                    kg
+        <h1>Material Analysis for Collection {{ collectionName || collectionId }}</h1>
+        <div v-if="loading" class="spinner-border spinner-border-sm"></div>
+        <div v-else>
+            <form @submit.prevent="submitForm">
+                <div v-for="(piece, index) in furniture" :key="index">
+                    <h2>{{ piece.nombre }}</h2>
+                    <div v-for="(material, index) in piece.materiales" :key="index">
+                        <label>{{ material.nombre }}:</label>
+                        <input type="number" v-model="material.amount" min="1">
+                        kg
+                    </div>
                 </div>
-            </div>
-            <button type="submit">Aceptar</button>
-        </form>
+                <button type="submit">Aceptar</button>
+            </form>
+        </div>
     </div>
 </template>
 
@@ -29,12 +32,13 @@ const { furniture } = storeToRefs(furnitureStore)
 const collectionId = router.currentRoute.value.params.collection
 const materialsAmount = ref([])
 const collectionName = ref('')
+const loading = ref(true)
 
 furnitureStore.getCollectionFurniture(collectionId)
 
-try{
+try {
     collectionName.value = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).name
-}catch(error){
+} catch (error) {
     console.error(error)
 }
 
@@ -94,5 +98,6 @@ onMounted(async () => {
             }
         })
     })
+    loading.value = false
 })
 </script>

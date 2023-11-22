@@ -1,74 +1,88 @@
 <template>
-    <div>
-        <h1>Plan de fabricación</h1>
-        <h2>Lugares de fabricación:</h2>
-        <div class="card">
-            <div class="card-body">
-                <div v-for="(factory, index) in factoryList" :key="index">
-                    <input type="radio" :id="'factory-' + index" :value="factory" v-model="selectedFactory">
-                    <label :for="'factory-' + index">{{ factory.lugar_de_fabricacion.nombre || factory.telefono_reserva }}</label>
+    <div name="parentdiv" class="d-flex">
+        <div name="div1">
+            <h1>Plan de fabricación</h1>
+            <h2>Lugares de fabricación:</h2>
+            <div class="card">
+                <div class="card-body">
+                    <div v-for="(factory, index) in factoryList" :key="index">
+                        <input type="radio" :id="'factory-' + index" :value="factory" v-model="selectedFactory">
+                        <label :for="'factory-' + index">{{ factory.nombre || factory.telefono_reserva
+                            || factory.lugar_de_fabricacion.nombre }}</label>
+                    </div>
+                    <button @click="clearSelection">Clear</button>
+                    <div class="date-field form-group">
+                        <label for="estimatedLaunchDate">Fecha estimada de lanzamiento:</label>
+                        <input type="date" id="estimatedLaunchDate" v-model="estimatedLaunchDate" class="form-control" />
+                    </div>
+                    <div v-if="estimatedLaunchDate" class="date-field form-group">
+                        <label for="slot_start_date">Fecha inicio reserva:</label>
+                        <input type="date" id="slot_start_date" v-model="slot_start_date" class="form-control"
+                            :min="new Date().toISOString().split('T')[0]" :max="estimatedLaunchDate"/>
+                    </div>
+                    <div v-if="estimatedLaunchDate && slot_start_date" class="date-field form-group">
+                        <label for="slot_end_date">Fecha fin reserva:</label>
+                        <input type="date" id="slot_end_date" v-model="slot_end_date" class="form-control" 
+                        :min="slot_start_date" :max="estimatedLaunchDate"/>
+                    </div>
                 </div>
-                <button @click="clearSelection">Clear</button>
-                {{ estimated_launch_date }}
-                <div class="date-field">
-                    <label for="slot_start_date">Fecha inicio reserva:</label>
-                    <input type="date" id="slot_start_date" v-model="slot_start_date"
-                        :min="new Date().toISOString().split('T')[0]" />
-                </div>
-                <div class="date-field">
-                    <label for="slot_end_date">Fecha fin reserva:</label>
-                    <input type="date" id="slot_end_date" v-model="slot_end_date" />
+                <div class="form-group">
+                    <label for="lotQuantity">Cantidad de lotes:</label>
+                    <input type="number" class="form-control" v-model.number="lotQuantity" min="1">
                 </div>
             </div>
         </div>
-        <div class="form-group">
-            <label for="lotQuantity">Cantidad de lotes:</label>
-            <input type="number" class="form-control" v-model.number="lotQuantity" min="1">
-        </div>
-        <h2>Lista de materiales:</h2>
-        <div class="card">
-            <div class="card-body">
-                <div v-for="material in collectionMaterialList" :key="material.id">
-                    <h5 class="card-title">Material: {{ material.name }}</h5>
-                    <h5 class="card-title">Cantidad: {{ material.amount }}</h5>
-                    <div class="card-text">
-                <div v-for="materialFromProvider in materialsFromProviders" :key="materialFromProvider.material">
-                        <div v-if="material.id == materialFromProvider.material">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h6 class="card-subtitle mb-2 text-muted">Proveedor o reciclador: {{
-                                            materialFromProvider.actor_nombre }}</h6>
-                                        <h6 class="card-subtitle mb-2 text-muted">Cantidad: {{
-                                            materialFromProvider.cantidad_disponible }}</h6>
-                                        <h6 class="card-subtitle mb-2 text-muted" v-if="materialFromProvider.es_importado">
-                                            Es importado</h6>
-                                        <h6 class="card-subtitle mb-2 text-muted" v-else>No es importado</h6>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox"
-                                                :id="'materialProvided-' + materialFromProvider.id"
-                                                v-model="materialFromProvider.checked">
-                                            <label class="form-check-label"
-                                                :for="'materialProvided-' + materialFromProvider.id">Seleccionar</label>
-                                            <div v-if="materialFromProvider.checked">
-                                                <label for="amount">Amount:</label>
-                                                <input type="number" class="form-control"
-                                                    v-model.number="selectedMaterials[material.id][materialFromProvider.id]"
-                                                    min="1" :max="materialFromProvider.cantidad_disponible">
 
-                                                <label for="deliveryDate">Delivery Date (minimo {{
-                                                    materialFromProvider.plazo_entrega_dias }} días):</label>
-                                                <input type="date" class="form-control"
-                                                    v-model="materialFromProvider.deliveryDate"
-                                                    :min="new Date(Date.now() + materialFromProvider.plazo_entrega_dias * 24 * 60 * 60 * 1000).toISOString().split('T')[0]">
+        <div name="div2">
+            <h2>Lista de materiales:</h2>
+            <div class="card">
+                <div class="card-body">
+                    <div v-for="material in collectionMaterialList" :key="material.id">
+                        <h5 class="card-title">Material: {{ material.name }}</h5>
+                        <h5 class="card-title">Cantidad: {{ material.amount }}</h5>
+                        <div class="card-text">
+                            <div v-for="materialFromProvider in materialsFromProviders"
+                                :key="materialFromProvider.material">
+                                <div v-if="material.id == materialFromProvider.material">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6 class="card-subtitle mb-2 text-muted">Proveedor o reciclador: {{
+                                                materialFromProvider.actor_nombre }}</h6>
+                                            <h6 class="card-subtitle mb-2 text-muted">Cantidad: {{
+                                                materialFromProvider.cantidad_disponible }}</h6>
+                                            <h6 class="card-subtitle mb-2 text-muted"
+                                                v-if="materialFromProvider.es_importado">
+                                                Es importado</h6>
+                                            <h6 class="card-subtitle mb-2 text-muted" v-else>No es importado</h6>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                    :id="'materialProvided-' + materialFromProvider.id"
+                                                    v-model="materialFromProvider.checked">
+                                                <label class="form-check-label"
+                                                    :for="'materialProvided-' + materialFromProvider.id">Seleccionar</label>
+                                                <div v-if="materialFromProvider.checked">
+                                                    <label for="amount">Amount:</label>
+                                                    <input type="number" class="form-control"
+                                                        v-model.number="selectedMaterials[material.id][materialFromProvider.id]"
+                                                        min="1" :max="materialFromProvider.cantidad_disponible">
 
-                                                <div v-if="!validateTotalAmount(material.id, material.amount)">
-                                                    <p class="text-danger">Total amount for {{ material.name }} must be {{
-                                                        material.amount }}, but is {{ getTotalAmount(material.id) }}</p>
-                                                </div>
+                                                    <label for="deliveryDate">Delivery Date (minimo {{
+                                                        materialFromProvider.plazo_entrega_dias }} días):</label>
+                                                    <input type="date" class="form-control"
+                                                        v-model="materialFromProvider.deliveryDate"
+                                                        :min="new Date(Date.now() + materialFromProvider.plazo_entrega_dias * 24 * 60 * 60 * 1000).toISOString().split('T')[0]">
 
-                                                <div v-if="!validateDeliveryDate(materialFromProvider)">
-                                                    <p class="text-danger">Delivery date is required for selected material
-                                                    </p>
+                                                    <div v-if="!validateTotalAmount(material.id, material.amount)">
+                                                        <p class="text-danger">Total amount for {{ material.name }} must be
+                                                            {{
+                                                                material.amount }}, but is {{ getTotalAmount(material.id) }}</p>
+                                                    </div>
+
+                                                    <div v-if="!validateDeliveryDate(materialFromProvider)">
+                                                        <p class="text-danger">Delivery date is required for selected
+                                                            material
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -78,18 +92,21 @@
                         </div>
                     </div>
                 </div>
+                <div v-if="!validateAllMaterials()">
+                    <p class="text-danger text-center">Total amount for each material must be equal to the amount of the
+                        material</p>
+                </div>
             </div>
-            <div v-if="!validateAllMaterials()">
-                <p class="text-danger text-center">Total amount for each material must be equal to the amount of the material</p>
-            </div>
-            <button @click="onSubmit" style="background-color: blue; color: white; padding: 10px 20px; border: none; cursor: pointer;">Submit</button>
+            <button @click="onSubmit"
+                style="background-color: blue; color: white; padding: 10px 20px; border: none; cursor: pointer;">Submit</button>
         </div>
     </div>
 </template>
 
+
 <script setup>
 import { onBeforeMount, ref } from 'vue'
-import { getBonitaVariable, setBonitaVariable, router } from '@/helpers'
+import { getBonitaVariable, setBonitaVariable, router, fetchWrapper } from '@/helpers'
 import { useCollectionsStore } from '@/stores'
 
 const collectionId = router.currentRoute.value.params.collection
@@ -101,23 +118,25 @@ const selectedMaterials = ref([])
 const factoryList = ref([])
 const selectedFactory = ref(null)
 const collectionStore = useCollectionsStore()
-const estimated_launch_date = ref(null)
+const estimatedLaunchDate = ref(null)
 const slot_start_date = ref(null)
 const slot_end_date = ref(null)
 const lotQuantity = ref(1);
-
+const proveedoresUrl = `${import.meta.env.VITE_API_PROVEEDORES_URL}`
 
 const fetchMaterialsFromProviders = async () => {
-    try {
-        materialsFromProviders.value = JSON.parse(await getBonitaVariable(caseId, "consulta_materiales"))
-        materialsFromProviders.value.forEach((material) => {
-            material.checked = false
-            material.amount = 0
-            material.deliveryDate = null
-        })
-    } catch (error) {
-        console.error(error)
+    let materialsQuery = await getBonitaVariable(caseId, "consulta_materiales")
+    if (!materialsQuery) {
+        materialsQuery = await fetchWrapper.get(`${proveedoresUrl}/proveedores/proveedores-materiales/`)
+    } else {
+        materialsQuery = JSON.parse(materialsQuery)
     }
+    materialsFromProviders.value = materialsQuery
+    materialsFromProviders.value.forEach((material) => {
+        material.checked = false
+        material.amount = 0
+        material.deliveryDate = null
+    })
 }
 
 const validateMaterialPresence = (materialsFromProviders, collectionMaterialList) => {
@@ -212,7 +231,7 @@ const validateFabricationDates = (finalList) => {
         alert("La fecha de inicio debe ser posterior a la fecha de entrega de los materiales")
         datesCorrect = false
     }
-    if (endDate > estimated_launch_date.value) {
+    if (endDate > estimatedLaunchDate.value) {
         alert("La fecha de fin debe ser anterior a la fecha estimada de lanzamiento de la colección")
         datesCorrect = false
     }
@@ -273,27 +292,30 @@ const clearSelection = () => {
     selectedFactory.value = null
 }
 
+const fechFabricationLocations = async () => {
+    let fabricationLocations = await getBonitaVariable(caseId, "consulta_lugares_fabricacion")
+    if (!fabricationLocations) {
+        fabricationLocations = await fetchWrapper.get(`${proveedoresUrl}/proveedores/lugar-fabricacion/`)
+    } else {
+        fabricationLocations = JSON.parse(fabricationLocations)
+    }
+    factoryList.value = fabricationLocations
+    console.log(factoryList.value)
+}
+
 onBeforeMount(async () => {
     await collectionStore.getAll()
-
-    const estimatedLaunchDate = new Date(collectionStore.getById(collectionId).estimated_launch_date)
-    estimatedLaunchDate.setDate(estimatedLaunchDate.getDate() + 1) // add one day
-    estimated_launch_date.value = new Date(estimatedLaunchDate.getFullYear(), estimatedLaunchDate.getMonth(), estimatedLaunchDate.getDate())
     await fetchMaterialsFromProviders()
-    (materialsFromProviders.value)
+    await fechFabricationLocations()
     collectionMaterialList.value = JSON.parse(await getBonitaVariable(caseId, "cantidad_materiales"))
-    factoryList.value = JSON.parse(await getBonitaVariable(caseId, "consulta_lugares_fabricacion"))
     const allMaterialsProvided = validateMaterialPresence(materialsFromProviders, collectionMaterialList.value)
     const canFulfillAllMaterials = validateMaterialAmount(materialsFromProviders, collectionMaterialList.value)
-
     if (!allMaterialsProvided && !canFulfillAllMaterials) {
         router.push({ name: 'designed-collections' })
     }
     const materials = collectionMaterialList.value
     const materialsProvided = materialsFromProviders.value
-
     selectedMaterials.value = {}
-
     materials.forEach(material => {
         selectedMaterials.value[material.id] = {}
         materialsProvided.forEach(materialProvided => {
