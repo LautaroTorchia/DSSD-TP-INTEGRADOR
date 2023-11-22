@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'rest_framework_tracking',
     'import_export',
     'proveedores',
+    'reservas'
 ]
 
 MIDDLEWARE = [

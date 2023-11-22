@@ -24,7 +24,7 @@ class RoleListAPIView(LoggingMixin, ListCreateAPIView):
         return serializer.save()
 
     def get_queryset(self):        
-        return self.queryset
+        return self.queryset.all()
 
 class RoleDetailAPIView(LoggingMixin, RetrieveUpdateDestroyAPIView):
     serializer_class = RoleSerializer
@@ -33,7 +33,7 @@ class RoleDetailAPIView(LoggingMixin, RetrieveUpdateDestroyAPIView):
     lookup_field = "id"
 
     def get_queryset(self):
-        return self.queryset
+        return self.queryset.all()
 
 class DynamicSearchFilter(SearchFilter):
     def get_search_fields(self, view, request):
@@ -104,7 +104,7 @@ class UserRoleListAPIView(LoggingMixin, ListCreateAPIView):
         return serializer.save()
 
     def get_queryset(self):
-        return self.queryset
+        return self.queryset.all()
 
 class UserRoleDetailAPIView(LoggingMixin, RetrieveUpdateDestroyAPIView):
     serializer_class = UserRoleSerializer
@@ -113,7 +113,7 @@ class UserRoleDetailAPIView(LoggingMixin, RetrieveUpdateDestroyAPIView):
     lookup_field = "id"
 
     def get_queryset(self):
-        return self.queryset
+        return self.queryset.all()
 
 class DynamicSearchFilter(SearchFilter):
     def get_search_fields(self, view, request):
@@ -184,7 +184,7 @@ class ViewDescriptorListAPIView(LoggingMixin, ListCreateAPIView):
         return serializer.save()
 
     def get_queryset(self):
-        return self.queryset
+        return self.queryset.all()
 
 class ViewDescriptorDetailAPIView(LoggingMixin, RetrieveUpdateDestroyAPIView):
     serializer_class = ViewDescriptorSerializer
@@ -193,7 +193,7 @@ class ViewDescriptorDetailAPIView(LoggingMixin, RetrieveUpdateDestroyAPIView):
     lookup_field = "id"
 
     def get_queryset(self):
-        return self.queryset
+        return self.queryset.all()
 
 class DynamicSearchFilter(SearchFilter):
     def get_search_fields(self, view, request):
@@ -264,7 +264,7 @@ class PermissionRoleListAPIView(LoggingMixin, ListCreateAPIView):
         return serializer.save()
 
     def get_queryset(self):
-        return self.queryset
+        return self.queryset.all()
 
 class PermissionRoleDetailAPIView(LoggingMixin, RetrieveUpdateDestroyAPIView):
     serializer_class = PermissionRoleSerializer
@@ -273,7 +273,7 @@ class PermissionRoleDetailAPIView(LoggingMixin, RetrieveUpdateDestroyAPIView):
     lookup_field = "id"
 
     def get_queryset(self):
-        return self.queryset
+        return self.queryset.all()
 
 class DynamicSearchFilter(SearchFilter):
     def get_search_fields(self, view, request):

@@ -131,7 +131,7 @@ CORS_ALLOW_METHODS = [
 
 
 BONITA_URL= os.environ.get("BONITA_URL","http://161.35.225.144:8080")
-API_PROVEEDORES_URL = os.environ.get("API_PROVEEDORES_URL","http://api-proveedores.com")
+API_PROVEEDORES_URL = os.environ.get("API_PROVEEDORES_URL","http://localhost:8001")
 
 
 DATABASES = {
@@ -154,10 +154,9 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=180),
-    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(minutes=200),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=365 * 10),  # 10 years
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=365 * 10),  # 10 years
 }
-
 
 
 # Password validation
