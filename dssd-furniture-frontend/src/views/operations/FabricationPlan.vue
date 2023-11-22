@@ -13,7 +13,8 @@
                     <button @click="clearSelection">Clear</button>
                     <div class="date-field form-group">
                         <label for="estimatedLaunchDate">Fecha estimada de lanzamiento:</label>
-                        <input type="date" id="estimatedLaunchDate" v-model="estimatedLaunchDate" class="form-control" />
+                        <input type="date" id="estimatedLaunchDate" v-model="estimatedLaunchDate" class="form-control" 
+                        :min="new Date().toISOString().split('T')[0]"/>
                     </div>
                     <div v-if="estimatedLaunchDate" class="date-field form-group">
                         <label for="slot_start_date">Fecha inicio reserva:</label>
@@ -215,6 +216,7 @@ const validateDeliveryDate = (materialFromProvider) => {
 const validateFabricationDates = (finalList) => {
     const startDate = new Date(slot_start_date.value)
     const endDate = new Date(slot_end_date.value)
+    const estimatedLaunchDateSelected = new Date(estimatedLaunchDate.value)
     let datesCorrect = true
     if (startDate >= endDate) {
         alert("La fecha de inicio debe ser anterior a la fecha de fin")
@@ -231,7 +233,7 @@ const validateFabricationDates = (finalList) => {
         alert("La fecha de inicio debe ser posterior a la fecha de entrega de los materiales")
         datesCorrect = false
     }
-    if (endDate > estimatedLaunchDate.value) {
+    if (endDate > estimatedLaunchDateSelected) {
         alert("La fecha de fin debe ser anterior a la fecha estimada de lanzamiento de la colección")
         datesCorrect = false
     }
