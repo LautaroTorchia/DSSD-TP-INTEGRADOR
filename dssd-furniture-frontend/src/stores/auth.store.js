@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 import { fetchWrapper, router } from '@/helpers'
-
+import { jwtDecode } from 'jwt-decode'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 
@@ -12,6 +12,15 @@ export const useAuthStore = defineStore({
         user: JSON.parse(localStorage.getItem('user')),
         returnUrl: null
     }),
+    getters: {
+        isTokenExpired: (state) => {
+            if (state.user) {
+                const currentTime = Date.now() / 1000
+                return jwtDecode(state.user.tokens.access).exp < currentTime
+            }
+            return true
+        },
+    },
     actions: {
         async login(email, password) {
             const user = await fetchWrapper.post(`${baseUrl}/auth/login/`, { email, password })
