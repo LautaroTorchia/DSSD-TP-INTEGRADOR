@@ -1,18 +1,21 @@
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useFurnitureStore } from '@/stores'
+import { useFurnitureStore, useCollectionsStore } from '@/stores'
 import { router } from '@/helpers'
 import BackButton from '@/components/BackButton.vue'
 import { onBeforeMount, ref } from 'vue'
 
 const furnitureStore = useFurnitureStore()
+const collectionStore = useCollectionsStore()
+const { collections } = storeToRefs(collectionStore)
 const { furniture } = storeToRefs(furnitureStore)
 const collectionId = router.currentRoute.value.params.collection
 const loading = ref(true)
+const collection = ref({})
 
 onBeforeMount(async () => {
     await furnitureStore.getCollectionFurniture(collectionId)
-    (furniture.value)
+    collection.value = collections.value.find((collection) => collection.id == collectionId)
     loading.value = false
 })
 
@@ -43,8 +46,8 @@ const deleteFurniture = async (id) => {
             <template v-for="furniture in furniture" :key="furniture.id">
                 <li>Nombre: {{ furniture.nombre }} </li>
                 <router-link :to="{ name: 'furniture-detail', params: { collection: collectionId, id: furniture.id } }">Ver</router-link>
-                <button @click="deleteFurniture(furniture.id)">Borrar</button>
-                <!-- <button @click="updateFurniture(furniture.id)">Editar</button> -->
+                
+                <button v-if="!collection.designed" @click="deleteFurniture(furniture.id)">Borrar</button>
             </template>
         </ul>
         <div v-else-if="furniture.loading" class="spinner-border spinner-border-sm"></div>

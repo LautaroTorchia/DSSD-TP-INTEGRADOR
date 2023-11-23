@@ -30,8 +30,6 @@ export const useCollectionsStore = defineStore({
             try {
                 this.collections = { loading: true }
                 const data = await fetchWrapper.get(`${baseUrl}/coleccion/`)
-                const furnitureStore = useFurnitureStore()
-
                 const collections = await Promise.all(data.map(async collection => {
                     return {
                         id: collection.id,
@@ -45,6 +43,7 @@ export const useCollectionsStore = defineStore({
                     }
                 }))
                 this.collections = collections
+                
                 return collections
             } catch (error) {
                 this.collections = { error }
@@ -66,10 +65,10 @@ export const useCollectionsStore = defineStore({
             const data = {
                 nombre: values.name,
                 descripcion: values.description,
-                fecha_lanzamiento_estimada: values.estimated_release,
             }
             const response = await fetchWrapper.post(`${baseUrl}/coleccion/`, data).catch(error => this.collections = { error })
             const caseId = await createBonitaInstance()
+            
             const patchResponse = await fetchWrapper.patch(`${baseUrl}/coleccion/${response.id}/`, { instancia_bonita: caseId }).catch(error => this.collections = { error })
         },
         async finish(collection) {
@@ -78,7 +77,7 @@ export const useCollectionsStore = defineStore({
                 await advanceNamedBonitaTask(collection.caseId, "Diseñar coleccion")
                 await fetchWrapper.patch(`${baseUrl}/coleccion/${collection.id}/`, { diseñada: true })
             } catch (error) {
-                this.collections = { error }
+                throw new Error("No se pudo avanzar la tarea")
             }
         },
         async update(collection) {

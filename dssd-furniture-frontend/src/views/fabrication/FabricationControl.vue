@@ -85,17 +85,17 @@
         if (confirmed) {
             const plan_fabricacion=await getBonitaVariable(caseId.value, 'plan_de_fabricacion')
             const deliveryDate = new Date().toISOString(); // Current date
-            console.log(reservation)
+            
             const data = {
                 fecha_fabricado: deliveryDate,
                 lugar: reservation.lugar_de_fabricacion,
                 coleccion: collectionId,
             };
             lotQuantity.value = Number(JSON.parse(plan_fabricacion).lotQuantity)
-            console.log(lotQuantity.value)
+            
             for (let i = 0; i < lotQuantity.value; i++) {
                 const response = await fetchWrapper.post(`${baseUrl}/entregas/lotes-fabricados/`, data);
-                console.log(response)
+                
             }
            
             await setBonitaVariable(caseId.value,"retraso_fabricacion","false")
@@ -111,7 +111,7 @@
   const renegotiate = () => {
     // Implement the logic to navigate to the renegotiate view
     // You can use router.push or router.replace to navigate to the desired route
-    console.log('Navigating to renegotiate view...');
+    
   };
   
   const isFabricated = ref(false); // Set this based on your backend logic

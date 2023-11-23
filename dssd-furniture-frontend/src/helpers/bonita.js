@@ -21,12 +21,20 @@ export const getBonitaTasks = async () => {
 
 
 export async function advanceNamedBonitaTask(caseId, taskName) {
+    console.log(taskName)
     const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
-    const task = tasks.find(task => task.caseId === caseId.toString() && task.name === taskName || (task.name,taskName))
+    console.log("tasks")
+    const task = tasks.find(task => task.caseId === caseId.toString() && task.name === taskName )
+    console.log("task")
+    console.log(task)
     if (!task) {
         throw new Error('No se encontró la tarea')
     }
-    await fetchWrapper.post(`${baseUrl}/bonita/execute-user-task/${task.id}/`)
+    try {
+        await fetchWrapper.post(`${baseUrl}/bonita/execute-user-task/${task.id}/`)
+    } catch (error) {
+        throw new Error('No se pudo avanzar la tarea')
+    }
 }
 
 export async function getBonitaVariable(caseId, variableName) {

@@ -56,13 +56,13 @@ const fabricationPlan = ref({})
 const loading = ref(true)
 
 async function submitForm() {
+    loading.value = true
     try {
-        await advanceNamedBonitaTask(caseId, "Armar plan de fabricacion")
+        await advanceNamedBonitaTask(caseId, "Armar plan de fabricación")
         await placeOrders(fabricationPlan.value)
-        loading.value = true
         router.push({ name: 'designed-collections' })
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
@@ -94,7 +94,7 @@ async function placeFactorySlotOrder(factorySlot) {
 async function placeOrders(fabricationPlan) {
     try {
         placeFactorySlotOrder(fabricationPlan.factory_slot)
-        await advanceNamedBonitaTask(caseId, "Reservar espacio de fabricación")
+        await advanceNamedBonitaTask(caseId, "Reservar espacio de fabricacion")
     } catch (error) {
         throw error
     }

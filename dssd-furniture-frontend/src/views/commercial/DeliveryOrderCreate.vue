@@ -90,7 +90,7 @@ const finishAssignment = () => {
       id_coleccion: collectionId,
       vendedor_final: assignment.location,
     }
-    console.log(body)
+    
     await fetchWrapper.post(`${baseUrl}/entregas/ordenes/`, body)
   })
   router.push({ name: 'delivery-order-collection-list' })

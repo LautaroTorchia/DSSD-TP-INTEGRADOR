@@ -1,80 +1,110 @@
 <template>
-  <div>
-    <form @submit.prevent="submitForm">
-      <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" id="name" v-model="formData.name" required/>
-      </div>
-      <div class="form-group">
-        <label for="description">Description:</label>
-        <textarea id="description" v-model="formData.description" required></textarea>
-      </div>
-      <div class="form-group">
-        <label for="estimated-release">Estimated Release:</label>
-        <input type="date" id="estimated-release" class="form-control" v-model="formData.estimated_release" @change="updateEstimatedRelease" required/>
-        <div class="text-danger" ref="estimatedReleaseError"></div>
-      </div>
-      <div class="form-group">
-        <button type="submit">Confirmar</button>
-      </div>
-    </form>
-    <BackButton />
+  <div class="card-container">
+    <div class="card">
+      <form @submit.prevent="submitForm" class="form">
+        <div class="form-group">
+          <label for="name" class="label">Name:</label>
+          <input type="text" id="name" v-model="formData.name" required class="form-input" style="border: 1px solid #ccc; padding: 5px;"/>
+          <p class="error-message">{{errors.name}}</p>
+        </div>
+        <div class="form-group">
+          <label for="description" class="label">Description:</label>
+          <textarea id="description" v-model="formData.description" required class="form-textarea" style="border: 1px solid #ccc; padding: 5px;"></textarea>
+          <p class="error-message">{{errors.desc}}</p>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Confirmar</button>
+        </div>
+      </form>
+      <BackButton />
+    </div>
   </div>
 </template>
 
-<script>
-import { reactive } from 'vue'
+<style>
+.card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.label {
+  margin-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.error-message {
+  color: red;
+}
+</style>
+
+<style>
+.card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.card {
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+</style>
+
+<script setup>
+import { ref } from 'vue'
 import BackButton from '@/components/BackButton.vue'
 import { getCurrentInstance } from 'vue'
 
-export default {
-  components: {
-    BackButton,
-  },
-  props: {
-    formData: {
-      default: () => ({ name: '', description: '', estimated_release: ''}),
-    },
-  },
-  setup(props) {
-    const formData = reactive({
-      name: props.formData.name,
-      description: props.formData.description,
-      estimated_release: props.formData.estimated_release,
-    })
+const formData = ref({
+  name: "",
+  description: "",
+})
 
-    const { emit } = getCurrentInstance()
-    const submitForm = () => {
-      emit('form-submitted', formData)
-    }
-    return {
-      formData,
-      submitForm,
-    }
-  },
-  methods:{
-    updateEstimatedRelease() {
-      const currentDate = new Date()
-      const selectedDate = new Date(this.formData.estimated_release)
-      const estimatedReleaseErrorElement = this.$refs.estimatedReleaseError
+const errors = ref({
+  name: "",
+  desc: "",
+})
 
-      if (selectedDate <= currentDate) {
-        this.displayErrorMessage(estimatedReleaseErrorElement, "Estimated Release must be a date after today.")
-        this.formData.estimated_release = '' // Clear the input
-      } else {
-        this.clearErrorMessage(estimatedReleaseErrorElement)
-      }
-    },
-    displayErrorMessage(element, message) {
-      if (element) {
-        element.textContent = message
-      }
-    },
-    clearErrorMessage(element) {
-      if (element) {
-        element.textContent = ""
-      }
-    },
+
+
+const { emit } = getCurrentInstance()
+
+const validateName = () => {
+  if (formData.value.name.trim() === "") {
+    errors.value.name = "El nombre es requerido"
+    return false
   }
+  return true
+}
+
+const validateDesc = () => {
+  if (formData.value.description.trim() === "") {
+    errors.value.desc = "La descripción es requerida"
+    return false
+  }
+  return true
+}
+
+const submitForm = () => {
+  if (!validateName() || !validateDesc()) {
+    return
+  }
+  emit('form-submitted', formData.value)
 }
 </script>

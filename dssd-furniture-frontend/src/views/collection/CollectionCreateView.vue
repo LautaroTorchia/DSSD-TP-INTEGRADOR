@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h2>Crear Colección</h2>
+      <h2 class="text-center">Crear Colección</h2>
       <CollectionForm @form-submitted="handleFormSubmission" />
     </div>
   </template>
@@ -19,7 +19,6 @@ import CollectionForm from './CollectionForm.vue'
         formData: {
           name: '',
           description: '',
-          estimated_release: '',
         },
       }
     },

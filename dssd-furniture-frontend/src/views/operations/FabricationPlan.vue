@@ -2,13 +2,13 @@
     <div name="parentdiv" class="d-flex">
         <div name="div1">
             <h1>Plan de fabricación</h1>
-            <h2>Lugares de fabricación:</h2>
             <div class="card">
                 <div class="card-body">
+                    <h2>Lugares de fabricación:</h2>
                     <div v-for="(factory, index) in factoryList" :key="index">
                         <input type="radio" :id="'factory-' + index" :value="factory" v-model="selectedFactory">
-                        <label :for="'factory-' + index">{{ factory.nombre || factory.telefono_reserva
-                            || factory.lugar_de_fabricacion.nombre }}</label>
+                        <label :for="'factory-' + index">{{ factory.nombre 
+                            || factory.lugar_de_fabricacion.nombre || factory.telefono_reserva }}</label>
                     </div>
                     <button @click="clearSelection">Clear</button>
                     <div class="date-field form-group">
@@ -271,6 +271,7 @@ const onSubmit = () => {
 
 
     if (datesValidated && finalList.length > 0) {
+        fetchWrapper.patch(`${baseUrl}/coleccion/${collection.id}/`, { fecha_lanzamiento_estimada: estimatedLaunchDate.value })
         const fabricationPlan = {
             factory_slot: {
                 factory: selectedFactory.value.id,
@@ -296,23 +297,29 @@ const clearSelection = () => {
 
 const fechFabricationLocations = async () => {
     let fabricationLocations = await getBonitaVariable(caseId, "consulta_lugares_fabricacion")
+    
     if (!fabricationLocations) {
+        
         fabricationLocations = await fetchWrapper.get(`${proveedoresUrl}/proveedores/lugar-fabricacion/`)
     } else {
+        
         fabricationLocations = JSON.parse(fabricationLocations)
+        
     }
+    
     factoryList.value = fabricationLocations
-    console.log(factoryList.value)
+    
 }
 
 onBeforeMount(async () => {
     await collectionStore.getAll()
     await fetchMaterialsFromProviders()
     await fechFabricationLocations()
+    
     collectionMaterialList.value = JSON.parse(await getBonitaVariable(caseId, "cantidad_materiales"))
     const allMaterialsProvided = validateMaterialPresence(materialsFromProviders, collectionMaterialList.value)
     const canFulfillAllMaterials = validateMaterialAmount(materialsFromProviders, collectionMaterialList.value)
-    if (!allMaterialsProvided && !canFulfillAllMaterials) {
+    if (!allMaterialsProvided || !canFulfillAllMaterials) {
         router.push({ name: 'designed-collections' })
     }
     const materials = collectionMaterialList.value

@@ -28,10 +28,10 @@ async function handleFormSubmission(formData) {
   <div>
     <div v-if="loading" class="spinner-border spinner-border-sm">
       <div class="spinner-border spinner-border-sm"></div>
-      <h2>Creando mueble</h2>
+      <h2 class="text-center">Creando mueble</h2>
     </div>
     <div v-else>
-      <h2>Crear Mueble de la colección</h2>
+      <h2 class="text-center">Crear Mueble de la colección</h2>
       <FurnitureForm @form-submitted="handleFormSubmission" />
     </div>
 

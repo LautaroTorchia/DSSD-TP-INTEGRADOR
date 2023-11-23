@@ -1,52 +1,56 @@
 <template>
-  <div>
-    <form @submit.prevent="submitForm" enctype="multipart/form-data">
-      <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" id="name" class="form-control" v-model="formData.name" maxlength="100" required />
+  <div class="d-flex justify-content-center align-items-center">
+    <div class="card shadow rounded">
+      <div class="card-body">
+        <form @submit.prevent="submitForm" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" class="form-control" v-model="formData.name" maxlength="100" required />
+          </div>
+          <div class="form-group">
+            <label for="estimated-days">Estimated Days:</label>
+            <input type="number" id="estimated-days" class="form-control" v-model="formData.estimated_days"
+              @input="validateEstimatedDays" required />
+            <div class="text-danger" ref="estimatedDaysError"></div>
+          </div>
+          <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" class="form-control" v-model="formData.description" required></textarea>
+          </div>
+          <div class="form-group custom-file">
+            <label for="image" class="custom-file-label">{{ formData.image ? formData.image.name : 'Choose Image' }}</label>
+            <input type="file" id="image" class="custom-file-input" @change="updateImageFile" required />
+            <div class="text-danger" ref="imageError"></div>
+          </div>
+          <div class="form-group custom-file mt-3">
+            <label for="manufacturing-plan" class="custom-file-label">{{ formData.manufacturing_plan ?
+              formData.manufacturing_plan.name : 'Choose Manufacturing Plan' }}</label>
+            <input type="file" id="manufacturing-plan" class="custom-file-input" @change="updateManufacturingPlanFile"
+              required />
+            <div class="text-danger" ref="manufacturingPlanError"></div>
+          </div>
+          <div class="form-group">
+            <div v-if="materialsList">
+              <label for="materials">Materials:</label>
+              <select id="materials" class="form-control" @change="addMaterial">
+                <option v-for="material in materialsList" :key="material.id" :value="material.nombre">{{ material.nombre }}
+                </option>
+              </select>
+            </div>
+            <div v-if="formData.materials" class="mt-3">
+              <span v-for="(material, index) in formData.materials.split(',')" :key="index"
+                class="badge badge-pill badge-primary mr-2">{{ material }} <button type="button" class="close ml-2"
+                  aria-label="Close" @click="removeMaterial(index)"><span aria-hidden="true">&times;</span></button></span>
+            </div>
+          </div>
+          <div class="text-danger" ref="materialsError"></div>
+          <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary btn-lg">Crear</button>
+          </div>
+        </form>
+        <BackButton />
       </div>
-      <div class="form-group">
-        <label for="estimated-days">Estimated Days:</label>
-        <input type="number" id="estimated-days" class="form-control" v-model="formData.estimated_days"
-          @input="validateEstimatedDays" required /> Dias
-        <div class="text-danger" ref="estimatedDaysError"></div>
-      </div>
-      <div class="form-group">
-        <label for="description">Description:</label>
-        <textarea id="description" class="form-control" v-model="formData.description" required></textarea>
-      </div>
-      <div class="form-group custom-file">
-        <label for="image" class="custom-file-label">{{ formData.image ? formData.image.name : 'Choose Image' }}</label>
-        <input type="file" id="image" class="custom-file-input" @change="updateImageFile" required />
-        <div class="text-danger" ref="imageError"></div>
-      </div>
-      <div class="form-group custom-file mt-3">
-        <label for="manufacturing-plan" class="custom-file-label">{{ formData.manufacturing_plan ?
-          formData.manufacturing_plan.name : 'Choose Manufacturing Plan' }}</label>
-        <input type="file" id="manufacturing-plan" class="custom-file-input" @change="updateManufacturingPlanFile"
-          required />
-        <div class="text-danger" ref="manufacturingPlanError"></div>
-      </div>
-      <div class="form-group">
-        <div v-if="materialsList">
-          <label for="materials">Materials:</label>
-          <select id="materials" class="form-control" @change="addMaterial">
-            <option v-for="material in materialsList" :key="material.id" :value="material.nombre">{{ material.nombre }}
-            </option>
-          </select>
-        </div>
-        <div v-if="formData.materials" class="mt-3">
-          <span v-for="(material, index) in formData.materials.split(',')" :key="index"
-            class="badge badge-pill badge-primary mr-2">{{ material }} <button type="button" class="close ml-2"
-              aria-label="Close" @click="removeMaterial(index)"><span aria-hidden="true">&times;</span></button></span>
-        </div>
-      </div>
-      <div class="text-danger" ref="materialsError"></div>
-      <div class="form-group">
-        <button type="submit" class="btn btn-primary">Crear</button>
-      </div>
-    </form>
-    <BackButton />
+    </div>
   </div>
 </template>
 

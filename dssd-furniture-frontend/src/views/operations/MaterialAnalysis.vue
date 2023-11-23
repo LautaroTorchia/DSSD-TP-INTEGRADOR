@@ -32,6 +32,7 @@ const { furniture } = storeToRefs(furnitureStore)
 const collectionId = router.currentRoute.value.params.collection
 const materialsAmount = ref([])
 const collectionName = ref('')
+const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
 const loading = ref(true)
 
 furnitureStore.getCollectionFurniture(collectionId)
@@ -72,7 +73,6 @@ const submitForm = async () => {
 
     if (confirmed) {
         try {
-            const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
             await fetchWrapper.put(`${baseUrl}/bonita/update-case-variable/${caseId}/cantidad_materiales/`, { type: "java.lang.String", value: JSON.stringify(materialsAmount.value) })
             await advanceNamedBonitaTask(caseId, "Analizar materiales")
             router.push({ name: 'fabrication-plan' })
@@ -83,12 +83,8 @@ const submitForm = async () => {
 }
 
 onMounted(async () => {
-    const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
-    if (await getBonitaVariable(caseId, "consulta_materiales")) {
-        router.push({ name: 'fabrication-plan' })
-    }
-
     const materials = await materialsStore.getAll()
+    await furnitureStore.getCollectionFurniture(collectionId)
     furniture.value.forEach((piece) => {
         piece.materiales = piece.materiales.map((material) => Number(material))
         piece.materiales.forEach((materialId, index) => {
