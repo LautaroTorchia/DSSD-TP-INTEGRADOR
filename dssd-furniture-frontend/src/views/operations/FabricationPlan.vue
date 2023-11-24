@@ -124,6 +124,7 @@ const slot_start_date = ref(null)
 const slot_end_date = ref(null)
 const lotQuantity = ref(1);
 const proveedoresUrl = `${import.meta.env.VITE_API_PROVEEDORES_URL}`
+const baseUrl = `${import.meta.env.VITE_API_URL}`
 
 const fetchMaterialsFromProviders = async () => {
     let materialsQuery = await getBonitaVariable(caseId, "consulta_materiales")
@@ -271,7 +272,7 @@ const onSubmit = () => {
 
 
     if (datesValidated && finalList.length > 0) {
-        fetchWrapper.patch(`${baseUrl}/coleccion/${collection.id}/`, { fecha_lanzamiento_estimada: estimatedLaunchDate.value })
+        fetchWrapper.patch(`${baseUrl}/coleccion/${collectionId}/`, { fecha_lanzamiento_estimada: estimatedLaunchDate.value })
         const fabricationPlan = {
             factory_slot: {
                 factory: selectedFactory.value.id,
