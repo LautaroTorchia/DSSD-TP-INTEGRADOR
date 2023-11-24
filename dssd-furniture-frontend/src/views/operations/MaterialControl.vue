@@ -114,8 +114,6 @@ const confirmMarkAsDelivered = async (reservation) => {
         id_reserva: reservation.id,
       }
       const response = await fetchWrapper.post(`${baseUrl}/reservas/material-entregado/`, data)
-
-      // Disable the checkbox after marking as delivered
       reservation.markedAsDelivered = true
     }
   } catch (error) {
