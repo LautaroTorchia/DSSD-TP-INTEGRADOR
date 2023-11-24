@@ -1,43 +1,49 @@
 <template>
-    <div>
-      <h1>Control de materiales reservados de la coleccion {{ collectionId }}</h1>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Proveedor</th>
-            <th>Material</th>
-            <th>Cantidad Pactada</th>
-            <th>Fecha Entrega Pactada</th>
-            <th>Sede a Entregar</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="reservation in filteredReservations" :key="reservation.id">
-            <td>{{ reservation.id }}</td>
-            <td>{{ reservation.nombre_proveedor }}</td>
-            <td>{{ reservation.nombre_material }}</td>
-            <td>{{ reservation.cantidad_pactada }}</td>
-            <td>{{ reservation.fecha_entrega_pactada }}</td>
-            <td>{{ reservation.sede_a_entregar }}</td>
-            <td>
-              <span v-if="reservation.markedAsDelivered">Delivered</span>
-              <span v-else>
-                <button @click="confirmMarkAsDelivered(reservation)" :disabled="reservation.markedAsDelivered">
-                  Mark as Delivered
-                </button>
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-        <div class="d-flex justify-content-between mt-4">
-        <button class="btn btn-primary" @click="renegociate" :disabled="!taskIsAvailable">Renegociar entregas</button>
-        <button class="btn btn-success" @click="advanceToNextStep" :disabled="!allReservationsDelivered || !taskIsAvailable">
-            Confirmar Entrega
-        </button>
-        </div>
+  <div v-if="loading">
+      <div class="spinner-border text-primary" role="status">
+      </div>
+  </div>
+  <div v-else>
+    <h1>Control de materiales reservados de la colección {{ collectionId }}</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Proveedor</th>
+          <th>Material</th>
+          <th>Cantidad Pactada</th>
+          <th>Fecha Entrega Pactada</th>
+          <th>Sede a Entregar</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="reservation in filteredReservations" :key="reservation.id">
+          <td>{{ reservation.id }}</td>
+          <td>{{ reservation.nombre_proveedor }}</td>
+          <td>{{ reservation.nombre_material }}</td>
+          <td>{{ reservation.cantidad_pactada }}</td>
+          <td>{{ reservation.fecha_entrega_pactada }}</td>
+          <td>{{ reservation.sede_a_entregar }}</td>
+          <td>
+            <span v-if="reservation.markedAsDelivered">Entregado</span>
+            <span v-else>
+              <button @click="confirmMarkAsDelivered(reservation)" :disabled="reservation.markedAsDelivered">
+                Marcar como Entregado
+              </button>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="d-flex justify-content-between mt-4">
+      <button class="btn btn-primary" @click="renegociate" :disabled="!taskIsAvailable">
+        Renegociar entregas
+      </button>
+      <button class="btn btn-success" @click="advanceToNextStep" :disabled="!allReservationsDelivered || !taskIsAvailable">
+        Confirmar Entrega
+      </button>
+    </div>
   </div>
 </template>
   
@@ -55,6 +61,7 @@ const reservations = ref([])
 const caseId=ref("")
 const filteredReservations = ref([])
 const baseUrl = `${import.meta.env.VITE_API_URL}`
+const loading = ref(true)
 
 
 const taskIsAvailable= computed(async () => {
@@ -138,6 +145,7 @@ onMounted(async () => {
     const collectionIdAsInt = parseInt(collectionId, 10)
     caseId.value = collections.value.find((collection) => collection.id === collectionIdAsInt).caseId
     fetchReservations()
+    loading.value = false
 })
 </script>
   

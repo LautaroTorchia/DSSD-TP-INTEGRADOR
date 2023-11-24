@@ -1,90 +1,126 @@
 <template>
-    <div class="fabrication-control container mt-4">
-      <h1 class="mb-4">Fabrication Control for Collection {{ collectionId }}</h1>
-      <div v-if="isFabricated" class="alert alert-success">
-        <p>The collection has been fabricated successfully.</p>
+    <div v-if="loading">
+      <div class="spinner-border text-primary" role="status">
       </div>
-      <div v-else>
-        <p>The collection is not yet fabricated.</p>
-        <div v-if="fabricationReservations.length > 0" class="mt-4">
-          <h2>Fabrication Reservations:</h2>
-          <div class="row">
-            <div v-for="reservation in filteredFabrications" :key="reservation.id" class="col-md-6 mb-3">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Reservation ID: {{ reservation.id }}</h5>
-                  <p class="card-text">
-                    Fabrication Location: {{ reservation.lugar_de_fabricacion }}
-                  </p>
-                  <p class="card-text">
-                    Start Date: {{ reservation.fecha_inicio_reserva }}
-                  </p>
-                  <p class="card-text">
-                    End Date: {{ reservation.fecha_fin_reserva }}
-                  </p>
-                </div>
-              </div>
+  </div>
+  <div v-else class="fabrication-control container mt-4">
+    <h1 class="mb-4">Control de Fabricación para la Colección {{ collectionId }}</h1>
+
+    <div v-if="isFabricated" class="alert alert-success">
+      <p>La colección se ha fabricado con éxito.</p>
+    </div>
+
+    <div v-else>
+      <div class="d-flex flex-wrap justify-content-between mb-4">
+        <div class="card collection-card">
+          <div class="card-body">
+            <h5 class="card-title">Detalles de la Colección</h5>
+            <p class="card-text"><strong>Nombre de la Colección:</strong> {{ collection.name }}</p>
+            <p class="card-text"><strong>Descripción:</strong> {{ collection.description }}</p>
+            <p class="card-text"><strong>Diseñada:</strong> {{ collection.designed ? 'Sí' : 'No' }}</p>
+            <p class="card-text"><strong>Fabricada:</strong> {{ collection.fabricated ? 'Sí' : 'No' }}</p>
+            <p class="card-text"><strong>Fecha Estimada de Lanzamiento:</strong> {{ collection.estimated_launch_date }}</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="not-fabricated-text"><strong>La colección aún no ha sido fabricada.</strong></p>
+
+      <div class="card reservation-card" v-if="fabricationReservations.length > 0">
+          <div class="card-body">
+            <h5 class="card-title">Reservas de Fabricación</h5>
+        <div class="row">
+          <div v-for="reservation in filteredFabrications" :key="reservation.id" class="col-md-6 mb-3">
+              <div class="card-body">
+                <h5 class="card-title">ID de Reserva: {{ reservation.id }}</h5>
+                <p class="card-text"><strong>Ubicación de Fabricación:</strong> {{ reservation.lugar_de_fabricacion_nombre }}</p>
+                <p class="card-text"><strong>Fecha de Inicio:</strong> {{ reservation.fecha_inicio_reserva }}</p>
+                <p class="card-text"><strong>Fecha de Fin:</strong> {{ reservation.fecha_fin_reserva }}</p>
+
             </div>
           </div>
         </div>
-        <div v-for="reservation in filteredFabrications" :key="reservation.id" class="col-md-6 mb-3">
-            <div class="mt-4">
-            <button
-                class="btn btn-success me-2"
-                @click="markAsFabricated(reservation)"
-                :disabled="isFabricated"
-            >
-                Mark as Fabricated
-            </button>
-            <button
-                class="btn btn-primary"
-                @click="renegotiate"
-                :disabled="isFabricated"
-            >
-                Renegotiate
-            </button>
-            </div>
-        </div>
       </div>
     </div>
-  </template>
+
+      <div class="mt-4">
+        <button
+          class="btn btn-success me-2"
+          @click="markAsFabricated(filteredFabrications[0])"
+          :disabled="!taskIsAvailable"
+        >
+          Marcar como Fabricada
+        </button>
+        <button class="btn btn-primary" @click="renegotiate" :disabled="isFabricated">Renegociar</button>
+      </div>
+    </div>
+  </div>
+</template>
+
   
-  <script setup>
-  import { ref, onMounted } from 'vue';
-  import { router,fetchWrapper,setBonitaVariable,advanceNamedBonitaTask,getBonitaVariable } from '@/helpers';
+<script setup>
+  import { ref, onMounted,computed } from 'vue';
+  import { router,fetchWrapper,setBonitaVariable,advanceNamedBonitaTask,getBonitaVariable,getBonitaTask } from '@/helpers';
   import { storeToRefs } from 'pinia'
   import { useCollectionsStore } from '@/stores'
   
   const collectionId = router.currentRoute.value.params.collection;
   const fabricationReservations = ref([]);
   const filteredFabrications = ref([]);
+  const collection = ref({}); // Move inside setup
   const collectionStore = useCollectionsStore()
   const { collections } = storeToRefs(collectionStore)
   const caseId=ref("")
   const lotQuantity = ref(1);
+  const loading = ref(true)
   const baseUrl = `${import.meta.env.VITE_API_URL}`
-  
+  const proveedoresUrl = `${import.meta.env.VITE_API_PROVEEDORES_URL}`
+
+  const taskIsAvailable= computed(async () => {
+    const bonitaTasks = await getBonitaTask(caseId.value)
+    console.log(bonitaTasks)
+    const controlarMaterialesTaskExists = bonitaTasks.some(task => task.displayName === "Controlar fabricación")
+    return controlarMaterialesTaskExists
+  })
+
   const fetchFabricationReservations = async () => {
     try {
       const response = await fetchWrapper.get(`${import.meta.env.VITE_API_URL}/reservas/reservas-lugares-fabricacion/`);
       fabricationReservations.value = response;
-      filterFabricationReservations();
+      await filterFabricationReservations(fabricationReservations.value);
     } catch (error) {
       console.error(error);
     }
   };
   
-  const filterFabricationReservations = () => {
-    const collectionIdAsInt = parseInt(collectionId, 10); 
-    filteredFabrications.value = fabricationReservations.value.filter(reservation => reservation.coleccion === collectionIdAsInt);
-  };
+  const filterFabricationReservations = async (fabrications) => {
+  const collectionIdAsInt = parseInt(collectionId, 10);
+  filteredFabrications.value = fabrications.filter((reservation) => {
+    return reservation.coleccion === collectionIdAsInt
+  });
+  filteredFabrications.value = filteredFabrications.value.filter( async (reservation) => {
+    return await fetchFabricationLocation(reservation,reservation.lugar_de_fabricacion);
+  });
+};
+
+const fetchFabricationLocation = async (reservation,fabricationLocationId) => {
+  try {
+    const response = await fetchWrapper.get(`${proveedoresUrl}/proveedores/lugar-fabricacion/${fabricationLocationId}/`);
+    const fabricationLocation = response;
+    reservation.lugar_de_fabricacion_nombre = fabricationLocation.nombre; 
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
   
   const markAsFabricated = async (reservation) => {
     try {
-        const confirmed = window.confirm('Are you sure you want to mark this material as delivered?');
+        const confirmed = window.confirm('Estas seguro que quieres confirmar a la coleccion como fabricada?');
         if (confirmed) {
             const plan_fabricacion=await getBonitaVariable(caseId.value, 'plan_de_fabricacion')
-            const deliveryDate = new Date().toISOString(); // Current date
+            const deliveryDate = new Date().toISOString().split('T')[0] // Current date
             
             const data = {
                 fecha_fabricado: deliveryDate,
@@ -97,9 +133,10 @@
                 const response = await fetchWrapper.post(`${baseUrl}/entregas/lotes-fabricados/`, data);
                 
             }
-           
             await setBonitaVariable(caseId.value,"retraso_fabricacion","false")
             await advanceNamedBonitaTask(caseId.value,"Controlar fabricación")
+            await fetchWrapper.patch(`${baseUrl}/coleccion/${collectionId}/`, { fabricada: true });
+
             router.push("/")
             reservation.markAsFabricated = true;
         }
@@ -119,10 +156,13 @@
   onMounted(async () => {
     await collectionStore.getAll()
     const collectionIdAsInt = parseInt(collectionId, 10);
+    collection.value=collections.value.find((collection) => collection.id === collectionIdAsInt)
     caseId.value = collections.value.find((collection) => collection.id === collectionIdAsInt).caseId
-    fetchFabricationReservations();
+    await fetchFabricationReservations();
+    loading.value = false
   });
-  </script>
+  
+</script>
   
   <style scoped>
   .fabrication-control {
@@ -138,6 +178,10 @@
   
   .card {
     width: 100%;
+  }
+  .not-fabricated-text {
+    font-weight: bold;
+    color: #721c24; /* Dark red text color */
   }
   </style>
   
