@@ -14,6 +14,7 @@ export { default as FabricationPlan } from './operations/FabricationPlan.vue'
 export { default as FabricationPlanConfirm } from './operations/FabricationPlanConfirm.vue'
 export { default as MaterialControl } from './operations/MaterialControl.vue'
 export { default as DesignedCollectionList } from './operations/DesignedCollectionListView.vue'
+export { default as Renegociate } from './operations/Renegociate.vue'
 
 export { default as Dashboard } from './dashboard/Dashboard.vue'
 

@@ -67,7 +67,10 @@ const loading = ref(true)
 const taskIsAvailable= computed(async () => {
   const bonitaTasks = await getBonitaTask(caseId.value)
   const controlarMaterialesTaskExists = bonitaTasks.some(task => task.displayName === "Controlar entrega de materiales")
-  return controlarMaterialesTaskExists
+  if (controlarMaterialesTaskExists){
+    return true
+  }
+  return false 
 })
 const allReservationsDelivered = computed(() => {
   return filteredReservations.value.every((reservation) => reservation.markedAsDelivered)

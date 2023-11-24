@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuthStore } from '@/stores'
-import { Home, Login, CollectionList, CollectionCreate, CollectionUpdate, FurnitureList, FurnitureCreate, FurnitureDetail, DesignedCollectionList, MaterialAnalysis, FabricationPlan, FabricationPlanConfirm, Dashboard, DeliveryOrderList,MaterialControl,DeliveryOrderCreate, FabricationControlList } from '@/views'
+import { Home, Login, CollectionList, CollectionCreate, CollectionUpdate, FurnitureList, FurnitureCreate, FurnitureDetail, DesignedCollectionList, MaterialAnalysis, FabricationPlan, FabricationPlanConfirm, Dashboard, DeliveryOrderList,MaterialControl,DeliveryOrderCreate, FabricationControlList,Renegociate } from '@/views'
 import { FabricationControl } from '../views'
 
 
@@ -27,6 +27,7 @@ export const router = createRouter({
         { path: '/:collection/delivery-order-create', component: DeliveryOrderCreate , name: 'delivery-order-create' },
         { path: '/:collection/fabrication-control', component: FabricationControl , name: 'fabrication-control' },
         { path: '/fabrication-control-list', component: FabricationControlList , name: 'fabrication-control-list' },
+        { path: '/:collection/renegociate', component: Renegociate , name: 'renegociate-collection' },
     ]
 })
 
