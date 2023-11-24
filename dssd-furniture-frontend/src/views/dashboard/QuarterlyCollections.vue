@@ -31,6 +31,9 @@ const selectedQuarter = ref('');
 
 onMounted(async () => {
   await collectionStore.getAll()
+  collections.value = collections.value.filter((collection) => {
+    return collection.estimated_launch_date 
+  })
   collections.value.forEach(async (collection) => {
     const launchDate = new Date(collection.estimated_launch_date)
     const quarter = `Q${Math.floor((launchDate.getMonth() + 1) / 3) + 1} ${launchDate.getFullYear()}`;

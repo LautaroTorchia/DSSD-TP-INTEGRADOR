@@ -3,6 +3,9 @@
 import MaterialsGraph from './MaterialsGraph.vue'
 import QuarterlyCollections from './QuarterlyCollections.vue'
 import AverageDesignTime from './AverageDesignTime.vue'
+import AveragePlanTime from './AveragePlanTime.vue'
+import AverageFabricationAndDistributionTime from './AverageFabricationAndDistributionTime.vue'
+localStorage.setItem('bonitaTasks', '')
 </script>
 
 <template>
@@ -25,7 +28,7 @@ import AverageDesignTime from './AverageDesignTime.vue'
         </div>
       </div>
     </div>
-    
+
     <div class="row row-separator">
       <div class="col-md-6">
         <div class="card">
@@ -37,23 +40,21 @@ import AverageDesignTime from './AverageDesignTime.vue'
       <div class="col-md-6">
         <div class="card">
           <div class="card-body">
-            <AverageDesignTime />
+            <AveragePlanTime />
           </div>
         </div>
       </div>
     </div>
   </div>
-
   <div class="row row-separator">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <AverageDesignTime />
-          </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <AverageFabricationAndDistributionTime />
         </div>
       </div>
     </div>
-
+  </div>
 </template>
 
 <style scoped>

@@ -2,8 +2,8 @@
     <div v-if="loading" class="spinner"></div>
     <div :style="{visibility : hiddenVisibility}">
         <div class="chart-container" style="position: relative; height:40vh; width:30vw">
-            <h4 class="text-center">Tiempo promedio de diseño: {{ averageDesignTime }} dias</h4>
-            <canvas id="AverageDesignTimeChart" ref="chart"></canvas>
+            <h4 class="text-center">Tiempo promedio de fabricacion y distribucion: {{ averagePlanTime }} dias</h4>
+            <canvas id="AverageFabricationAndDistributionTime" ref="chart"></canvas>
         </div>
     </div>
     
@@ -20,7 +20,7 @@ const collectionStore = useCollectionsStore()
 const { collections } = storeToRefs(collectionStore)
 const base_url = `${import.meta.env.VITE_API_URL}`
 
-const averageDesignTime = ref(0)
+const averagePlanTime = ref(0)
 const chart = ref(null)
 const loading = ref(true)
 const hiddenVisibility = ref("hidden")
@@ -62,30 +62,45 @@ onMounted(async () => {
         return collection.designed 
     })
     
-    let designTimeList = await getArchivedTasks(filteredCollections, "Diseñar coleccion")
-    
+    const designTimeList = await getArchivedTasks(filteredCollections, "Reservar espacio de fabricación")
+    const fabricationOrderList = await getArchivedTasks(filteredCollections, "Asociar lotes a orden de entraga")
 
-    designTimeList = designTimeList.map(designTime => {
-        const created_at = new Date(designTime.created_at)
-        const reached_state_date = new Date(designTime.reached_state_date)
-        const diffTime = Math.abs(reached_state_date - created_at)
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    const matchingItems = designTimeList.filter(designItem => {
+        return fabricationOrderList.some(fabricationItem => fabricationItem.caseId === designItem.caseId)
+    }).concat(fabricationOrderList.filter(fabricationItem => {
+        return designTimeList.some(designItem => designItem.caseId === fabricationItem.caseId)
+    }))
+
+    
+    const dupPlanTimeList = matchingItems.map(item => {
+        const designTime = designTimeList.find(designItem => designItem.caseId === item.caseId)
+        const fabricationTime = fabricationOrderList.find(fabricationItem => fabricationItem.caseId === item.caseId)
         return {
-            caseId: designTime.caseId,
-            name: designTime.name,
-            designTime: diffDays
+            name: item.name,
+            caseId: item.caseId,
+            planTime: Math.ceil((new Date(fabricationTime.reached_state_date) - new Date(designTime.reached_state_date)) / (1000 * 60 * 60 * 24))
         }
     })
 
-    averageDesignTime.value = designTimeList.reduce((sum, designTime) => sum + designTime.designTime, 0) / designTimeList.length
+    const planTimeList = Array.from(new Set(dupPlanTimeList.map(planTime => planTime.caseId)))
+    .map(caseId => {
+        return dupPlanTimeList.find(planTime => planTime.caseId === caseId)
+    })
 
-    chart.value = new Chart(document.getElementById('AverageDesignTimeChart'), {
+    if (planTimeList.length === 0) {
+        loading.value = false
+        hiddenVisibility.value = ""
+        return
+    }
+    averagePlanTime.value = planTimeList.reduce((sum, planTime) => sum + planTime.planTime, 0) / planTimeList.length
+
+    chart.value = new Chart(document.getElementById('AverageFabricationAndDistributionTime'), {
         type: 'bar',
         data: {
-            labels: designTimeList.map(designTime => designTime.name),
+            labels: planTimeList.map(planTime => planTime.name),
             datasets: [{
-                label: 'Tiempo de diseño (días)',
-                data: designTimeList.map(designTime => designTime.designTime),
+                label: 'Tiempo de planeamiento (días)',
+                data: planTimeList.map(planTime => planTime.planTime),
                 borderWidth: 1
             }]
         },
@@ -97,15 +112,15 @@ onMounted(async () => {
                 },
                 title: {
                     display: true,
-                    text: 'Tiempo de diseño por colección'
+                    text: 'Tiempo de planeamiento por colección'
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
-                    max: designTimeList.reduce((max, designTime) => {
-                        const designTimeMonths = Math.ceil(designTime.designTime)
-                        return designTimeMonths > max ? designTimeMonths : max;
+                    max: planTimeList.reduce((max, planTime) => {
+                        const planTimeMonths = Math.ceil(planTime.planTime)
+                        return planTimeMonths > max ? planTimeMonths : max;
                     }, 0),
                     ticks: {
                         stepSize: 1

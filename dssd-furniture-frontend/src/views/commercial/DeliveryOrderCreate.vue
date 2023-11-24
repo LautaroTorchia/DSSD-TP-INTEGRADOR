@@ -1,7 +1,7 @@
 <template>
   <h1>Delivery Order Create</h1>
   <div v-if="!loading">
-    <h2>Ordenes de entrega sin asignar: {{ lotQuantity }}</h2>
+    <h2>Ordenes de entrega sin asignar: {{ lotQuantity-totalQuantity }}</h2>
     <form @submit.prevent="submitForm">
       <div class="form-group" name="assignElement">
         <label for="distributorDropdown">Distribuidor:</label>
@@ -33,14 +33,26 @@
     <button type="submit" class="btn btn-primary mt-2 mr-2" @click="finishAssignment">Confirmar</button>
     <div>
       <h3>Asignaciones:</h3>
-      <div class="d-flex flex-column justify-content-between" style="width: 7cm;" >
-        <div v-for="assignment in assignmentList" :key="assignment.location" class="badge badge-primary font-weight-bold">
-          <p>{{ 'Punto de venta: ' + assignment.assignmentTag.location }}</p>
-          <p>{{ 'Cantidad de lotes: ' + assignment.lotsAmount }}</p>
-          <p>{{ 'Fecha de entrega: ' + assignment.assignmentTag.formattedDate }}</p>
-          <button class="btn btn-danger btn-sm" @click="removeAssignment(assignment)">X</button>
-        </div>
-      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Punto de venta</th>
+            <th>Cantidad de lotes</th>
+            <th>Fecha de entrega</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="assignment in assignmentList" :key="assignment.location">
+            <td>{{ assignment.assignmentTag.location }}</td>
+            <td>{{ assignment.lotsAmount }}</td>
+            <td>{{ assignment.assignmentTag.formattedDate }}</td>
+            <td>
+              <button class="btn btn-danger btn-sm" @click="removeAssignment(assignment)">X</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
   <div v-else-if="loading" class="spinner-border spinner-border-sm"></div>
