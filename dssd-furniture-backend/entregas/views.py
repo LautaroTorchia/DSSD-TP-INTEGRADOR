@@ -1,6 +1,6 @@
 from rest_framework import generics
-from .models import OrdenDeEntrega,LotesFabricados,SedeDeDistribucion,VendedorFinal,AsociacionLoteOrdenEntrega
-from .serializers import OrdenDeEntregaSerializer,LotesFabricadosSerializer,LugarDeDistribucionSerializer,VendedorFinalSerializer,AsociacionLoteOrdenEntregaSerializer
+from .models import OrdenDeEntrega,LotesFabricados,SedeDeDistribucion,VendedorFinal,AsociacionLoteOrdenEntrega,AsociacionLoteDistribucion
+from .serializers import OrdenDeEntregaSerializer,LotesFabricadosSerializer,LugarDeDistribucionSerializer,VendedorFinalSerializer,AsociacionLoteOrdenEntregaSerializer,AsociacionLoteDistribucionSerializer
 from general_permissions.permissions import IsPermittedRBAC
 from rest_framework import permissions
 
@@ -33,3 +33,8 @@ class AsociacionLoteOrdenEntregaListCreateView(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
     queryset = AsociacionLoteOrdenEntrega.objects.all()
     serializer_class = AsociacionLoteOrdenEntregaSerializer
+
+class AsociacionLoteDistribucionListCreateView(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticated,IsPermittedRBAC,)
+    queryset = AsociacionLoteDistribucion.objects.all()
+    serializer_class = AsociacionLoteDistribucionSerializer

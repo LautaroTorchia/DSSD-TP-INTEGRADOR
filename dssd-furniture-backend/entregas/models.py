@@ -27,3 +27,8 @@ class AsociacionLoteOrdenEntrega(models.Model):
     orden_entrega=models.ForeignKey(OrdenDeEntrega,on_delete=models.CASCADE)
     lote=models.ForeignKey(LotesFabricados,on_delete=models.CASCADE)
     fecha_asociacion=models.DateField(auto_now_add=True)
+
+class AsociacionLoteDistribucion(models.Model):
+    distribucion=models.ForeignKey(SedeDeDistribucion,on_delete=models.CASCADE)
+    lote=models.ForeignKey(LotesFabricados,on_delete=models.CASCADE)
+    fecha_asociacion=models.DateField(auto_now_add=True)

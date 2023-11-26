@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import OrdenDeEntrega,LotesFabricados,SedeDeDistribucion,VendedorFinal,AsociacionLoteOrdenEntrega
+from .models import OrdenDeEntrega,LotesFabricados,SedeDeDistribucion,VendedorFinal,AsociacionLoteOrdenEntrega,AsociacionLoteDistribucion
 
 class OrdenDeEntregaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,4 +24,10 @@ class VendedorFinalSerializer(serializers.ModelSerializer):
 class AsociacionLoteOrdenEntregaSerializer(serializers.ModelSerializer):
     class Meta:
         model = AsociacionLoteOrdenEntrega
+        fields = '__all__'
+    
+
+class AsociacionLoteDistribucionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AsociacionLoteDistribucion
         fields = '__all__'

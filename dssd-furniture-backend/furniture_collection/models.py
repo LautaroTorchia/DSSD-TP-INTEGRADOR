@@ -8,7 +8,7 @@ class Coleccion(models.Model):
     diseñada = models.BooleanField(default=False)
     fabricada = models.BooleanField(default=False)
     instancia_bonita = models.IntegerField(null=True)
-    fecha_lanzamiento_estimada = models.DateField()
+    fecha_lanzamiento_estimada = models.DateField(blank=True,null=True)
 
     def __str__(self):
         return self.nombre
