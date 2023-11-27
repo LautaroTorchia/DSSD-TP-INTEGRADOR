@@ -17,15 +17,17 @@
           <template v-for="furnitureItem in furniture" :key="furnitureItem.id">
             <tr>
               <td>{{ furnitureItem.nombre }}</td>
-              <td>{{ furnitureItem.descripcion || 'N/A' }}</td>
-              <td>{{ furnitureItem.estimated_days || 'N/A' }}</td>
+              <td>{{ furnitureItem.descripcion }}</td>
+              <td>{{ furnitureItem.plazo_fabricacion }} días</td>
               <td>
                 <router-link
                   :to="{ name: 'furniture-detail', params: { collection: collectionId, id: furnitureItem.id } }"
-                  class="btn btn-dark btn-sm"
-                >
+                  class="btn btn-dark btn-sm">
                   Ver
                 </router-link>
+                <button v-if="!collection.designed" @click="deleteFurniture(furnitureItem.id)" class="btn btn-danger btn-sm">
+                  Eliminar
+                </button>
               </td>
             </tr>
           </template>

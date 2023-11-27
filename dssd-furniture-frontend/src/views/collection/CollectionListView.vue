@@ -5,6 +5,7 @@ import { useCollectionsStore, useFurnitureStore } from '@/stores';
 
 const collectionStore = useCollectionsStore();
 const furnitureStore = useFurnitureStore();
+const loading = ref(true);
 
 const { collections } = storeToRefs(collectionStore);
 
@@ -16,6 +17,7 @@ onMounted(async () => {
     collection.hasFurniture = !!(await furnitureStore.getCollectionFurniture(collection.id)).length;
   });
   orderedCollections.value = orderCollections(collections.value);
+  loading.value = false;
 });
 
 function orderCollections(collections) {
@@ -58,7 +60,8 @@ const finishCollection = async (collection) => {
 </script>
 
 <template>
-  <div class="container mt-4">
+  <div v-if="collections.loading" class="spinner-border spinner-border-sm"></div>
+  <div v-else class="container mt-4">
     <div class="mb-3 d-flex justify-content-end">
       <router-link :to="{ name: 'collection-create' }" class="btn btn-primary">Crear colección</router-link>
     </div>
@@ -101,4 +104,5 @@ const finishCollection = async (collection) => {
       </tbody>
     </table>
   </div>
+
 </template>
