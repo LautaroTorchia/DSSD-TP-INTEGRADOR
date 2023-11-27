@@ -4,7 +4,8 @@
       <form @submit.prevent="renegotiate">
         <div class="mb-3">
           <label for="newReleaseDate" class="form-label">Nueva Fecha de Lanzamiento:</label>
-          <input type="date" id="newReleaseDate" v-model="newReleaseDate" class="form-control" required />
+          <input type="date" id="newReleaseDate" v-model="newReleaseDate" class="form-control" required 
+          :min="collection.estimated_launch_date"/>
         </div>
       <div class="d-flex justify-content-between mt-4">
         <button @click="renegotiate()" type="submit" class="btn btn-primary">Renegociar</button>
@@ -17,7 +18,7 @@
 <script setup>
 
   import { ref, onMounted,computed } from 'vue'
-  import { router, setBonitaVariable,fetchWrapper, advanceNamedBonitaTask } from '@/helpers';
+  import { router, setBonitaVariable,fetchWrapper, advanceNamedBonitaTask,getBonitaVariable } from '@/helpers';
   import { storeToRefs } from 'pinia'
   import { useCollectionsStore } from '@/stores'
   
@@ -32,6 +33,7 @@
   
   const renegotiate = async () => {
     try {
+      const collectionIdAsInt = parseInt(collectionId, 10);
       // set bonita variables
       await setBonitaVariable(caseId.value, 'se_renegocio', "true");
       await advanceNamedBonitaTask(caseId.value, 'Renegociar');
@@ -45,6 +47,71 @@
       deliveryOrders.value = await fetchWrapper.get(`${baseUrl}/entregas/ordenes/`)
       deliveryOrders.value.map( async (order) => await fetchWrapper.delete(`${baseUrl}/entregas/ordenes/${order.id}/`))
 
+      // get delivered material reservations
+      const deliveredMaterialReservations = await fetchWrapper.get(`${baseUrl}/reservas/material-entregado/`);
+
+      // get all material reservations for the collection
+      const totalMaterialReservations = await fetchWrapper.get(`${baseUrl}/reservas/reservas-materiales/`);
+      console.log(totalMaterialReservations)
+      const allMaterialReservations = totalMaterialReservations.filter(reservation =>
+        reservation.coleccion === collectionIdAsInt
+      );
+
+      
+      // filter out material reservations that were not delivered
+      const materialReservationsToDelete = allMaterialReservations.filter(reservation =>
+        !deliveredMaterialReservations.some(deliveredReservation => deliveredReservation.id_reserva === reservation.id)
+      );
+
+      // delete material reservations that were not delivered
+      await Promise.all(materialReservationsToDelete.map(reservation =>
+        fetchWrapper.delete(`${baseUrl}/reservas/reservas-materiales/${reservation.id}/`)
+      ));
+    
+      // delete old lugar fabricacion reservations
+      const lugarFabricacionReservations = await fetchWrapper.get(`${baseUrl}/reservas/reservas-lugares-fabricacion/`);
+      console.log(lugarFabricacionReservations)
+
+      const lugarFabricacionReservationsToDelete = lugarFabricacionReservations.filter(reservation =>
+        reservation.coleccion === collectionIdAsInt
+      );
+
+
+      await Promise.all(lugarFabricacionReservationsToDelete.map(reservation =>
+        fetchWrapper.delete(`${baseUrl}/reservas/reservas-lugares-fabricacion/${reservation.id}/`)
+      ));
+
+      //now modify cantidad_materiales variable
+      const materialReservationsToUpdate = allMaterialReservations.filter(reservation =>
+        deliveredMaterialReservations.some(deliveredReservation => deliveredReservation.id_reserva === reservation.id)
+      );
+
+
+      console.log("materiales_entregados: ",materialReservationsToUpdate)
+
+      const cantidadMateriales = await getBonitaVariable(caseId.value, 'cantidad_materiales');
+      console.log(cantidadMateriales)
+      const materialsArray = JSON.parse(cantidadMateriales);
+
+      for (let i=0; i < materialsArray.length; i++) {
+        const material = materialsArray[i];
+        const deliveredReservation = materialReservationsToUpdate.find(
+          (reservation) => reservation.nombre_material === material.name
+        );
+        console.log(deliveredReservation, " for material ",material.id)
+
+        if (deliveredReservation) {
+          console.log("inside if")
+          material.amount -= deliveredReservation.cantidad_pactada;
+
+          // If the amount reaches 0, remove the element from the array
+          if (material.amount <= 0) {
+            materialsArray.splice(i, 1); // Use the current index (i) to remove the element
+          }
+        }
+      }     
+      console.log("despues de actualizar ", materialsArray[0],materialsArray[1])
+      await setBonitaVariable(caseId.value, 'cantidad_materiales',materialsArray)
       router.push('/');
     } catch (error) {
       console.error(error);

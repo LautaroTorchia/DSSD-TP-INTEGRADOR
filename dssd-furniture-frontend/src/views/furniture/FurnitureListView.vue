@@ -18,7 +18,7 @@
             <tr>
               <td>{{ furnitureItem.nombre }}</td>
               <td>{{ furnitureItem.descripcion || 'N/A' }}</td>
-              <td>{{ furnitureItem.estimated_days || 'N/A' }}</td>
+              <td>{{ furnitureItem.plazo_fabricacion || 'N/A' }}</td>
               <td>
                 <router-link
                   :to="{ name: 'furniture-detail', params: { collection: collectionId, id: furnitureItem.id } }"
