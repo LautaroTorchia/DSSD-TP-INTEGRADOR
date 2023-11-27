@@ -42,7 +42,7 @@ onMounted(async () => {
     })
     const materialValues = Object.values(materialsData)
 
-    const ctx = document.getElementById('myChart');
+    const ctx = document.getElementById('myChart')
 
     const chartElem = new Chart(ctx, {
         type: 'doughnut',
@@ -66,7 +66,7 @@ onMounted(async () => {
                 },
             }
         }
-    });
+    })
     chart.value = chartElem
     loading.value = false
 })

@@ -63,11 +63,11 @@ import { getBonitaVariable, fetchWrapper } from '@/helpers';
 import { onBeforeMount, ref } from 'vue';
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 
-const collectionStore = useCollectionsStore();
-const { collections } = storeToRefs(collectionStore);
-const loading = ref(true);
-const designedCollections = ref([]);
-const orderedCollections = ref([]);
+const collectionStore = useCollectionsStore()
+const { collections } = storeToRefs(collectionStore)
+const loading = ref(true)
+const designedCollections = ref([])
+const orderedCollections = ref([])
 
 onBeforeMount(async () => {
   await collectionStore.getAll()
@@ -76,30 +76,30 @@ onBeforeMount(async () => {
   for (const collection of designedCollections.value) {
     collection.loading = true;
     try {
-      const materialAmount = await getBonitaVariable(collection.caseId, 'cantidad_materiales');
+      const materialAmount = await getBonitaVariable(collection.caseId, 'cantidad_materiales')
       collection.cantidadMateriales = !!materialAmount;
       if (collection.cantidadMateriales) {
-        const fabricationPlan = await getBonitaVariable(collection.caseId, "plan_de_fabricacion");
-        console.log(fabricationPlan);
+        const fabricationPlan = await getBonitaVariable(collection.caseId, "plan_de_fabricacion")
+        console.log(fabricationPlan)
         if (fabricationPlan === "") {
           collection.planDeFabricacion = false;
         }
         collection.planDeFabricacion = !!fabricationPlan;
       }
-      console.log(collection.planDeFabricacion);
+      console.log(collection.planDeFabricacion)
       if (collection.planDeFabricacion) {
-        collection.orders_placed = !!(ordersPlaced.find((order) => order.coleccion == collection.id));
+        collection.orders_placed = !!(ordersPlaced.find((order) => order.coleccion == collection.id))
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
     collection.loading = false;
   }
   orderedCollections.value = designedCollections.value.slice().sort((a, b) => {
-    const dateA = new Date(a.fecha_creacion);
-    const dateB = new Date(b.fecha_creacion);
+    const dateA = new Date(a.fecha_creacion)
+    const dateB = new Date(b.fecha_creacion)
     return dateA - dateB;
-  });
+  })
 
   loading.value = false
 })

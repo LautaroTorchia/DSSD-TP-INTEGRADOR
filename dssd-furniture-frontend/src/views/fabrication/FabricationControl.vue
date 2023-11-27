@@ -51,7 +51,7 @@
         >
           Marcar como Fabricada
         </button>
-        <button class="btn btn-primary" @click="renegotiate" :disabled="isFabricated">Renegociar</button>
+        <router-link :to="{ name: 'Renegotiate', params: { collectionId } }" class="btn btn-primary" :disabled="isFabricated">Renegociar</router-link>
       </div>
     </div>
   </div>
@@ -59,19 +59,19 @@
 
   
 <script setup>
-  import { ref, onMounted,computed } from 'vue';
-  import { router,fetchWrapper,setBonitaVariable,advanceNamedBonitaTask,getBonitaVariable,getBonitaTask } from '@/helpers';
+  import { ref, onMounted,computed } from 'vue'
+  import { router,fetchWrapper,setBonitaVariable,advanceNamedBonitaTask,getBonitaVariable,getBonitaTask } from '@/helpers'
   import { storeToRefs } from 'pinia'
   import { useCollectionsStore } from '@/stores'
   
-  const collectionId = router.currentRoute.value.params.collection;
-  const fabricationReservations = ref([]);
-  const filteredFabrications = ref([]);
-  const collection = ref({}); // Move inside setup
+  const collectionId = router.currentRoute.value.params.collection
   const collectionStore = useCollectionsStore()
   const { collections } = storeToRefs(collectionStore)
+  const fabricationReservations = ref([])
+  const filteredFabrications = ref([])
+  const collection = ref({})
   const caseId=ref("")
-  const lotQuantity = ref(1);
+  const lotQuantity = ref(1)
   const loading = ref(true)
   const baseUrl = `${import.meta.env.VITE_API_URL}`
   const proveedoresUrl = `${import.meta.env.VITE_API_PROVEEDORES_URL}`
@@ -85,82 +85,77 @@
 
   const fetchFabricationReservations = async () => {
     try {
-      const response = await fetchWrapper.get(`${import.meta.env.VITE_API_URL}/reservas/reservas-lugares-fabricacion/`);
-      fabricationReservations.value = response;
-      await filterFabricationReservations(fabricationReservations.value);
+      const response = await fetchWrapper.get(`${import.meta.env.VITE_API_URL}/reservas/reservas-lugares-fabricacion/`)
+      fabricationReservations.value = response
+      await filterFabricationReservations(fabricationReservations.value)
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
   
   const filterFabricationReservations = async (fabrications) => {
-  const collectionIdAsInt = parseInt(collectionId, 10);
+  const collectionIdAsInt = parseInt(collectionId, 10)
   filteredFabrications.value = fabrications.filter((reservation) => {
     return reservation.coleccion === collectionIdAsInt
-  });
+  })
   filteredFabrications.value = filteredFabrications.value.filter( async (reservation) => {
-    return await fetchFabricationLocation(reservation,reservation.lugar_de_fabricacion);
-  });
-};
+    return await fetchFabricationLocation(reservation,reservation.lugar_de_fabricacion)
+  })
+}
 
 const fetchFabricationLocation = async (reservation,fabricationLocationId) => {
   try {
-    const response = await fetchWrapper.get(`${proveedoresUrl}/proveedores/lugar-fabricacion/${fabricationLocationId}/`);
-    const fabricationLocation = response;
-    reservation.lugar_de_fabricacion_nombre = fabricationLocation.nombre; 
-    return true;
+    const response = await fetchWrapper.get(`${proveedoresUrl}/proveedores/lugar-fabricacion/${fabricationLocationId}/`)
+    const fabricationLocation = response
+    reservation.lugar_de_fabricacion_nombre = fabricationLocation.nombre 
+    return true
   } catch (error) {
-    console.error(error);
-    return false;
+    console.error(error)
+    return false
   }
-};
+}
   
   const markAsFabricated = async (reservation) => {
     try {
-        const confirmed = window.confirm('Estas seguro que quieres confirmar a la coleccion como fabricada?');
+        const confirmed = window.confirm('Estas seguro que quieres confirmar a la coleccion como fabricada?')
         if (confirmed) {
             const plan_fabricacion=await getBonitaVariable(caseId.value, 'plan_de_fabricacion')
-            const deliveryDate = new Date().toISOString().split('T')[0] // Current date
+            const deliveryDate = new Date().toISOString().split('T')[0]
             
             const data = {
                 fecha_fabricado: deliveryDate,
                 lugar: reservation.lugar_de_fabricacion,
                 coleccion: collectionId,
-            };
+            }
             lotQuantity.value = Number(JSON.parse(plan_fabricacion).lotQuantity)
             
             for (let i = 0; i < lotQuantity.value; i++) {
-                const response = await fetchWrapper.post(`${baseUrl}/entregas/lotes-fabricados/`, data);
+                const response = await fetchWrapper.post(`${baseUrl}/entregas/lotes-fabricados/`, data)
                 
             }
             await setBonitaVariable(caseId.value,"retraso_fabricacion","false")
             await advanceNamedBonitaTask(caseId.value,"Controlar fabricación")
-            await fetchWrapper.patch(`${baseUrl}/coleccion/${collectionId}/`, { fabricada: true });
+            await fetchWrapper.patch(`${baseUrl}/coleccion/${collectionId}/`, { fabricada: true })
 
             router.push("/")
-            reservation.markAsFabricated = true;
+            reservation.markAsFabricated = true
         }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
   
-  const renegotiate = () => {
-    // Implement the logic to navigate to the renegotiate view
-    // You can use router.push or router.replace to navigate to the desired route
-    
-  };
   
-  const isFabricated = ref(false); // Set this based on your backend logic
+  const isFabricated = ref(false)
   
   onMounted(async () => {
     await collectionStore.getAll()
-    const collectionIdAsInt = parseInt(collectionId, 10);
+    const collectionIdAsInt = parseInt(collectionId, 10)
     collection.value=collections.value.find((collection) => collection.id === collectionIdAsInt)
     caseId.value = collections.value.find((collection) => collection.id === collectionIdAsInt).caseId
-    await fetchFabricationReservations();
+    await fetchFabricationReservations()
     loading.value = false
-  });
+  })
   
 </script>
   

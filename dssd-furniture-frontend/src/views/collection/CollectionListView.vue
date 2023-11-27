@@ -3,59 +3,59 @@ import { ref, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useCollectionsStore, useFurnitureStore } from '@/stores';
 
-const collectionStore = useCollectionsStore();
-const furnitureStore = useFurnitureStore();
-const loading = ref(true);
+const collectionStore = useCollectionsStore()
+const furnitureStore = useFurnitureStore()
+const loading = ref(true)
 
-const { collections } = storeToRefs(collectionStore);
+const { collections } = storeToRefs(collectionStore)
 
-const orderedCollections = ref([]);
+const orderedCollections = ref([])
 
 onMounted(async () => {
-  await collectionStore.getAll();
+  await collectionStore.getAll()
   collections.value.forEach(async (collection) => {
     const furniture = await furnitureStore.getCollectionFurniture(collection.id)
     console.log(!!furniture.length)
     collection.hasFurniture = !!furniture.length;
-  });
-  orderedCollections.value = orderCollections(collections.value);
+  })
+  orderedCollections.value = orderCollections(collections.value)
   loading.value = false;
-});
+})
 
 function orderCollections(collections) {
   return collections.slice().sort((a, b) => {
     if (a.designed !== b.designed) {
       return a.designed ? 1 : -1;
     } else {
-      return new Date(b.fecha_creacion) - new Date(a.fecha_creacion);
+      return new Date(b.fecha_creacion) - new Date(a.fecha_creacion)
     }
-  });
+  })
 }
 
 const deleteCollection = async (id) => {
-  const confirmed = confirm('¿Desea borrar la colección?');
+  const confirmed = confirm('¿Desea borrar la colección?')
   if (confirmed) {
     try {
-      await collectionStore.delete(id);
+      await collectionStore.delete(id)
     } catch (error) {
-      alert('Error al borrar la colección');
-      console.error(error);
+      alert('Error al borrar la colección')
+      console.error(error)
     }
   }
 };
 
 const finishCollection = async (collection) => {
-  const confirmed = confirm('¿Desea terminar la colección?');
+  const confirmed = confirm('¿Desea terminar la colección?')
   if (confirmed) {
     try {
       if (!collection.hasFurniture) {
-        alert('No se puede terminar una colección sin muebles');
+        alert('No se puede terminar una colección sin muebles')
         return;
       }
-      await collectionStore.finish(collection);
+      await collectionStore.finish(collection)
     } catch (error) {
-      alert('Error al terminar la colección');
-      console.error(error);
+      alert('Error al terminar la colección')
+      console.error(error)
     }
   }
 };

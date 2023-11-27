@@ -53,28 +53,28 @@ import { router } from '@/helpers';
 import BackButton from '@/components/BackButton.vue';
 import { onBeforeMount, ref } from 'vue';
 
-const furnitureStore = useFurnitureStore();
-const collectionStore = useCollectionsStore();
-const { collections } = storeToRefs(collectionStore);
-const { furniture } = storeToRefs(furnitureStore);
+const furnitureStore = useFurnitureStore()
+const collectionStore = useCollectionsStore()
+const { collections } = storeToRefs(collectionStore)
+const { furniture } = storeToRefs(furnitureStore)
 const collectionId = router.currentRoute.value.params.collection;
-const loading = ref(true);
-const collection = ref({});
+const loading = ref(true)
+const collection = ref({})
 
 onBeforeMount(async () => {
-  await furnitureStore.getCollectionFurniture(collectionId);
-  collection.value = collections.value.find((collection) => collection.id == collectionId);
+  await furnitureStore.getCollectionFurniture(collectionId)
+  collection.value = collections.value.find((collection) => collection.id == collectionId)
   loading.value = false;
-});
+})
 
 const deleteFurniture = async (id) => {
-  const confirmed = confirm('¿Desea borrar el mueble?');
+  const confirmed = confirm('¿Desea borrar el mueble?')
   if (confirmed) {
     try {
-      furnitureStore.delete(id);
+      furnitureStore.delete(id)
     } catch (error) {
-      alert('Error al borrar el mueble');
-      console.error(error);
+      alert('Error al borrar el mueble')
+      console.error(error)
     }
   }
 };

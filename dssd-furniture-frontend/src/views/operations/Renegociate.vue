@@ -22,82 +22,82 @@
   import { storeToRefs } from 'pinia'
   import { useCollectionsStore } from '@/stores'
   
-  const newReleaseDate = ref('');
+  const newReleaseDate = ref('')
   const collectionId = router.currentRoute.value.params.collection;
-  const caseId = ref('');
+  const caseId = ref('')
   const collectionStore = useCollectionsStore()
-  const collection = ref({}); // Move inside setup
+  const collection = ref({}) // Move inside setup
   const { collections } = storeToRefs(collectionStore)
-  const deliveryOrders = ref([]);
+  const deliveryOrders = ref([])
   const baseUrl = `${import.meta.env.VITE_API_URL}`
   
   const renegotiate = async () => {
     try {
-      const collectionIdAsInt = parseInt(collectionId, 10);
+      const collectionIdAsInt = parseInt(collectionId, 10)
       // set bonita variables
-      await setBonitaVariable(caseId.value, 'se_renegocio', "true");
-      await advanceNamedBonitaTask(caseId.value, 'Renegociar');
+      await setBonitaVariable(caseId.value, 'se_renegocio', "true")
+      await advanceNamedBonitaTask(caseId.value, 'Renegociar')
       
       //set new collection release date
       await fetchWrapper.patch(`${baseUrl}/coleccion/${collectionId}/`, {
         fecha_lanzamiento_estimada: newReleaseDate.value,
-      });
+      })
 
       //delete old delivery orders
       deliveryOrders.value = await fetchWrapper.get(`${baseUrl}/entregas/ordenes/`)
       deliveryOrders.value.map( async (order) => await fetchWrapper.delete(`${baseUrl}/entregas/ordenes/${order.id}/`))
 
       // get delivered material reservations
-      const deliveredMaterialReservations = await fetchWrapper.get(`${baseUrl}/reservas/material-entregado/`);
+      const deliveredMaterialReservations = await fetchWrapper.get(`${baseUrl}/reservas/material-entregado/`)
 
       // get all material reservations for the collection
-      const totalMaterialReservations = await fetchWrapper.get(`${baseUrl}/reservas/reservas-materiales/`);
+      const totalMaterialReservations = await fetchWrapper.get(`${baseUrl}/reservas/reservas-materiales/`)
       console.log(totalMaterialReservations)
       const allMaterialReservations = totalMaterialReservations.filter(reservation =>
         reservation.coleccion === collectionIdAsInt
-      );
+      )
 
       
       // filter out material reservations that were not delivered
       const materialReservationsToDelete = allMaterialReservations.filter(reservation =>
         !deliveredMaterialReservations.some(deliveredReservation => deliveredReservation.id_reserva === reservation.id)
-      );
+      )
 
       // delete material reservations that were not delivered
       await Promise.all(materialReservationsToDelete.map(reservation =>
         fetchWrapper.delete(`${baseUrl}/reservas/reservas-materiales/${reservation.id}/`)
-      ));
+      ))
     
       // delete old lugar fabricacion reservations
-      const lugarFabricacionReservations = await fetchWrapper.get(`${baseUrl}/reservas/reservas-lugares-fabricacion/`);
+      const lugarFabricacionReservations = await fetchWrapper.get(`${baseUrl}/reservas/reservas-lugares-fabricacion/`)
       console.log(lugarFabricacionReservations)
 
       const lugarFabricacionReservationsToDelete = lugarFabricacionReservations.filter(reservation =>
         reservation.coleccion === collectionIdAsInt
-      );
+      )
 
 
       await Promise.all(lugarFabricacionReservationsToDelete.map(reservation =>
         fetchWrapper.delete(`${baseUrl}/reservas/reservas-lugares-fabricacion/${reservation.id}/`)
-      ));
+      ))
 
       //now modify cantidad_materiales variable
       const materialReservationsToUpdate = allMaterialReservations.filter(reservation =>
         deliveredMaterialReservations.some(deliveredReservation => deliveredReservation.id_reserva === reservation.id)
-      );
+      )
 
 
       console.log("materiales_entregados: ",materialReservationsToUpdate)
 
-      const cantidadMateriales = await getBonitaVariable(caseId.value, 'cantidad_materiales');
+      const cantidadMateriales = await getBonitaVariable(caseId.value, 'cantidad_materiales')
       console.log(cantidadMateriales)
-      const materialsArray = JSON.parse(cantidadMateriales);
+      const materialsArray = JSON.parse(cantidadMateriales)
 
       for (let i=0; i < materialsArray.length; i++) {
         const material = materialsArray[i];
         const deliveredReservation = materialReservationsToUpdate.find(
           (reservation) => reservation.nombre_material === material.name
-        );
+        )
         console.log(deliveredReservation, " for material ",material.id)
 
         if (deliveredReservation) {
@@ -106,15 +106,15 @@
 
           // If the amount reaches 0, remove the element from the array
           if (material.amount <= 0) {
-            materialsArray.splice(i, 1); // Use the current index (i) to remove the element
+            materialsArray.splice(i, 1) // Use the current index (i) to remove the element
           }
         }
       }     
       console.log("despues de actualizar ", materialsArray[0],materialsArray[1])
       await setBonitaVariable(caseId.value, 'cantidad_materiales',materialsArray)
-      router.push('/');
+      router.push('/')
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   };
 
@@ -129,12 +129,12 @@
       await fetchWrapper.delete(`${baseUrl}/coleccion/${collectionId}/`)
 
       // set bonita variables
-      await setBonitaVariable(caseId.value, 'se_renegocio', "false");
-      await advanceNamedBonitaTask(caseId.value, 'Renegociar');
+      await setBonitaVariable(caseId.value, 'se_renegocio', "false")
+      await advanceNamedBonitaTask(caseId.value, 'Renegociar')
 
-      router.push('/');
+      router.push('/')
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   };
   

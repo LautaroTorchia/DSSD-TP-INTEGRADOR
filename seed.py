@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 fake = Faker(["es_AR"])
 URL_PROVEEDORES="http://143.244.222.100/api/"
+URL_API="http://159.89.241.7/api/"
 
 def generate_material_name():
     materials = [
@@ -219,7 +220,7 @@ def generate_factory_reservation():
         print(response.json())
 
 def generate_final_vendor():
-    url = "http://138.197.49.27/api/entregas/vendedores-finales/"
+    url = f"{URL_API}entregas/vendedores-finales/"
     print(url)
     token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAwNTIzMjAyLCJqdGkiOiJjZjc2NDM4OWEyYjQ0NWFmOWM2MzE4ODQyZjY1OTAxZiIsInVzZXJfaWQiOjN9.caQtkAFJQm7zXtl-OhxglqmwgV7zKCuL5Jx5cY0lNVQ"
     headers = {
@@ -239,6 +240,22 @@ def generate_final_vendor():
         print(response.status_code)
         print(response.json())
 
+def generate_distribution_locations():
+    url = f"{URL_API}entregas/lugares-de-distribucion/"
+    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoyMDE2NDYxNDQ0LCJqdGkiOiIwMWE1ZmM4YWViYzA0NWI0YTgxMjZhYzY2YzIxMWI0ZiIsInVzZXJfaWQiOjN9.JFzYc0VuuNcDQ9uVT6hx5WzvR9bOL1wJzk0k8FGzZQM"
+    headers = {
+        "accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization" : f"Bearer {token}"
+    }
+    for _ in range(10):
+        payload = {
+            "nombre": fake.company(),
+            "ubicacion": fake.city(),
+        }
+        response = requests.post(url, json=payload, headers=headers)
+        print(response.status_code)
+        print(response.json())
 
 
 if __name__ == "__main__":
@@ -247,4 +264,5 @@ if __name__ == "__main__":
     #generate_providers_seed()
     #generate_material_provider()
     #generate_factory_reservation()
-    generate_final_vendor()
+    #generate_final_vendor()
+    generate_distribution_locations()

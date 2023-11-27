@@ -42,41 +42,41 @@ export const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     const publicPages = ['/login', '/forbidden', "/"]; // Exclude /forbidden from authentication check
-    const authRequired = !publicPages.includes(to.path);
-    const auth = useAuthStore();
+    const authRequired = !publicPages.includes(to.path)
+    const auth = useAuthStore()
 
     // Check if the route requires authentication
     if (authRequired && auth.isTokenExpired) {
-        return next('/login');
+        return next('/login')
     }
 
     // Check user role for restricted routes
     if (authRequired) {
         try {
-            const response = await fetchWrapper.get(`${import.meta.env.VITE_API_URL}/authorization/user-role`);
-            const userRoles = response.map((role) => role.role_denomination);
+            const response = await fetchWrapper.get(`${import.meta.env.VITE_API_URL}/authorization/user-role`)
+            const userRoles = response.map((role) => role.role_denomination)
 
-            const allowedRoles = getAllowedRoles(to.meta);
+            const allowedRoles = getAllowedRoles(to.meta)
             console.log("allowed roles in that view: ", allowedRoles)
 
             const storedUsername = JSON.parse(localStorage.getItem('user')).username;
-            const matchingRoles = response.filter((role) => role.username === storedUsername);
-            const hasAllowedRole = matchingRoles.some((role) => allowedRoles.includes(role.role_denomination));
+            const matchingRoles = response.filter((role) => role.username === storedUsername)
+            const hasAllowedRole = matchingRoles.some((role) => allowedRoles.includes(role.role_denomination))
             if (hasAllowedRole) {
-                return next();
+                return next()
             } else {
-                return next('/forbidden');
+                return next('/forbidden')
             }
         } catch (error) {
-            console.error(error);
+            console.error(error)
             // Redirect to login if there is an error fetching user roles
-            return next('/login');
+            return next('/login')
         }
     }
 
     // Continue to the next route
-    next();
-});
+    next()
+})
 
 function getAllowedRoles(routeMeta) {
     // Retrieve the allowed roles from the route meta or provide a default value

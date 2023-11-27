@@ -21,13 +21,13 @@
 import { ref, onMounted, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useCollectionsStore } from '@/stores';
-const collectionStore = useCollectionsStore();
-const { collections } = storeToRefs(collectionStore);
-const quartersCollections = ref([]);
-const quarterCollections = ref([]);
+const collectionStore = useCollectionsStore()
+const { collections } = storeToRefs(collectionStore)
+const quartersCollections = ref([])
+const quarterCollections = ref([])
 const quarters = ref([])
 
-const selectedQuarter = ref('');
+const selectedQuarter = ref('')
 
 onMounted(async () => {
   await collectionStore.getAll()
