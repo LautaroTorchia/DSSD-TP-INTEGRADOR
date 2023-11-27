@@ -23,7 +23,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '@/stores'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { fetchWrapper } from '@/helpers'
 
 const collectionStore = useCollectionsStore()
