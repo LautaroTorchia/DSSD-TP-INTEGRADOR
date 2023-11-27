@@ -24,3 +24,7 @@ export { default as DeliveryOrderCreate } from './commercial/DeliveryOrderCreate
 export { default as FabricationControl } from './fabrication/FabricationControl.vue'
 export { default as FabricationControlList } from './fabrication/FabricationControlList.vue'
 
+export { default as DistributionList } from './operations/distribution/DistributionList.vue'
+export { default as DistributionCreate } from './operations/distribution/DistributionCreate.vue'
+
+

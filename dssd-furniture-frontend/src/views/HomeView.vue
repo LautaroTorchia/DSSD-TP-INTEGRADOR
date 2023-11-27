@@ -21,6 +21,7 @@ const { user: authUser } = storeToRefs(authStore)
         entrega</router-link>
       <router-link :to="{ name: 'fabrication-control-list' }" class="btn btn-primary me-2">Controlar
         fabricación</router-link>
+      <router-link :to="{ name: 'distribution-list' }" class="btn btn-primary me-2">Distribución interna</router-link>
     </div>
   </div>
 </template>
