@@ -14,7 +14,9 @@ const orderedCollections = ref([]);
 onMounted(async () => {
   await collectionStore.getAll();
   collections.value.forEach(async (collection) => {
-    collection.hasFurniture = !!(await furnitureStore.getCollectionFurniture(collection.id)).length;
+    const furniture = await furnitureStore.getCollectionFurniture(collection.id)
+    console.log(!!furniture.length)
+    collection.hasFurniture = !!furniture.length;
   });
   orderedCollections.value = orderCollections(collections.value);
   loading.value = false;

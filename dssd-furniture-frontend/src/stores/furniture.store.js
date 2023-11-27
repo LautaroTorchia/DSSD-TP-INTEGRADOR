@@ -19,7 +19,7 @@ export const useFurnitureStore = defineStore({
     actions: {
         async getCollectionFurniture(collectionId) {
             await this.getAll()  
-            const filteredFurniture = this.furniture.filter(furniture => furniture.coleccion == collectionId)
+            const filteredFurniture = JSON.parse(localStorage.getItem('furniture')).furniture.filter(furniture => furniture.coleccion == collectionId) 
             this.furniture = filteredFurniture
             return filteredFurniture
         },

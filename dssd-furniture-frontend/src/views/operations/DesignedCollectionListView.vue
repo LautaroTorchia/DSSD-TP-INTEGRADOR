@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <h2>Colecciones diseñadas:</h2>
+  <div v-if="!loading">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -52,6 +53,7 @@
       </tbody>
     </table>
   </div>
+  <div v-else class="spinner-border spinner-border-sm"></div>
 </template>
 
 <script setup>
@@ -71,24 +73,28 @@ onBeforeMount(async () => {
   await collectionStore.getAll()
   const ordersPlaced = await fetchWrapper.get(`${baseUrl}/reservas/reservas-lugares-fabricacion/`)
   designedCollections.value = collections.value.filter((collection) => collection.designed && !collection.fabricated)
-  designedCollections.value.forEach(async (collection) => {
-    collection.loading = true
+  for (const collection of designedCollections.value) {
+    collection.loading = true;
     try {
       const materialAmount = await getBonitaVariable(collection.caseId, 'cantidad_materiales');
-      collection.cantidadMateriales = !!materialAmount
+      collection.cantidadMateriales = !!materialAmount;
       if (collection.cantidadMateriales) {
-        const fabricationPlan = await getBonitaVariable(collection.caseId, "plan_de_fabricacion")
-        collection.planDeFabricacion = !!fabricationPlan
+        const fabricationPlan = await getBonitaVariable(collection.caseId, "plan_de_fabricacion");
+        console.log(fabricationPlan);
+        if (fabricationPlan === "") {
+          collection.planDeFabricacion = false;
+        }
+        collection.planDeFabricacion = !!fabricationPlan;
       }
-      console.log(collection.planDeFabricacion)
+      console.log(collection.planDeFabricacion);
       if (collection.planDeFabricacion) {
-        collection.orders_placed = !!(ordersPlaced.find((order) => order.coleccion == collection.id))
+        collection.orders_placed = !!(ordersPlaced.find((order) => order.coleccion == collection.id));
       }
-    } catch (error) { 
-      console.error(error)
+    } catch (error) {
+      console.error(error);
     }
-    collection.loading = false
-  })
+    collection.loading = false;
+  }
   orderedCollections.value = designedCollections.value.slice().sort((a, b) => {
     const dateA = new Date(a.fecha_creacion);
     const dateB = new Date(b.fecha_creacion);

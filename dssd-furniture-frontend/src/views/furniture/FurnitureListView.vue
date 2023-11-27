@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!loading">
     <div class="d-flex justify-content-end mb-3">
       <router-link :to="{ name: 'furniture-create' }" class="btn btn-primary">Crear mueble</router-link>
     </div>
@@ -43,6 +43,7 @@
     </table>
     <BackButton />
   </div>
+  <div v-else class="spinner-border spinner-border-sm"></div>
 </template>
 
 <script setup>
