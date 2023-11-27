@@ -1,5 +1,5 @@
 <template>
-    <div name="parentdiv" class="d-flex">
+    <div v-if="!loading" name="parentdiv" class="d-flex">
         <div name="div1">
             <h1>Plan de fabricación</h1>
             <div class="card">
@@ -11,6 +11,8 @@
                             || factory.lugar_de_fabricacion.nombre || factory.telefono_reserva }}</label>
                     </div>
                     <button @click="clearSelection">Clear</button>
+                    <h2>Fecha de fabricación:</h2>
+                    {{ collection.fecha_de_lanzamiento_estimada }}
                     <div class="date-field form-group">
                         <label for="estimatedLaunchDate">Fecha estimada de lanzamiento:</label>
                         <input type="date" id="estimatedLaunchDate" v-model="estimatedLaunchDate" class="form-control" 
@@ -102,6 +104,8 @@
                 style="background-color: blue; color: white; padding: 10px 20px; border: none; cursor: pointer;">Submit</button>
         </div>
     </div>
+    <div v-else class="spinner-border spinner-border-sm"></div>
+        
 </template>
 
 
@@ -109,22 +113,25 @@
 import { onBeforeMount, ref } from 'vue'
 import { getBonitaVariable, setBonitaVariable, router, fetchWrapper } from '@/helpers'
 import { useCollectionsStore } from '@/stores'
+import { storeToRefs } from 'pinia'
 
+const collectionStore = useCollectionsStore()
+const { collections } = storeToRefs(collectionStore)
+const collection = ref(null)
 const collectionId = router.currentRoute.value.params.collection
 const caseId = JSON.parse(localStorage.getItem('collections')).collections.find((collection) => collection.id == collectionId).caseId
-
 const materialsFromProviders = ref([])
 const collectionMaterialList = ref([])
 const selectedMaterials = ref([])
 const factoryList = ref([])
 const selectedFactory = ref(null)
-const collectionStore = useCollectionsStore()
 const estimatedLaunchDate = ref(null)
 const slot_start_date = ref(null)
 const slot_end_date = ref(null)
 const lotQuantity = ref(1);
 const proveedoresUrl = `${import.meta.env.VITE_API_PROVEEDORES_URL}`
 const baseUrl = `${import.meta.env.VITE_API_URL}`
+const loading = ref(true)
 
 const fetchMaterialsFromProviders = async () => {
     let materialsQuery = await getBonitaVariable(caseId, "consulta_materiales")
@@ -314,6 +321,7 @@ const fechFabricationLocations = async () => {
 
 onBeforeMount(async () => {
     await collectionStore.getAll()
+    collection.value = collections.value.find((collection) => collection.id == collectionId)
     await fetchMaterialsFromProviders()
     await fechFabricationLocations()
     
@@ -332,6 +340,6 @@ onBeforeMount(async () => {
             selectedMaterials.value[material.id][materialProvided.id] = 0
         })
     })
-
+    loading.value = false
 })
 </script>

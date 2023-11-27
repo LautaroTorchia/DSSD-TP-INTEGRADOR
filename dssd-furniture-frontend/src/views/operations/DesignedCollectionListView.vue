@@ -17,12 +17,26 @@
               <td>{{ collection.description }}</td>
               <td>{{ collection.estimated_launch_date }}</td>
               <td>
-                <router-link
-                  :to="{ name: 'material-analysis', params: { collection: collection.id } }"
-                  class="btn btn-primary btn-sm"
-                >
-                  Analizar materiales
-                </router-link>
+                <div v-if="collection.cantidadMateriales">
+                      <div v-if="collection.planDeFabricacion">
+                          <div v-if="collection.orders_placed">
+                              <router-link
+                                  :to="{ name: 'material-control-list', params: { collection: collection.id } }">Controlar
+                                  entrega de materiales</router-link>
+                          </div>
+                          <div v-else-if="!collection.loading">
+                              <router-link
+                                  :to="{ name: 'fabrication-plan-confirm', params: { collection: collection.id } }">Confirmar
+                                  plan de fabricación</router-link>
+                          </div>
+                      </div>
+                      <div v-else-if="!collection.loading"><router-link
+                              :to="{ name: 'fabrication-plan', params: { collection: collection.id } }">Armar plan de
+                              fabricación</router-link></div>
+                  </div>
+                  <div v-else-if="!collection.loading"><router-link
+                          :to="{ name: 'material-analysis', params: { collection: collection.id } }">Analizar
+                          materiales</router-link></div>
               </td>
             </tr>
           </template>

@@ -60,9 +60,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getBonitaVariable, fetchWrapper, router } from '@/helpers'
+import { getBonitaVariable, fetchWrapper, router, advanceNamedBonitaTaskWithCollection } from '@/helpers'
 import { useCollectionsStore } from '@/stores'
 import { storeToRefs } from 'pinia'
+
 
 const collectionId = router.currentRoute.value.params.collection
 const baseUrl = `${import.meta.env.VITE_API_URL}`
@@ -88,12 +89,7 @@ onMounted(async () => {
   distributors.value = await fetchWrapper.get(`${baseUrl}/entregas/vendedores-finales/`)
   loading.value = false
 })
-
-const finishAssignment = () => {
-  if (lotQuantity.value !== totalQuantity.value) {
-    alert('Debe asignar todos los lotes disponibles')
-    return
-  }
+const postOrders = async () => {
   assignmentList.value.forEach(async (assignment) => {
     const body = {
       descripcion: 'Entrega de orden de entrega creada el' + new Date().toISOString().split('T')[0] + ' para la colección ',
@@ -105,6 +101,20 @@ const finishAssignment = () => {
     
     await fetchWrapper.post(`${baseUrl}/entregas/ordenes/`, body)
   })
+}
+
+const finishAssignment = () => {
+  if (lotQuantity.value !== totalQuantity.value) {
+    alert('Debe asignar todos los lotes disponibles')
+    return
+  }
+  try {
+    postOrders()
+    advanceNamedBonitaTaskWithCollection(collectionId, 'Generar orden de entrega')
+  } catch (error) {
+    console.error(error)
+  }
+
   router.push({ name: 'delivery-order-collection-list' })
 }
 
