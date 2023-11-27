@@ -76,9 +76,8 @@ onMounted(async () => {
             designTime: diffDays
         }
     })
-    if (planTimeList.length === 0) {
+    if (designTimeList.length === 0) {
         loading.value = false
-        hiddenVisibility.value = ""
         return
     }
     averageDesignTime.value = designTimeList.reduce((sum, designTime) => sum + designTime.designTime, 0) / designTimeList.length

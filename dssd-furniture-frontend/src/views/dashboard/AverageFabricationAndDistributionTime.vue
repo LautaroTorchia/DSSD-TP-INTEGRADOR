@@ -89,7 +89,6 @@ onMounted(async () => {
 
     if (planTimeList.length === 0) {
         loading.value = false
-        hiddenVisibility.value = ""
         return
     }
     averagePlanTime.value = planTimeList.reduce((sum, planTime) => sum + planTime.planTime, 0) / planTimeList.length
