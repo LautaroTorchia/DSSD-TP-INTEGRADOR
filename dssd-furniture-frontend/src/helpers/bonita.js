@@ -21,17 +21,12 @@ export const getBonitaTasks = async () => {
 
 export async function advanceNamedBonitaTaskWithCollection(collectionId, taskName) {
     const caseId = (await fetchWrapper.get(`${baseUrl}/coleccion/${collectionId}/`)).instancia_bonita
-    console.log("caseId",caseId)
     await advanceNamedBonitaTask(caseId, taskName)
 }
 
 export async function advanceNamedBonitaTask(caseId, taskName) {
-    console.log(taskName)
     const tasks = await fetchWrapper.get(`${baseUrl}/bonita/user-tasks/`)
-    console.log("tasks")
     const task = tasks.find(task => task.caseId === caseId.toString() && task.name === taskName )
-    console.log("task")
-    console.log(task)
     if (!task) {
         throw new Error('No se encontró la tarea')
     }

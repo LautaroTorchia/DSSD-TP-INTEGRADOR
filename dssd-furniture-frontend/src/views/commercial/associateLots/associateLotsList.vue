@@ -34,13 +34,18 @@ const showCollections = ref([])
 const loading = ref(true)
 
 onMounted(async () => {
-    let orders = await fetchWrapper.get(`${baseUrl}/entregas/ordenes/`)
+    const ordersPromise = fetchWrapper.get(`${baseUrl}/entregas/ordenes/`)
+    const lotOrderPromise = fetchWrapper.get(`${baseUrl}/entregas/orden-de-lote/`)
     await collectionStore.getAll()
     showCollections.value = collections.value.filter(collection => collection.fabricated)
-    orders = await orders
+    const orders = await ordersPromise
+    const lotOrders = await lotOrderPromise
     showCollections.value = showCollections.value.filter(collection => {
         const order = orders.find(order => order.id_coleccion == collection.id)
-        return order
+        if (!order) return false
+        const lotOrder = lotOrders.find(lotOrder => lotOrder.orden_entrega == order.id)
+        if (lotOrder) return false
+        return true
     })
     loading.value = false
 })
