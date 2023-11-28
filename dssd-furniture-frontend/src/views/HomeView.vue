@@ -22,6 +22,7 @@ const { user: authUser } = storeToRefs(authStore)
       <router-link :to="{ name: 'fabrication-control-list' }" class="btn btn-primary me-2">Controlar
         fabricación</router-link>
       <router-link :to="{ name: 'distribution-list' }" class="btn btn-primary me-2">Distribución interna</router-link>
+      <router-link :to="{ name: 'associate-lots-list' }" class="btn btn-primary me-2">Asociar lotes</router-link>
     </div>
   </div>
 </template>

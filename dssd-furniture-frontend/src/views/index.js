@@ -20,11 +20,15 @@ export { default as Dashboard } from './dashboard/Dashboard.vue'
 
 export { default as DeliveryOrderList } from './commercial/DeliveryOrderCollectionList.vue'
 export { default as DeliveryOrderCreate } from './commercial/DeliveryOrderCreate.vue'
+export { default as AssociateLotsList } from './commercial/associateLots/associateLotsList.vue'
+export { default as AssociateLots } from './commercial/associateLots/associateLots.vue'
 
 export { default as FabricationControl } from './fabrication/FabricationControl.vue'
 export { default as FabricationControlList } from './fabrication/FabricationControlList.vue'
 
 export { default as DistributionList } from './operations/distribution/DistributionList.vue'
 export { default as DistributionCreate } from './operations/distribution/DistributionCreate.vue'
+
+
 
 
