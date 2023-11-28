@@ -11,9 +11,9 @@
                             || factory.lugar_de_fabricacion.nombre || factory.telefono_reserva }}</label>
                     </div>
                     <button @click="clearSelection">Clear</button>
-                    <div v-if="collection.fecha_de_lanzamiento_estimada">
+                    <div v-if="collection.estimated_launch_date">
                         <h2>Fecha de fabricación:</h2>
-                        {{ collection.fecha_de_lanzamiento_estimada }}
+                        {{ collection.estimated_launch_date }}
                     </div>
                     <div v-else class="date-field form-group">
                         <label for="estimatedLaunchDate">Fecha estimada de lanzamiento:</label>
@@ -324,7 +324,7 @@ const fechFabricationLocations = async () => {
 onBeforeMount(async () => {
     await collectionStore.getAll()
     collection.value = collections.value.find((collection) => collection.id == collectionId)
-    estimatedLaunchDate.value = collection.value.fecha_lanzamiento_estimada
+    estimatedLaunchDate.value = collection.value.estimated_launch_date
     await fetchMaterialsFromProviders()
     await fechFabricationLocations()
     

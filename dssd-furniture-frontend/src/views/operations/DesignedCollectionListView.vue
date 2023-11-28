@@ -80,13 +80,11 @@ onBeforeMount(async () => {
       collection.cantidadMateriales = !!materialAmount;
       if (collection.cantidadMateriales) {
         const fabricationPlan = await getBonitaVariable(collection.caseId, "plan_de_fabricacion")
-        console.log(fabricationPlan)
         if (fabricationPlan === "") {
           collection.planDeFabricacion = false;
         }
         collection.planDeFabricacion = !!fabricationPlan;
       }
-      console.log(collection.planDeFabricacion)
       if (collection.planDeFabricacion) {
         collection.orders_placed = !!(ordersPlaced.find((order) => order.coleccion == collection.id))
       }

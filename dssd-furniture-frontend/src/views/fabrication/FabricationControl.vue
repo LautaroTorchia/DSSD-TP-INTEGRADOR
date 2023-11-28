@@ -51,7 +51,7 @@
         >
           Marcar como Fabricada
         </button>
-        <router-link :to="{ name: 'Renegotiate', params: { collectionId } }" class="btn btn-primary" :disabled="isFabricated">Renegociar</router-link>
+        <router-link :to="{ name: 'renegociate-collection', params: { collectionId } }" class="btn btn-primary" :disabled="isFabricated">Renegociar</router-link>
       </div>
     </div>
   </div>

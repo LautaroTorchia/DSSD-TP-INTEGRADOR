@@ -21,6 +21,7 @@ export const getBonitaTasks = async () => {
 
 export async function advanceNamedBonitaTaskWithCollection(collectionId, taskName) {
     const caseId = (await fetchWrapper.get(`${baseUrl}/coleccion/${collectionId}/`)).instancia_bonita
+    console.log("caseId",caseId)
     await advanceNamedBonitaTask(caseId, taskName)
 }
 
