@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { useAuthStore } from '@/stores'
-import { Home, Login, CollectionList, CollectionCreate, CollectionUpdate, FurnitureList, FurnitureCreate, FurnitureDetail, DesignedCollectionList, MaterialAnalysis, FabricationPlan, FabricationPlanConfirm, Dashboard, DeliveryOrderList, MaterialControl, DeliveryOrderCreate, FabricationControlList, Renegociate, DistributionList, DistributionCreate } from '@/views'
+import { Home, Login, CollectionList, CollectionCreate, CollectionUpdate, FurnitureList, FurnitureCreate, FurnitureDetail, DesignedCollectionList, MaterialAnalysis, FabricationPlan, FabricationPlanConfirm, Dashboard, DeliveryOrderList, MaterialControl, DeliveryOrderCreate, FabricationControlList, Renegociate, DistributionList, DistributionCreate, AssociateLotsList, AssociateLots } from '@/views'
 
 import ForbiddenPage from '@/views/forbidden.vue';
 import { FabricationControl } from '../views'
@@ -37,6 +37,8 @@ export const router = createRouter({
 
         { path: '/delivery-order-collection-list', component: DeliveryOrderList, name: 'delivery-order-collection-list', meta: { roles: ['commercial_analist', 'admin'] } },
         { path: '/:collection/delivery-order-create', component: DeliveryOrderCreate, name: 'delivery-order-create', meta: { roles: ['commercial_analist', 'admin'] } },
+        { path: '/associate-lots-list', component: AssociateLotsList, name: 'associate-lots-list', meta: { roles: ['commercial_analist', 'admin'] } },
+        { path: '/:collection/associate-lots', component: AssociateLots, name: 'associate-lots', meta: { roles: ['commercial_analist', 'admin'] } },
     ]
 })
 

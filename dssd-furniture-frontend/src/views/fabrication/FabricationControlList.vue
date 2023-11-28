@@ -1,14 +1,18 @@
 <template>
-    <div  >
-        <h1>Controlar Fabricacion</h1>
-        <ul class="list-group">
-            <li v-for="collection in showCollections" :key="collection.id" class="list-group-item">
-                <router-link :to="{ name: 'fabrication-control', params: { collection: collection.id } }" class="text-decoration-none">
-                    {{ collection.name }}
-                </router-link>
-            </li>
-        </ul>
+    <h1>Controlar Fabricacion</h1>
+    <div v-if="!loading">
+        <div>
+            <ul class="list-group">
+                <li v-for="collection in showCollections" :key="collection.id" class="list-group-item">
+                    <router-link :to="{ name: 'fabrication-control', params: { collection: collection.id } }"
+                        class="text-decoration-none">
+                        {{ collection.name }}
+                    </router-link>
+                </li>
+            </ul>
+        </div>
     </div>
+    <div v-else class="spinner-border spinner-border-sm"></div>
 </template>
 
 <script setup>
