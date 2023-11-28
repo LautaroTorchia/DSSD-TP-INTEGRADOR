@@ -53,7 +53,7 @@
         >
           Marcar como Fabricada
         </button>
-          <button class="btn btn-success me-2"
+          <button class="btn btn-primary me-2"
           @click="renegociate()"
           >
           Renegociar

@@ -98,24 +98,19 @@
       console.log(cantidadMateriales)
       const materialsArray = JSON.parse(cantidadMateriales)
 
-      for (let i=0; i < materialsArray.length; i++) {
+      for (let i = 0; i < materialsArray.length; i++) {
         const material = materialsArray[i];
-        const deliveredReservation = materialReservationsToUpdate.find(
+        const deliveredReservations = materialReservationsToUpdate.filter(
           (reservation) => reservation.nombre_material === material.name
-        )
-        console.log(deliveredReservation, " for material ",material.id)
-
-        if (deliveredReservation) {
-          console.log("inside if")
+        );
+        deliveredReservations.forEach((deliveredReservation) => {
           material.amount -= deliveredReservation.cantidad_pactada;
-
           // If the amount reaches 0, remove the element from the array
           if (material.amount <= 0) {
-            materialsArray.splice(i, 1) // Use the current index (i) to remove the element
+            materialsArray.splice(i, 1); // Use the current index (i) to remove the element
           }
-        }
-      }     
-
+        });
+      }
       await setBonitaVariable(caseId.value, "plan_de_fabricacion", "")
       await setBonitaVariable(caseId.value, 'cantidad_materiales',materialsArray)
       router.push('/')
