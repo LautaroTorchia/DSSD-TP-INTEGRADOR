@@ -1,7 +1,7 @@
 <template>
   <h1>Delivery Order Create</h1>
   <div v-if="!loading">
-    <h2>Ordenes de entrega sin asignar: {{ lotQuantity-totalQuantity }}</h2>
+    <h2>Ordenes de entrega sin asignar: {{ lotQuantity - totalQuantity }}</h2>
     <form @submit.prevent="submitForm">
       <div class="form-group" name="assignElement">
         <label for="distributorDropdown">Distribuidor:</label>
@@ -15,15 +15,14 @@
         <input type="number" id="quantityInput" class="form-control" v-model="quantity" :min="1" :max="lotQuantity"
           @input="handleInput" required>
       </div>
-      <p class="text-danger" >{{ amountError }}</p>
+      <p class="text-danger">{{ amountError }}</p>
       <div class="form-group">
         <label for="delivery-date">Fecha de entrega:</label>
-        <input type="date" id="delivery-date" class="form-control" v-model="deliveryDate" :min="end_date" required/>
+        <input type="date" id="delivery-date" class="form-control" v-model="deliveryDate" :min="end_date" required />
         <div class="text-danger" ref="deliveryDateError"></div>
       </div>
       <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary mt-2 mr-2" @click="assignOrders"
-          v-if="totalQuantity < lotQuantity">
+        <button type="submit" class="btn btn-primary mt-2 mr-2" @click="assignOrders" v-if="totalQuantity < lotQuantity">
           Asignar
         </button>
         <p v-else>Cantidad de lotes máxima alcanzada</p>
@@ -90,17 +89,20 @@ onMounted(async () => {
   loading.value = false
 })
 const postOrders = async () => {
+  let promise = []
   assignmentList.value.forEach(async (assignment) => {
-    const body = {
-      descripcion: 'Entrega de orden de entrega creada el' + new Date().toISOString().split('T')[0] + ' para la colección ',
-      fecha_entrega: assignment.deliveryDate,
-      se_entrego: false,
-      id_coleccion: collectionId,
-      vendedor_final: assignment.location,
+    for (let i = 0; i < assignment.lotsAmount; i++) {
+      const body = {
+        descripcion: 'Entrega de orden de entrega creada el ' + new Date().toISOString().split('T')[0] + ' para la colección ',
+        fecha_entrega: assignment.deliveryDate,
+        se_entrego: false,
+        id_coleccion: collectionId,
+        vendedor_final: assignment.location,
+      }
+      promise.push(fetchWrapper.post(`${baseUrl}/entregas/ordenes/`, body))
     }
-    
-    await fetchWrapper.post(`${baseUrl}/entregas/ordenes/`, body)
   })
+  await Promise.all(promise)
 }
 
 const finishAssignment = () => {

@@ -1,19 +1,23 @@
 <template>
-    <div>
-        <h1>Material Analysis for Collection {{ collectionName || collectionId }}</h1>
-        <div v-if="loading" class="spinner-border spinner-border-sm"></div>
-        <div v-else>
-            <form @submit.prevent="submitForm">
-                <div v-for="(piece, index) in furniture" :key="index">
-                    <h2>{{ piece.nombre }}</h2>
-                    <div v-for="(material, index) in piece.materiales" :key="index">
-                        <label>{{ material.nombre }}:</label>
-                        <input type="number" v-model="material.amount" min="1">
-                        kg
-                    </div>
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">Análisis de materiales de la coleccion {{ collectionName }}</h1>
+                <div v-if="loading" class="spinner-border spinner-border-sm"></div>
+                <div v-else>
+                    <form @submit.prevent="submitForm">
+                        <div v-for="(piece, index) in furniture" :key="index">
+                            <h2>Mueble: {{ piece.nombre }}</h2>
+                            <div v-for="(material, index) in piece.materiales" :key="index">
+                                <label>{{ material.nombre }}:</label>
+                                <input type="number" v-model="material.amount" min="1" class="form-control">
+                                kg
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Aceptar</button>
+                    </form>
                 </div>
-                <button type="submit">Aceptar</button>
-            </form>
+            </div>
         </div>
     </div>
 </template>
