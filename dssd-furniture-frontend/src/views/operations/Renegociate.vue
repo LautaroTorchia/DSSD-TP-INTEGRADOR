@@ -8,10 +8,10 @@
           <input type="date" id="newReleaseDate" v-model="newReleaseDate" class="form-control" required 
           :min="collection.estimated_launch_date"/>
         </div>
-        <div class="d-flex justify-content-between mt-4">
-          <button @click="renegotiate()" type="submit" class="btn btn-primary">Renegociar</button>
-          <button @click="cancelCollection()" type="submit" class="btn btn-danger">Cancelar coleccion</button>
-        </div>
+      <div class="d-flex justify-content-between mt-4">
+        <button @click="renegotiate" class="btn btn-primary">Renegociar</button>
+        <button @click="cancelCollection" class="btn btn-danger">Cancelar colección</button>
+      </div>
       </form>
     </div>
   </div>
@@ -127,10 +127,6 @@
   const cancelCollection = async () => {
     try {
 
-      //delete old delivery orders
-      deliveryOrders.value = await fetchWrapper.get(`${baseUrl}/entregas/ordenes/`)
-      deliveryOrders.value.map( async (order) => await fetchWrapper.delete(`${baseUrl}/entregas/ordenes/${order.id}/`))
-      
       //delete collection
       await fetchWrapper.delete(`${baseUrl}/coleccion/${collectionId}/`)
 

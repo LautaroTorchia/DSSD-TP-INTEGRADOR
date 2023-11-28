@@ -36,11 +36,15 @@
         </tr>
       </tbody>
     </table>
+    <!-- Error Message -->
+    <div v-if="errorMessage" class="alert alert-danger mt-3">
+      {{ errorMessage }}
+    </div>
     <div class="d-flex justify-content-between mt-4">
-      <button class="btn btn-primary" @click="renegociate" :disabled="!taskIsAvailable">
+      <button class="btn btn-primary" @click="renegociate">
         Renegociar entregas
       </button>
-      <button class="btn btn-success" @click="advanceToNextStep" :disabled="!allReservationsDelivered || !taskIsAvailable">
+      <button class="btn btn-success" @click="advanceToNextStep" :disabled="!allReservationsDelivered">
         Confirmar Entrega
       </button>
     </div>
@@ -62,16 +66,9 @@ const caseId=ref("")
 const filteredReservations = ref([])
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 const loading = ref(true)
+const errorMessage = ref('')
 
 
-const taskIsAvailable= computed(async () => {
-  const bonitaTasks = await getBonitaTask(caseId.value)
-  const controlarMaterialesTaskExists = bonitaTasks.some(task => task.displayName === "Controlar entrega de materiales")
-  if (controlarMaterialesTaskExists){
-    return true
-  }
-  return false 
-})
 const allReservationsDelivered = computed(() => {
   return filteredReservations.value.every((reservation) => reservation.markedAsDelivered)
 })
@@ -123,6 +120,14 @@ const confirmMarkAsDelivered = async (reservation) => {
 
 const renegociate = async () => {
   try {
+    const bonitaTasks = await getBonitaTask(caseId.value)
+    const controlarMaterialesTaskExists = bonitaTasks.some(task => task.displayName === 'Controlar entrega de materiales')
+    
+    if (!controlarMaterialesTaskExists) {
+      errorMessage.value = 'Error: Todavia no ha pasado el tiempo estipulado para finalizar el control'
+      return
+    }
+    
     await setBonitaVariable(caseId.value,"retraso_materiales","true")
     await advanceNamedBonitaTask(caseId.value,"Controlar entrega de materiales")
     router.push(`/${collectionId}/renegociate`)
@@ -133,9 +138,17 @@ const renegociate = async () => {
 
 const advanceToNextStep = async () => {
   try {
-    await setBonitaVariable(caseId.value,"retraso_materiales","false")
-    await advanceNamedBonitaTask(caseId.value,"Controlar entrega de materiales")
-    router.push("/")
+    const bonitaTasks = await getBonitaTask(caseId.value)
+    const controlarMaterialesTaskExists = bonitaTasks.some(task => task.displayName === 'Controlar entrega de materiales')
+    
+    if (!controlarMaterialesTaskExists) {
+      errorMessage.value = 'Error: Todavia no ha pasado el tiempo estipulado para finalizar el control'
+      return
+    }
+    
+    await setBonitaVariable(caseId.value, 'retraso_materiales', 'false')
+    await advanceNamedBonitaTask(caseId.value, 'Controlar entrega de materiales')
+    router.push('/')
   } catch (error) {
     console.error(error)
   }

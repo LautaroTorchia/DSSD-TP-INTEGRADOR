@@ -42,16 +42,22 @@
         </div>
       </div>
     </div>
-
+      <!-- Error Message -->
+      <div v-if="errorMessage" class="alert alert-danger mt-3">
+            {{ errorMessage }}
+      </div>
       <div class="mt-4">
         <button
           class="btn btn-success me-2"
           @click="markAsFabricated(filteredFabrications[0])"
-          :disabled="!taskIsAvailable"
         >
           Marcar como Fabricada
         </button>
-        <router-link :to="{ name: 'renegociate-collection', params: { collectionId } }" class="btn btn-primary" :disabled="isFabricated">Renegociar</router-link>
+          <button class="btn btn-success me-2"
+          @click="renegociate()"
+          >
+          Renegociar
+        </button>
       </div>
     </div>
   </div>
@@ -75,13 +81,7 @@
   const loading = ref(true)
   const baseUrl = `${import.meta.env.VITE_API_URL}`
   const proveedoresUrl = `${import.meta.env.VITE_API_PROVEEDORES_URL}`
-
-  const taskIsAvailable= computed(async () => {
-    const bonitaTasks = await getBonitaTask(caseId.value)
-    console.log(bonitaTasks)
-    const controlarMaterialesTaskExists = bonitaTasks.some(task => task.displayName === "Controlar fabricación")
-    return controlarMaterialesTaskExists
-  })
+  const errorMessage = ref('')
 
   const fetchFabricationReservations = async () => {
     try {
@@ -114,9 +114,26 @@ const fetchFabricationLocation = async (reservation,fabricationLocationId) => {
     return false
   }
 }
-  
+  const renegociate = async ( ) => {
+    const bonitaTasks = await getBonitaTask(caseId.value);
+    const controlarMaterialesTaskExists = bonitaTasks.some(task => task.displayName === 'Controlar fabricación');
+
+    if (!controlarMaterialesTaskExists) {
+      errorMessage.value = 'Error: Todavía no ha pasado el tiempo estipulado para finalizar el control';
+      return;
+    }
+    router.push({ name: 'yourRouteName' });
+  }
+
   const markAsFabricated = async (reservation) => {
     try {
+        const bonitaTasks = await getBonitaTask(caseId.value)
+        const controlarMaterialesTaskExists = bonitaTasks.some(task => task.displayName === 'Controlar fabricación')
+        
+        if (!controlarMaterialesTaskExists) {
+          errorMessage.value = 'Error: Todavia no ha pasado el tiempo estipulado para finalizar el control'
+          return
+        }
         const confirmed = window.confirm('Estas seguro que quieres confirmar a la coleccion como fabricada?')
         if (confirmed) {
             const plan_fabricacion=await getBonitaVariable(caseId.value, 'plan_de_fabricacion')
