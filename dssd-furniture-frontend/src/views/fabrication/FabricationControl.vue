@@ -124,7 +124,7 @@ const fetchFabricationLocation = async (reservation,fabricationLocationId) => {
     }
     router.push({ name: 'yourRouteName' });
   }
-  
+
   const markAsFabricated = async (reservation) => {
     try {
         const bonitaTasks = await getBonitaTask(caseId.value)

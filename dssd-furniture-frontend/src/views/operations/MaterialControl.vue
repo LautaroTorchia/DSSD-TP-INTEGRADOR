@@ -128,9 +128,9 @@ const renegociate = async () => {
       return
     }
     
-    await setBonitaVariable(caseId.value, 'retraso_materiales', 'true')
-    await advanceNamedBonitaTask(caseId.value, 'Controlar entrega de materiales')
-    router.push('/')
+    await setBonitaVariable(caseId.value,"retraso_materiales","true")
+    await advanceNamedBonitaTask(caseId.value,"Controlar entrega de materiales")
+    router.push(`/${collectionId}/renegociate`)
   } catch (error) {
     console.error(error)
   }

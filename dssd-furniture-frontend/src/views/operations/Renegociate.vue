@@ -1,4 +1,5 @@
 <template>
+  <div v-if="!loading">
     <div>
       <h1>Renegociar {{ collection.name }} </h1>
       <form @submit.prevent="renegotiate">
@@ -13,6 +14,8 @@
       </div>
       </form>
     </div>
+  </div>
+  <div v-else class="spinner-border spinner-border-sm"></div>
   </template>
   
 <script setup>
@@ -30,8 +33,10 @@
   const { collections } = storeToRefs(collectionStore)
   const deliveryOrders = ref([])
   const baseUrl = `${import.meta.env.VITE_API_URL}`
+  const loading = ref(true)
   
   const renegotiate = async () => {
+    loading.value = true
     try {
       const collectionIdAsInt = parseInt(collectionId, 10)
       // set bonita variables
@@ -110,7 +115,8 @@
           }
         }
       }     
-      console.log("despues de actualizar ", materialsArray[0],materialsArray[1])
+
+      await setBonitaVariable(caseId.value, "plan_de_fabricacion", "")
       await setBonitaVariable(caseId.value, 'cantidad_materiales',materialsArray)
       router.push('/')
     } catch (error) {
@@ -140,5 +146,6 @@
     collection.value=collections.value.find((collection) => collection.id === collectionIdAsInt)
     caseId.value = collections.value.find((collection) => collection.id === collectionIdAsInt).caseId
     })
+    loading.value = false
 </script>
   

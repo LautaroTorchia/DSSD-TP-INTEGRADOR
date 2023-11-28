@@ -23,7 +23,10 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useCollectionsStore } from '@/stores'
+import { fetchWrapper } from '@/helpers'
 import { ref, onMounted } from 'vue'
+
+const baseUrl = `${import.meta.env.VITE_API_URL}`
 
 const collectionStore = useCollectionsStore()
 const { collections } = storeToRefs(collectionStore)
@@ -31,8 +34,21 @@ const showCollections = ref([])
 const loading = ref(true)
 
 onMounted(async () => {
+    let distributions = fetchWrapper.get(`${baseUrl}/entregas/distribucion-de-lote/`)
+    let lots = fetchWrapper.get(`${baseUrl}/entregas/lotes-fabricados/`)
     await collectionStore.getAll()
-    showCollections.value = collections.value.filter(collection => {return collection.fabricated})
+    showCollections.value = collections.value.filter(collection => { return collection.fabricated })
+    distributions = await distributions
+    lots = await lots
+    showCollections.value= showCollections.value.filter(collection => {
+        let lotsDistributed = lots.filter(lot => {
+            return distributions.some(distribution => {
+                return distribution.lote == lot.id
+            })
+        })
+        let distributed = lotsDistributed.some(lot => lot.coleccion == collection.id )
+        return !distributed
+    })
     loading.value = false
 })
 
