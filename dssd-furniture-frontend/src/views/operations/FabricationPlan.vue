@@ -7,8 +7,7 @@
                     <h2>Lugares de fabricación:</h2>
                     <div v-for="(factory, index) in factoryList" :key="index">
                         <input type="radio" :id="'factory-' + index" :value="factory" v-model="selectedFactory">
-                        <label :for="'factory-' + index">{{ factory.nombre 
-                            || factory.lugar_de_fabricacion.nombre || factory.telefono_reserva }}</label>
+                        <label :for="'factory-' + index">{{ factory.nombre || factory.telefono_reserva }}</label>
                     </div>
                     <button @click="clearSelection">Clear</button>
                     <div v-if="collection.estimated_launch_date">
