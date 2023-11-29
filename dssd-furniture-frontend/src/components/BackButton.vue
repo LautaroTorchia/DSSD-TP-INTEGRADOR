@@ -1,8 +1,16 @@
 <template>
-    <button @click="() => {this.$router.back()}">Volver</button>
+  <button
+    @click="
+      () => {
+        this.$router.back();
+      }
+    "
+  >
+    Volver
+  </button>
 </template>
 <script>
-  export default {
-    name: 'BackButton',
-  }
-  </script>
+export default {
+  name: "BackButton",
+};
+</script>

@@ -1,11 +1,10 @@
-
 <script setup>
-import MaterialsGraph from './MaterialsGraph.vue'
-import QuarterlyCollections from './QuarterlyCollections.vue'
-import AverageDesignTime from './AverageDesignTime.vue'
-import AveragePlanTime from './AveragePlanTime.vue'
-import AverageFabricationAndDistributionTime from './AverageFabricationAndDistributionTime.vue'
-localStorage.setItem('bonitaTasks', '')
+import MaterialsGraph from "./MaterialsGraph.vue";
+import QuarterlyCollections from "./QuarterlyCollections.vue";
+import AverageDesignTime from "./AverageDesignTime.vue";
+import AveragePlanTime from "./AveragePlanTime.vue";
+import AverageFabricationAndDistributionTime from "./AverageFabricationAndDistributionTime.vue";
+localStorage.setItem("bonitaTasks", "");
 </script>
 
 <template>
