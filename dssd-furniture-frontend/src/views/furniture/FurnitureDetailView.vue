@@ -23,7 +23,6 @@
         </div>
     </div>
     <div v-else class="spinner-border spinner-border-sm"></div>
-    
 </template>
 
 <script setup>

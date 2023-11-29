@@ -96,8 +96,8 @@ const submit = async () => {
     })
     await Promise.all(promiseList)
     loading.value = false
+    await advanceNamedBonitaTaskWithCollection(collectionId, "Asociar lotes a orden de entrega")
     alert('Lotes asociados correctamente')
-    await advanceNamedBonitaTaskWithCollection(collectionId, "Asociar lotes a orden de entraga")
     router.push({ name: 'home' })
 }
 </script>

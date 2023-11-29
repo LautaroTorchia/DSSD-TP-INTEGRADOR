@@ -132,6 +132,7 @@ const slot_end_date = ref(null)
 const lotQuantity = ref(1)
 const proveedoresUrl = `${import.meta.env.VITE_API_PROVEEDORES_URL}`
 const baseUrl = `${import.meta.env.VITE_API_URL}`
+const renegociated = ref(false)
 const loading = ref(true)
 
 const fetchMaterialsFromProviders = async () => {
@@ -250,7 +251,7 @@ const validateFabricationDates = (finalList) => {
 }
 
 const onSubmit = () => {
-    const atLeastTwoImported = validateAtLeastTwoImported()
+    const atLeastTwoImported = renegociated.value || validateAtLeastTwoImported()
     const allMaterialsValid = validateAllMaterials()
     const factorySelected = validateFactorySelected()
     const checkedDatesSet = materialsFromProviders.value.filter(material => material.checked).every(material => validateDeliveryDate(material))
@@ -315,18 +316,18 @@ const fechFabricationLocations = async () => {
         fabricationLocations = JSON.parse(fabricationLocations)
         
     }
-    
     factoryList.value = fabricationLocations
-    
 }
 
 onBeforeMount(async () => {
+    const materialsPromise = fetchMaterialsFromProviders()
+    const fabricationsPromise = fechFabricationLocations()
     await collectionStore.getAll()
     collection.value = collections.value.find((collection) => collection.id == collectionId)
     estimatedLaunchDate.value = collection.value.estimated_launch_date
-    await fetchMaterialsFromProviders()
-    await fechFabricationLocations()
-    
+    renegociated.value = await getBonitaVariable(caseId, "se_renegocio") == "true"
+    await materialsPromise
+    await fabricationsPromise
     collectionMaterialList.value = JSON.parse(await getBonitaVariable(caseId, "cantidad_materiales"))
     const allMaterialsProvided = validateMaterialPresence(materialsFromProviders, collectionMaterialList.value)
     const canFulfillAllMaterials = validateMaterialAmount(materialsFromProviders, collectionMaterialList.value)
