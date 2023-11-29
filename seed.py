@@ -3,9 +3,10 @@ import random
 import requests
 from datetime import datetime, timedelta
 
-fake = Faker(["es_AR"])
-URL_PROVEEDORES="http://143.244.222.100/api/"
+fake = Faker(["es_AR", "es_ES","en_US", "en_GB", "pt_BR", "it_IT", "fr_FR"])
+URL_PROVEEDORES="http://45.55.124.8/api/proveedores/"
 URL_API="http://159.89.241.7/api/"
+TOKEN="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoyMDE2NTgzMDM4LCJqdGkiOiJhMjg4OWRmOTlhOTA0ZmZlODY2MTM4MTRjMzI0Y2I2YSIsInVzZXJfaWQiOjN9.xqxNbkK5UlBtLxfeA7BzOn_eLWy78tqXdh8DSR4fgv8"
 
 def generate_material_name():
     materials = [
@@ -86,6 +87,7 @@ def generate_materials_seed():
     materials = generate_materials()
 
     url = f"{URL_PROVEEDORES}materiales/"
+    print(url)
 
     headers = {
         "accept": "application/json",
@@ -173,13 +175,13 @@ def generate_material_provider():
     url = f"{URL_PROVEEDORES}proveedores-materiales/"
 
     for material in materials:
-        selected_providers = random.sample(providers, k=2)
+        selected_providers = random.sample(providers, k=3)
 
         for provider in selected_providers:
             payload = {
                 "actor": provider["id"],
                 "material": material["id"],
-                "cantidad_disponible": random.randint(1, 12)*10,
+                "cantidad_disponible": random.randint(1, 12)*100,
                 "plazo_entrega_dias": random.randint(1, 30),
                 "es_importado": random.choice([True, False])
             }
@@ -209,20 +211,23 @@ def generate_factory_reservation():
     url = f"{URL_PROVEEDORES}lugar-fabricacion-en-reserva/"
 
     for factory in factories:
+        print(factory)
+        print(type(factory))
         payload = {
             "telefono_reserva": fake.phone_number(),
             "fecha_final_disponible": (datetime.now() + timedelta(days=random.randint(365, 730))).strftime("%Y-%m-%d"),
-            "lugar_de_fabricacion": factory["id"]
+            "lugar_de_fabricacion": factory,
         }
         print(payload)
         response = requests.post(url, json=payload, headers=headers)
         print(response.status_code)
+        print(response.text)
         print(response.json())
 
 def generate_final_vendor():
     url = f"{URL_API}entregas/vendedores-finales/"
     print(url)
-    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAwNTIzMjAyLCJqdGkiOiJjZjc2NDM4OWEyYjQ0NWFmOWM2MzE4ODQyZjY1OTAxZiIsInVzZXJfaWQiOjN9.caQtkAFJQm7zXtl-OhxglqmwgV7zKCuL5Jx5cY0lNVQ"
+    token = TOKEN
     headers = {
         "accept": "application/json",
         "Content-Type": "application/json",
@@ -242,7 +247,7 @@ def generate_final_vendor():
 
 def generate_distribution_locations():
     url = f"{URL_API}entregas/lugares-de-distribucion/"
-    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoyMDE2NDYxNDQ0LCJqdGkiOiIwMWE1ZmM4YWViYzA0NWI0YTgxMjZhYzY2YzIxMWI0ZiIsInVzZXJfaWQiOjN9.JFzYc0VuuNcDQ9uVT6hx5WzvR9bOL1wJzk0k8FGzZQM"
+    token = TOKEN
     headers = {
         "accept": "application/json",
         "Content-Type": "application/json",
@@ -259,10 +264,10 @@ def generate_distribution_locations():
 
 
 if __name__ == "__main__":
-    #generate_materials_seed()
-    #generate_factories_seed()
-    #generate_providers_seed()
-    #generate_material_provider()
+    generate_materials_seed()
+    generate_factories_seed()
+    generate_providers_seed()
+    generate_material_provider()
     #generate_factory_reservation()
-    #generate_final_vendor()
+    generate_final_vendor()
     generate_distribution_locations()
