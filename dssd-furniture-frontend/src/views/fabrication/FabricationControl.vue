@@ -122,7 +122,9 @@ const fetchFabricationLocation = async (reservation,fabricationLocationId) => {
       errorMessage.value = 'Error: Todavía no ha pasado el tiempo estipulado para finalizar el control';
       return;
     }
-    router.push({ name: 'yourRouteName' });
+    await setBonitaVariable(caseId.value,"retraso_fabricacion","true")
+    await advanceNamedBonitaTask(caseId.value,"Controlar fabricación")
+    router.push(`/${collectionId}/renegociate`);
   }
 
   const markAsFabricated = async (reservation) => {

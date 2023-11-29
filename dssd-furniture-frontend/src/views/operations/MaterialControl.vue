@@ -65,6 +65,7 @@ const reservations = ref([])
 const caseId=ref("")
 const filteredReservations = ref([])
 const baseUrl = `${import.meta.env.VITE_API_URL}`
+const proveedoresUrl = `${import.meta.env.VITE_API_PROVEEDORES_URL}`
 const loading = ref(true)
 const errorMessage = ref('')
 
