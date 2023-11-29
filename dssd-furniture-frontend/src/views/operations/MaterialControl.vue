@@ -24,7 +24,7 @@
           <td>{{ reservation.nombre_material }}</td>
           <td>{{ reservation.cantidad_pactada }}</td>
           <td>{{ reservation.fecha_entrega_pactada }}</td>
-          <td>{{ reservation.sede_a_entregar }}</td>
+          <td>{{ reservation.lugar_de_fabricacion_nombre }}</td>
           <td>
             <span v-if="reservation.markedAsDelivered">Entregado</span>
             <span v-else>
@@ -82,16 +82,29 @@ const fetchReservations = async () => {
     // Fetch already delivered materials
     const responseDelivered = await fetchWrapper.get(`${baseUrl}/reservas/material-entregado/`)
 
-    // Update markedAsDelivered property based on delivered materials
-    reservations.value.forEach((reservation) => {
+    filterReservations()
+
+    filteredReservations.value.forEach(async (reservation) => {
       reservation.markedAsDelivered = responseDelivered.some(
         (delivered) => delivered.id_reserva === reservation.id
       )
+      await fetchFabricationLocation(reservation,reservation.sede_a_entregar)
     })
 
-    filterReservations()
   } catch (error) {
     console.error(error)
+  }
+}
+
+const fetchFabricationLocation = async (reservation,fabricationLocationId) => {
+  try {
+    const response = await fetchWrapper.get(`${proveedoresUrl}/proveedores/lugar-fabricacion/${fabricationLocationId}/`)
+    const fabricationLocation = response
+    reservation.lugar_de_fabricacion_nombre = fabricationLocation.nombre 
+    return true
+  } catch (error) {
+    console.error(error)
+    return false
   }
 }
 

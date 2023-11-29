@@ -41,10 +41,13 @@
         </tr>
       </tbody>
     </table>
-    <BackButton class="btn btn-primary mb-2" />
-    <router-link :to="{ name: 'collections' }" class="btn btn-primary">
-      Volver a listado de colecciones
-    </router-link>
+    <div>
+      <BackButton class="btn btn-primary me-2">Volver</BackButton>
+      <router-link :to="{ name: 'collections' }" class="btn btn-primary">
+        Volver a listado de colecciones
+      </router-link>
+    </div>
+
   </div>
   <div v-else class="spinner-border spinner-border-sm"></div>
 </template>
