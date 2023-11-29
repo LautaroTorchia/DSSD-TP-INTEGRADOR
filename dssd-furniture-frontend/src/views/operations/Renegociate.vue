@@ -91,28 +91,29 @@
         deliveredMaterialReservations.some(deliveredReservation => deliveredReservation.id_reserva === reservation.id)
       )
 
+      const behindSchedule = await getBonitaVariable(caseId.value, "retraso_materiales")
+      if (behindSchedule === "true") {
+        const cantidadMateriales = await getBonitaVariable(caseId.value, 'cantidad_materiales')
+        console.log(cantidadMateriales)
+        const materialsArray = JSON.parse(cantidadMateriales)
 
-      console.log("materiales_entregados: ",materialReservationsToUpdate)
+        for (let i = 0; i < materialsArray.length; i++) {
+          const material = materialsArray[i];
+          const deliveredReservations = materialReservationsToUpdate.filter(
+            (reservation) => reservation.nombre_material === material.name
+          );
+          deliveredReservations.forEach((deliveredReservation) => {
+            material.amount -= deliveredReservation.cantidad_pactada;
+            // If the amount reaches 0, remove the element from the array
+            if (material.amount <= 0) {
+              materialsArray.splice(i, 1); // Use the current index (i) to remove the element
+            }
+          });
+        }
 
-      const cantidadMateriales = await getBonitaVariable(caseId.value, 'cantidad_materiales')
-      console.log(cantidadMateriales)
-      const materialsArray = JSON.parse(cantidadMateriales)
-
-      for (let i = 0; i < materialsArray.length; i++) {
-        const material = materialsArray[i];
-        const deliveredReservations = materialReservationsToUpdate.filter(
-          (reservation) => reservation.nombre_material === material.name
-        );
-        deliveredReservations.forEach((deliveredReservation) => {
-          material.amount -= deliveredReservation.cantidad_pactada;
-          // If the amount reaches 0, remove the element from the array
-          if (material.amount <= 0) {
-            materialsArray.splice(i, 1); // Use the current index (i) to remove the element
-          }
-        });
+        await setBonitaVariable(caseId.value, 'cantidad_materiales',materialsArray)
       }
       await setBonitaVariable(caseId.value, "plan_de_fabricacion", "")
-      await setBonitaVariable(caseId.value, 'cantidad_materiales',materialsArray)
       router.push('/')
     } catch (error) {
       console.error(error)
