@@ -186,7 +186,6 @@ router.beforeEach(async (to, from, next) => {
       const response = await fetchWrapper.get(
         `${import.meta.env.VITE_API_URL}/authorization/user-role`,
       );
-      const userRoles = response.map((role) => role.role_denomination);
 
       const allowedRoles = getAllowedRoles(to.meta);
       console.log("allowed roles in that view: ", allowedRoles);

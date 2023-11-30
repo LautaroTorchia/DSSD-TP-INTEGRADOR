@@ -1,5 +1,6 @@
 <template>
   <div v-if="loading" class="spinner"></div>
+  <div v-else> {{ errorMessage }} </div>
   <div :style="{ visibility: hiddenVisibility }">
     <div
       class="chart-container"
@@ -28,6 +29,7 @@ const averagePlanTime = ref(0);
 const chart = ref(null);
 const loading = ref(true);
 const hiddenVisibility = ref("hidden");
+const errorMessage = ref("");
 
 const getTasks = async () => {
   let bonitaTasks = [];
@@ -117,6 +119,7 @@ onMounted(async () => {
     return dupPlanTimeList.find((planTime) => planTime.caseId === caseId);
   });
   if (planTimeList.length === 0) {
+    errorMessage.value ="No hay datos para mostrar";
     loading.value = false;
     return;
   }

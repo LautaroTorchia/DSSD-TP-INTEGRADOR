@@ -9,7 +9,7 @@ localStorage.setItem("bonitaTasks", "");
 
 <template>
   <div>
-    <h1>Dashboard</h1>
+    <h1 class="text-center">Dashboard</h1>
 
     <div class="row row-separator">
       <div class="col-md-6">

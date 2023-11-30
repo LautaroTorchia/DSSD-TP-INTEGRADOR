@@ -28,10 +28,16 @@ export const useAuthStore = defineStore({
         password,
       });
 
-      // update pinia state
-      this.user = user;
-
+      
       // store user details and jwt in local storage to keep user logged in between page refreshes
+      localStorage.setItem("user", JSON.stringify(user));
+      this.user = user;
+      user.role = await fetchWrapper.get(`${baseUrl}/authorization/user-role`)
+      user.role =user.role.filter(
+        (role) => role.username === user.username,
+      ).map((role) => role.role_denomination)
+      console.log(user.role)
+      this.user = user;
       localStorage.setItem("user", JSON.stringify(user));
 
       // redirect to previous url or default to home page
