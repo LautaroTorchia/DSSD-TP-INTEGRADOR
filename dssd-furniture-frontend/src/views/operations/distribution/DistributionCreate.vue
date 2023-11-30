@@ -1,4 +1,6 @@
 <template>
+    <Navbar />
+  <div class="container pt-4 pb-4">
   <form @submit.prevent="submitForm">
     <div v-if="!loading">
       <h2>Distribuir lotes: {{ collection.name }}</h2>
@@ -29,6 +31,7 @@
     </div>
     <div v-else class="spinner-border text-primary" role="status"></div>
   </form>
+</div>
 </template>
 
 <style>
@@ -52,6 +55,7 @@ import {
 } from "@/helpers";
 import { storeToRefs } from "pinia";
 import { useCollectionsStore } from "@/stores";
+import Navbar from "@/components/Navbar.vue";
 
 const collectionId = router.currentRoute.value.params.collection;
 const collectionStore = useCollectionsStore();

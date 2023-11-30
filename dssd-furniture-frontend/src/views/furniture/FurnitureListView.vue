@@ -1,69 +1,62 @@
 <template>
-  <div v-if="!loading">
-    <div class="d-flex justify-content-end mb-3">
-      <router-link :to="{ name: 'furniture-create' }" class="btn btn-primary"
-        >Crear mueble</router-link
-      >
-    </div>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">Nombre</th>
-          <th scope="col">Descripción</th>
-          <th scope="col">Días estimados</th>
-          <th scope="col">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <template v-if="furniture.length">
-          <template v-for="furnitureItem in furniture" :key="furnitureItem.id">
-            <tr>
-              <td>{{ furnitureItem.nombre }}</td>
-              <td>{{ furnitureItem.descripcion }}</td>
-              <td>{{ furnitureItem.plazo_fabricacion }} días</td>
-              <td>
-                <router-link
-                  :to="{
+  <Navbar />
+  <div class="container pt-4 pb-4">
+    <div v-if="!loading">
+      <div class="d-flex justify-content-end mb-3">
+        <router-link :to="{ name: 'furniture-create' }" class="btn btn-primary">Crear mueble</router-link>
+      </div>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Días estimados</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template v-if="furniture.length">
+            <template v-for="furnitureItem in furniture" :key="furnitureItem.id">
+              <tr>
+                <td>{{ furnitureItem.nombre }}</td>
+                <td>{{ furnitureItem.descripcion }}</td>
+                <td>{{ furnitureItem.plazo_fabricacion }} días</td>
+                <td>
+                  <router-link :to="{
                     name: 'furniture-detail',
                     params: { collection: collectionId, id: furnitureItem.id },
-                  }"
-                  class="btn btn-dark btn-sm"
-                >
-                  Ver
-                </router-link>
-                <button
-                  v-if="!collection.designed"
-                  @click="deleteFurniture(furnitureItem.id)"
-                  class="btn btn-danger btn-sm"
-                >
-                  Eliminar
-                </button>
-              </td>
-            </tr>
+                  }" class="btn btn-dark btn-sm">
+                    Ver
+                  </router-link>
+                  <button v-if="!collection.designed" @click="deleteFurniture(furnitureItem.id)"
+                    class="btn btn-danger btn-sm">
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            </template>
           </template>
-        </template>
-        <tr v-else>
-          <td colspan="4" class="text-center">
-            <div
-              v-if="furniture.loading"
-              class="spinner-border spinner-border-sm"
-            ></div>
-            <div v-else-if="furniture.error" class="text-danger mt-3">
-              Error loading furniture: {{ furniture.error }}
-            </div>
-            <div v-else>No hay muebles en la colección</div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div>
-      <BackButton class="btn btn-primary me-2">Volver</BackButton>
-      <router-link :to="{ name: 'collections' }" class="btn btn-primary">
-        Volver a listado de colecciones
-      </router-link>
+          <tr v-else>
+            <td colspan="4" class="text-center">
+              <div v-if="furniture.loading" class="spinner-border spinner-border-sm"></div>
+              <div v-else-if="furniture.error" class="text-danger mt-3">
+                Error loading furniture: {{ furniture.error }}
+              </div>
+              <div v-else>No hay muebles en la colección</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div>
+        <BackButton class="btn btn-primary me-2">Volver</BackButton>
+        <router-link :to="{ name: 'collections' }" class="btn btn-primary">
+          Volver a listado de colecciones
+        </router-link>
+      </div>
+    </div>
+    <div v-else class="spinner-border spinner-border-sm">
     </div>
   </div>
-  <div v-else class="spinner-border spinner-border-sm"></div>
 </template>
 
 <script setup>
@@ -72,6 +65,7 @@ import { useFurnitureStore, useCollectionsStore } from "@/stores";
 import { router } from "@/helpers";
 import BackButton from "@/components/BackButton.vue";
 import { onBeforeMount, ref } from "vue";
+import Navbar from "@/components/Navbar.vue";
 
 const furnitureStore = useFurnitureStore();
 const collectionStore = useCollectionsStore();

@@ -1,58 +1,54 @@
 <template>
-  <div v-if="loading">
-    <div class="spinner-border text-primary" role="status"></div>
-  </div>
-  <div v-else>
-    <h1>Control de materiales reservados de la colección {{ collectionId }}</h1>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Proveedor</th>
-          <th>Material</th>
-          <th>Cantidad Pactada</th>
-          <th>Fecha Entrega Pactada</th>
-          <th>Sede a Entregar</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="reservation in filteredReservations" :key="reservation.id">
-          <td>{{ reservation.id }}</td>
-          <td>{{ reservation.nombre_proveedor }}</td>
-          <td>{{ reservation.nombre_material }}</td>
-          <td>{{ reservation.cantidad_pactada }}</td>
-          <td>{{ reservation.fecha_entrega_pactada }}</td>
-          <td>{{ reservation.lugar_de_fabricacion_nombre }}</td>
-          <td>
-            <span v-if="reservation.markedAsDelivered">Entregado</span>
-            <span v-else>
-              <button
-                @click="confirmMarkAsDelivered(reservation)"
-                :disabled="reservation.markedAsDelivered"
-              >
-                Marcar como Entregado
-              </button>
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <!-- Error Message -->
-    <div v-if="errorMessage" class="alert alert-danger mt-3">
-      {{ errorMessage }}
+  <Navbar />
+  <div class="container pt-4 pb-4">
+    <div v-if="loading">
+      <div class="spinner-border text-primary" role="status"></div>
     </div>
-    <div class="d-flex justify-content-between mt-4">
-      <button class="btn btn-primary" @click="renegociate">
-        Renegociar entregas
-      </button>
-      <button
-        class="btn btn-success"
-        @click="advanceToNextStep"
-        :disabled="!allReservationsDelivered"
-      >
-        Confirmar Entrega
-      </button>
+    <div v-else>
+      <h1>Control de materiales reservados de la colección {{ collectionId }}</h1>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Proveedor</th>
+            <th>Material</th>
+            <th>Cantidad Pactada</th>
+            <th>Fecha Entrega Pactada</th>
+            <th>Sede a Entregar</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="reservation in filteredReservations" :key="reservation.id">
+            <td>{{ reservation.id }}</td>
+            <td>{{ reservation.nombre_proveedor }}</td>
+            <td>{{ reservation.nombre_material }}</td>
+            <td>{{ reservation.cantidad_pactada }}</td>
+            <td>{{ reservation.fecha_entrega_pactada }}</td>
+            <td>{{ reservation.lugar_de_fabricacion_nombre }}</td>
+            <td>
+              <span v-if="reservation.markedAsDelivered">Entregado</span>
+              <span v-else>
+                <button @click="confirmMarkAsDelivered(reservation)" :disabled="reservation.markedAsDelivered">
+                  Marcar como Entregado
+                </button>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Error Message -->
+      <div v-if="errorMessage" class="alert alert-danger mt-3">
+        {{ errorMessage }}
+      </div>
+      <div class="d-flex justify-content-between mt-4">
+        <button class="btn btn-primary" @click="renegociate">
+          Renegociar entregas
+        </button>
+        <button class="btn btn-success" @click="advanceToNextStep" :disabled="!allReservationsDelivered">
+          Confirmar Entrega
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -67,6 +63,7 @@ import {
   advanceNamedBonitaTask,
 } from "@/helpers";
 import { storeToRefs } from "pinia";
+import Navbar from "@/components/Navbar.vue"
 import { useCollectionsStore } from "@/stores";
 
 const collectionId = router.currentRoute.value.params.collection;

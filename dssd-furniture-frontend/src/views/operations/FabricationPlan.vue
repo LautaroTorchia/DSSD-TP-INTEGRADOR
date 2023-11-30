@@ -1,4 +1,6 @@
 <template>
+    <Navbar />
+  <div class="container pt-4 pb-4">
   <div v-if="!loading" name="parentdiv" class="d-flex">
     <div name="div1">
       <h1>Plan de fabricación</h1>
@@ -202,11 +204,14 @@
       </button>
     </div>
   </div>
-  <div v-else class="spinner-border spinner-border-sm"></div>
+  <div v-else class="spinner-border spinner-border-sm">
+  </div>
+  </div>
 </template>
 
 <script setup>
 import { onBeforeMount, ref } from "vue";
+import Navbar from "@/components/Navbar.vue";
 import {
   getBonitaVariable,
   setBonitaVariable,

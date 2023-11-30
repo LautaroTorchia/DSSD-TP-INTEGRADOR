@@ -1,98 +1,91 @@
 <template>
-  <div v-if="loading">
-    <div class="spinner-border text-primary" role="status"></div>
-  </div>
-  <div v-else class="fabrication-control container mt-4">
-    <h1 class="mb-4">
-      Control de Fabricación para la Colección {{ collectionId }}
-    </h1>
-
-    <div v-if="isFabricated" class="alert alert-success">
-      <p>La colección se ha fabricado con éxito.</p>
+  <Navbar />
+  <div class="container pt-4 pb-4">
+    <div v-if="loading">
+      <div class="spinner-border text-primary" role="status"></div>
     </div>
+    <div v-else class="fabrication-control container mt-4">
+      <h1 class="mb-4">
+        Control de Fabricación para la Colección {{ collectionId }}
+      </h1>
 
-    <div v-else>
-      <div class="d-flex flex-wrap justify-content-between mb-4">
-        <div class="card collection-card">
-          <div class="card-body">
-            <h5 class="card-title">Detalles de la Colección</h5>
-            <p class="card-text">
-              <strong>Nombre de la Colección:</strong> {{ collection.name }}
-            </p>
-            <p class="card-text">
-              <strong>Descripción:</strong> {{ collection.description }}
-            </p>
-            <p class="card-text">
-              <strong>Diseñada:</strong> {{ collection.designed ? "Sí" : "No" }}
-            </p>
-            <p class="card-text">
-              <strong>Fabricada:</strong>
-              {{ collection.fabricated ? "Sí" : "No" }}
-            </p>
-            <p class="card-text">
-              <strong>Fecha Estimada de Lanzamiento:</strong>
-              {{ collection.estimated_launch_date }}
-            </p>
-          </div>
-        </div>
+      <div v-if="isFabricated" class="alert alert-success">
+        <p>La colección se ha fabricado con éxito.</p>
       </div>
 
-      <p class="not-fabricated-text">
-        <strong>La colección aún no ha sido fabricada.</strong>
-      </p>
+      <div v-else>
+        <div class="d-flex flex-wrap justify-content-between mb-4">
+          <div class="card collection-card">
+            <div class="card-body">
+              <h5 class="card-title">Detalles de la Colección</h5>
+              <p class="card-text">
+                <strong>Nombre de la Colección:</strong> {{ collection.name }}
+              </p>
+              <p class="card-text">
+                <strong>Descripción:</strong> {{ collection.description }}
+              </p>
+              <p class="card-text">
+                <strong>Diseñada:</strong> {{ collection.designed ? "Sí" : "No" }}
+              </p>
+              <p class="card-text">
+                <strong>Fabricada:</strong>
+                {{ collection.fabricated ? "Sí" : "No" }}
+              </p>
+              <p class="card-text">
+                <strong>Fecha Estimada de Lanzamiento:</strong>
+                {{ collection.estimated_launch_date }}
+              </p>
+            </div>
+          </div>
+        </div>
 
-      <div
-        class="card reservation-card"
-        v-if="fabricationReservations.length > 0"
-      >
-        <div class="card-body">
-          <h5 class="card-title">Reservas de Fabricación</h5>
-          <div class="row">
-            <div
-              v-for="reservation in filteredFabrications"
-              :key="reservation.id"
-              class="col-md-6 mb-3"
-            >
-              <div class="card-body">
-                <h5 class="card-title">ID de Reserva: {{ reservation.id }}</h5>
-                <p class="card-text">
-                  <strong>Ubicación de Fabricación:</strong>
-                  {{ reservation.lugar_de_fabricacion_nombre }}
-                </p>
-                <p class="card-text">
-                  <strong>Fecha de Inicio:</strong>
-                  {{ reservation.fecha_inicio_reserva }}
-                </p>
-                <p class="card-text">
-                  <strong>Fecha de Fin:</strong>
-                  {{ reservation.fecha_fin_reserva }}
-                </p>
+        <p class="not-fabricated-text">
+          <strong>La colección aún no ha sido fabricada.</strong>
+        </p>
+
+        <div class="card reservation-card" v-if="fabricationReservations.length > 0">
+          <div class="card-body">
+            <h5 class="card-title">Reservas de Fabricación</h5>
+            <div class="row">
+              <div v-for="reservation in filteredFabrications" :key="reservation.id" class="col-md-6 mb-3">
+                <div class="card-body">
+                  <h5 class="card-title">ID de Reserva: {{ reservation.id }}</h5>
+                  <p class="card-text">
+                    <strong>Ubicación de Fabricación:</strong>
+                    {{ reservation.lugar_de_fabricacion_nombre }}
+                  </p>
+                  <p class="card-text">
+                    <strong>Fecha de Inicio:</strong>
+                    {{ reservation.fecha_inicio_reserva }}
+                  </p>
+                  <p class="card-text">
+                    <strong>Fecha de Fin:</strong>
+                    {{ reservation.fecha_fin_reserva }}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <!-- Error Message -->
-      <div v-if="errorMessage" class="alert alert-danger mt-3">
-        {{ errorMessage }}
-      </div>
-      <div class="mt-4">
-        <button
-          class="btn btn-success me-2"
-          @click="markAsFabricated(filteredFabrications[0])"
-        >
-          Marcar como Fabricada
-        </button>
-        <button class="btn btn-primary me-2" @click="renegociate()">
-          Renegociar
-        </button>
+        <!-- Error Message -->
+        <div v-if="errorMessage" class="alert alert-danger mt-3">
+          {{ errorMessage }}
+        </div>
+        <div class="mt-4">
+          <button class="btn btn-success me-2" @click="markAsFabricated(filteredFabrications[0])">
+            Marcar como Fabricada
+          </button>
+          <button class="btn btn-primary me-2" @click="renegociate()">
+            Renegociar
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import {
   router,
   fetchWrapper,
@@ -103,6 +96,7 @@ import {
 } from "@/helpers";
 import { storeToRefs } from "pinia";
 import { useCollectionsStore } from "@/stores";
+import Navbar from "@/components/Navbar.vue";
 
 const collectionId = router.currentRoute.value.params.collection;
 const collectionStore = useCollectionsStore();
@@ -253,8 +247,10 @@ onMounted(async () => {
 .card {
   width: 100%;
 }
+
 .not-fabricated-text {
   font-weight: bold;
-  color: #721c24; /* Dark red text color */
+  color: #721c24;
+  /* Dark red text color */
 }
 </style>

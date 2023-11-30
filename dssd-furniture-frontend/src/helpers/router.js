@@ -6,7 +6,6 @@ import {
   Login,
   CollectionList,
   CollectionCreate,
-  CollectionUpdate,
   FurnitureList,
   FurnitureCreate,
   FurnitureDetail,
@@ -54,12 +53,6 @@ export const router = createRouter({
       path: "/collection/create",
       component: CollectionCreate,
       name: "collection-create",
-      meta: { roles: ["designer", "admin"] },
-    },
-    {
-      path: "/collection/:collection/update",
-      component: CollectionUpdate,
-      name: "collection-update",
       meta: { roles: ["designer", "admin"] },
     },
     {

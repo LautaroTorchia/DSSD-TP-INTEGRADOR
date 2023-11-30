@@ -1,15 +1,11 @@
 <template>
   <div class="app-container bg-light">
-    <Navbar />
-    <div class="container pt-4 pb-4">
-      <RouterView />
-    </div>
+    <RouterView />
   </div>
 </template>
 
 <script setup>
 import { RouterView } from "vue-router";
-import Navbar from "@/components/NavBar.vue";
 </script>
 
 <style>

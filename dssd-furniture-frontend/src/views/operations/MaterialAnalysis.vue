@@ -1,28 +1,26 @@
 <template>
-  <div class="container d-flex justify-content-center align-items-center">
-    <div class="card">
-      <div class="card-body">
-        <h1 class="card-title">
-          Análisis de materiales de la coleccion {{ collectionName }}
-        </h1>
-        <div v-if="loading" class="spinner-border spinner-border-sm"></div>
-        <div v-else>
-          <form @submit.prevent="submitForm">
-            <div v-for="(piece, index) in furniture" :key="index">
-              <h2>Mueble: {{ piece.nombre }}</h2>
-              <div v-for="(material, index) in piece.materiales" :key="index">
-                <label>{{ material.nombre }}:</label>
-                <input
-                  type="number"
-                  v-model="material.amount"
-                  min="1"
-                  class="form-control"
-                />
-                kg
+  <Navbar />
+  <div class="container pt-4 pb-4">
+    <div class="container d-flex justify-content-center align-items-center">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="card-title">
+            Análisis de materiales de la coleccion {{ collectionName }}
+          </h1>
+          <div v-if="loading" class="spinner-border spinner-border-sm"></div>
+          <div v-else>
+            <form @submit.prevent="submitForm">
+              <div v-for="(piece, index) in furniture" :key="index">
+                <h2>Mueble: {{ piece.nombre }}</h2>
+                <div v-for="(material, index) in piece.materiales" :key="index">
+                  <label>{{ material.nombre }}:</label>
+                  <input type="number" v-model="material.amount" min="1" class="form-control" />
+                  kg
+                </div>
               </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Aceptar</button>
-          </form>
+              <button type="submit" class="btn btn-primary">Aceptar</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -36,8 +34,8 @@ import {
   router,
   advanceNamedBonitaTask,
   fetchWrapper,
-  getBonitaVariable,
 } from "@/helpers";
+import Navbar from "@/components/Navbar.vue"
 import { onMounted, ref } from "vue";
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`;
@@ -92,9 +90,9 @@ const submitForm = async () => {
 
   const confirmed = confirm(
     "Confirma estos materiales: \n" +
-      Object.entries(message)
-        .map(([material, amount]) => `${material}: ${amount}`)
-        .join("\n"),
+    Object.entries(message)
+      .map(([material, amount]) => `${material}: ${amount}`)
+      .join("\n"),
   );
 
   if (confirmed) {

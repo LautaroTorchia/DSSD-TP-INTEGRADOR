@@ -1,46 +1,41 @@
 <template>
-  <div v-if="!loading" class="card">
-    <div class="card-body">
-      <h2 class="card-title">Mueble {{ furniturePiece.nombre }}</h2>
-      <ul class="list-group">
-        <li class="list-group-item">Colección: {{ collection }}</li>
-        <li class="list-group-item">
-          Plazo de fabricación: {{ furniturePiece.plazo_fabricacion }}
-        </li>
-        <li class="list-group-item">
-          Descripción: {{ furniturePiece.descripcion }}
-        </li>
-        <li class="list-group-item">Imagen:</li>
-        <img
-          :src="`data:image/png;base64,${furniturePiece.imagen_content}`"
-          class="card-img-top"
-          alt="Furniture Image"
-        />
-        <li class="list-group-item">
-          Plan de fabricación:
-          <a
-            :href="`data:application/pdf;base64,${furniturePiece.plan_fabricacion_content}`"
-            download="plan_fabricacion.pdf"
-            >Descargar</a
-          >
-        </li>
-        <li class="list-group-item">
-          Materiales:
-          <span
-            v-for="(material, index) in furniturePiece.materiales"
-            :key="index"
-          >
-            {{ material
-            }}{{ index !== furniturePiece.materiales.length - 1 ? ", " : "" }}
-          </span>
-        </li>
-        <li class="list-group-item">
-          Colección: {{ furniturePiece.coleccion }}
-        </li>
-      </ul>
+  <Navbar />
+  <div class="container pt-4 pb-4">
+    <div v-if="!loading" class="card">
+      <div class="card-body">
+        <h2 class="card-title">Mueble {{ furniturePiece.nombre }}</h2>
+        <ul class="list-group">
+          <li class="list-group-item">Colección: {{ collection }}</li>
+          <li class="list-group-item">
+            Plazo de fabricación: {{ furniturePiece.plazo_fabricacion }}
+          </li>
+          <li class="list-group-item">
+            Descripción: {{ furniturePiece.descripcion }}
+          </li>
+          <li class="list-group-item">Imagen:</li>
+          <img :src="`data:image/png;base64,${furniturePiece.imagen_content}`" class="card-img-top"
+            alt="Furniture Image" />
+          <li class="list-group-item">
+            Plan de fabricación:
+            <a :href="`data:application/pdf;base64,${furniturePiece.plan_fabricacion_content}`"
+              download="plan_fabricacion.pdf">Descargar</a>
+          </li>
+          <li class="list-group-item">
+            Materiales:
+            <span v-for="(material, index) in furniturePiece.materiales" :key="index">
+              {{ material
+              }}{{ index !== furniturePiece.materiales.length - 1 ? ", " : "" }}
+            </span>
+          </li>
+          <li class="list-group-item">
+            Colección: {{ furniturePiece.coleccion }}
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div v-else class="spinner-border spinner-border-sm">
     </div>
   </div>
-  <div v-else class="spinner-border spinner-border-sm"></div>
 </template>
 
 <script setup>
@@ -51,6 +46,7 @@ import {
   useMaterialsStore,
 } from "@/stores";
 import { router } from "@/helpers";
+import Navbar from "@/components/Navbar.vue";
 
 const furniturePiece = ref({});
 const collection = ref("");

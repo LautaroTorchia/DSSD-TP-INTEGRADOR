@@ -1,105 +1,69 @@
 <template>
-  <h1>Delivery Order Create</h1>
-  <div v-if="!loading">
-    <h2>Ordenes de entrega sin asignar: {{ lotQuantity - totalQuantity }}</h2>
-    <form @submit.prevent="submitForm">
-      <div class="form-group" name="assignElement">
-        <label for="distributorDropdown">Distribuidor:</label>
-        <select
-          v-model="selectedLocation"
-          class="custom-select"
-          id="distributorDropdown"
-          required
-        >
-          <option
-            v-for="distributor in distributors"
-            :key="distributor.id"
-            :value="distributor"
-          >
-            {{ distributor.nombre }}
-          </option>
-        </select>
+  <Navbar />
+  <div class="container pt-4 pb-4">
+    <h1>Delivery Order Create</h1>
+    <div v-if="!loading">
+      <h2>Ordenes de entrega sin asignar: {{ lotQuantity - totalQuantity }}</h2>
+      <form @submit.prevent="submitForm">
+        <div class="form-group" name="assignElement">
+          <label for="distributorDropdown">Distribuidor:</label>
+          <select v-model="selectedLocation" class="custom-select" id="distributorDropdown" required>
+            <option v-for="distributor in distributors" :key="distributor.id" :value="distributor">
+              {{ distributor.nombre }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="quantityInput">Cantidad:</label>
+          <input type="number" id="quantityInput" class="form-control" v-model="quantity" :min="1" :max="lotQuantity"
+            @input="handleInput" required />
+        </div>
+        <p class="text-danger">{{ amountError }}</p>
+        <div class="form-group">
+          <label for="delivery-date">Fecha de entrega:</label>
+          <input type="date" id="delivery-date" class="form-control" v-model="deliveryDate" :min="end_date" required />
+          <div class="text-danger" ref="deliveryDateError"></div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary mt-2 mr-2" @click="assignOrders"
+            v-if="totalQuantity < lotQuantity">
+            Asignar
+          </button>
+          <p v-else>Cantidad de lotes máxima alcanzada</p>
+          <router-link :to="{ name: 'delivery-order-collection-list' }" class="btn btn-danger mt-2">Cancelar</router-link>
+        </div>
+      </form>
+      <button type="submit" class="btn btn-primary mt-2 mr-2" @click="finishAssignment">
+        Confirmar
+      </button>
+      <div>
+        <h3>Asignaciones:</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Punto de venta</th>
+              <th>Cantidad de lotes</th>
+              <th>Fecha de entrega</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="assignment in assignmentList" :key="assignment.location">
+              <td>{{ assignment.assignmentTag.location }}</td>
+              <td>{{ assignment.lotsAmount }}</td>
+              <td>{{ assignment.assignmentTag.formattedDate }}</td>
+              <td>
+                <button class="btn btn-danger btn-sm" @click="removeAssignment(assignment)">
+                  X
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="form-group">
-        <label for="quantityInput">Cantidad:</label>
-        <input
-          type="number"
-          id="quantityInput"
-          class="form-control"
-          v-model="quantity"
-          :min="1"
-          :max="lotQuantity"
-          @input="handleInput"
-          required
-        />
-      </div>
-      <p class="text-danger">{{ amountError }}</p>
-      <div class="form-group">
-        <label for="delivery-date">Fecha de entrega:</label>
-        <input
-          type="date"
-          id="delivery-date"
-          class="form-control"
-          v-model="deliveryDate"
-          :min="end_date"
-          required
-        />
-        <div class="text-danger" ref="deliveryDateError"></div>
-      </div>
-      <div class="d-flex justify-content-end">
-        <button
-          type="submit"
-          class="btn btn-primary mt-2 mr-2"
-          @click="assignOrders"
-          v-if="totalQuantity < lotQuantity"
-        >
-          Asignar
-        </button>
-        <p v-else>Cantidad de lotes máxima alcanzada</p>
-        <router-link
-          :to="{ name: 'delivery-order-collection-list' }"
-          class="btn btn-danger mt-2"
-          >Cancelar</router-link
-        >
-      </div>
-    </form>
-    <button
-      type="submit"
-      class="btn btn-primary mt-2 mr-2"
-      @click="finishAssignment"
-    >
-      Confirmar
-    </button>
-    <div>
-      <h3>Asignaciones:</h3>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Punto de venta</th>
-            <th>Cantidad de lotes</th>
-            <th>Fecha de entrega</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="assignment in assignmentList" :key="assignment.location">
-            <td>{{ assignment.assignmentTag.location }}</td>
-            <td>{{ assignment.lotsAmount }}</td>
-            <td>{{ assignment.assignmentTag.formattedDate }}</td>
-            <td>
-              <button
-                class="btn btn-danger btn-sm"
-                @click="removeAssignment(assignment)"
-              >
-                X
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
     </div>
+    <div v-else-if="loading" class="spinner-border spinner-border-sm"></div>
   </div>
-  <div v-else-if="loading" class="spinner-border spinner-border-sm"></div>
 </template>
 
 <script setup>

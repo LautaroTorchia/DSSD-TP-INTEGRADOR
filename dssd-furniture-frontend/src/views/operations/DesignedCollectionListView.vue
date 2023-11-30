@@ -1,4 +1,6 @@
 <template>
+    <Navbar />
+  <div class="container pt-4 pb-4">
   <h2>Colecciones diseñadas:</h2>
   <div v-if="!loading">
     <table class="table table-striped">
@@ -86,7 +88,9 @@
       </tbody>
     </table>
   </div>
-  <div v-else class="spinner-border spinner-border-sm"></div>
+  <div v-else class="spinner-border spinner-border-sm">
+  </div>
+  </div>
 </template>
 
 <script setup>
@@ -94,6 +98,7 @@ import { storeToRefs } from "pinia";
 import { useCollectionsStore } from "@/stores";
 import { getBonitaVariable, fetchWrapper } from "@/helpers";
 import { onBeforeMount, ref } from "vue";
+import Navbar from "@/components/Navbar.vue";
 const baseUrl = `${import.meta.env.VITE_API_URL}`;
 
 const collectionStore = useCollectionsStore();

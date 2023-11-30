@@ -1,27 +1,24 @@
 <template>
-  <h1>Controlar Fabricacion</h1>
-  <div v-if="!loading">
-    <div>
-      <ul class="list-group">
-        <li
-          v-for="collection in showCollections"
-          :key="collection.id"
-          class="list-group-item"
-        >
-          <router-link
-            :to="{
+  <Navbar />
+  <div class="container pt-4 pb-4">
+    <h1>Controlar Fabricacion</h1>
+    <div v-if="!loading">
+      <div>
+        <ul class="list-group">
+          <li v-for="collection in showCollections" :key="collection.id" class="list-group-item">
+            <router-link :to="{
               name: 'fabrication-control',
               params: { collection: collection.id },
-            }"
-            class="text-decoration-none"
-          >
-            {{ collection.name }}
-          </router-link>
-        </li>
-      </ul>
+            }" class="text-decoration-none">
+              {{ collection.name }}
+            </router-link>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div v-else class="spinner-border spinner-border-sm">
     </div>
   </div>
-  <div v-else class="spinner-border spinner-border-sm"></div>
 </template>
 
 <script setup>
@@ -29,6 +26,7 @@ import { onMounted, ref } from "vue";
 import { getBonitaVariable } from "@/helpers";
 import { storeToRefs } from "pinia";
 import { useCollectionsStore } from "@/stores";
+import Navbar from "@/components/Navbar.vue";
 
 const collectionStore = useCollectionsStore();
 const { collections } = storeToRefs(collectionStore);

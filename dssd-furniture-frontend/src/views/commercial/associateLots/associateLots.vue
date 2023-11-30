@@ -1,4 +1,6 @@
 <template>
+    <Navbar />
+  <div class="container pt-4 pb-4">
   <div v-if="!loading" class="container">
     <div class="card shadow p-3 mb-5 bg-white rounded">
       <h2 class="card-title">Órdenes</h2>
@@ -47,10 +49,12 @@
     </div>
   </div>
   <div v-else class="spinner-border"></div>
+</div>
 </template>
 
 <script setup>
 import { onMounted, ref } from "vue";
+import Navbar from "@/components/Navbar.vue";
 import {
   fetchWrapper,
   router,

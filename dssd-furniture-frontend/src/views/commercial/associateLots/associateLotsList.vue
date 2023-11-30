@@ -1,4 +1,6 @@
 <template>
+    <Navbar />
+  <div class="container pt-4 pb-4">
   <div>
     <h1>Asociar ordenes de colecciones:</h1>
     <div v-if="!loading">
@@ -29,6 +31,7 @@
     </div>
     <div v-else>No hay nada</div>
   </div>
+  </div>
 </template>
 
 <script setup>
@@ -36,6 +39,7 @@ import { storeToRefs } from "pinia";
 import { useCollectionsStore } from "@/stores";
 import { fetchWrapper } from "@/helpers";
 import { ref, onMounted } from "vue";
+import Navbar from "@/components/Navbar.vue";
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`;
 

@@ -20,6 +20,7 @@ function onSubmit(values, { setErrors }) {
 </script>
 
 <template>
+    <div class="container pt-4 pb-4">
   <div>
     <h2>Login</h2>
     <Form
@@ -61,4 +62,5 @@ function onSubmit(values, { setErrors }) {
       </div>
     </Form>
   </div>
+</div>
 </template>

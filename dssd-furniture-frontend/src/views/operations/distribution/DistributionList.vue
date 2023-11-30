@@ -1,33 +1,29 @@
 <template>
-  <div>
-    <h1>Asociar distribucion interna</h1>
-    <div v-if="!loading">
-      <ul
-        v-for="collection in showCollections"
-        :key="collection.id"
-        class="list-group"
-      >
-        <li class="list-group-item">
-          <div class="d-flex justify-content-between align-items-center">
-            <span>{{ collection.name }}</span>
-            <router-link
-              :to="{
+  <Navbar />
+  <div class="container pt-4 pb-4">
+    <div>
+      <h1>Asociar distribucion interna</h1>
+      <div v-if="!loading">
+        <ul v-for="collection in showCollections" :key="collection.id" class="list-group">
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+              <span>{{ collection.name }}</span>
+              <router-link :to="{
                 name: 'distribution-create',
                 params: { collection: collection.id },
-              }"
-              class="btn btn-primary"
-            >
-              <slot>Asociar lotes</slot>
-            </router-link>
-          </div>
-        </li>
-      </ul>
+              }" class="btn btn-primary">
+                <slot>Asociar lotes</slot>
+              </router-link>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div v-else-if="loading" class="spinner-border spinner-border-sm"></div>
+      <div v-else-if="collections.error" class="text-danger">
+        Error loading collections: {{ collections.error }}
+      </div>
+      <div v-else>No hay nada</div>
     </div>
-    <div v-else-if="loading" class="spinner-border spinner-border-sm"></div>
-    <div v-else-if="collections.error" class="text-danger">
-      Error loading collections: {{ collections.error }}
-    </div>
-    <div v-else>No hay nada</div>
   </div>
 </template>
 
@@ -36,6 +32,7 @@ import { storeToRefs } from "pinia";
 import { useCollectionsStore } from "@/stores";
 import { fetchWrapper } from "@/helpers";
 import { ref, onMounted } from "vue";
+import Navbar from "@/components/Navbar.vue";
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`;
 

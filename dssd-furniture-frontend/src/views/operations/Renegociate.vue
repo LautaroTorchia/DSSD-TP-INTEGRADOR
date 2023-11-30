@@ -1,4 +1,6 @@
 <template>
+  <Navbar />
+    <div class="container pt-4 pb-4">
   <div v-if="!loading">
     <div>
       <h1>Renegociar {{ collection.name }}</h1>
@@ -28,10 +30,12 @@
     </div>
   </div>
   <div v-else class="spinner-border spinner-border-sm"></div>
+</div>
+
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import {
   router,
   setBonitaVariable,
@@ -39,6 +43,7 @@ import {
   advanceNamedBonitaTask,
   getBonitaVariable,
 } from "@/helpers";
+import Navbar from "@/components/Navbar.vue"
 import { storeToRefs } from "pinia";
 import { useCollectionsStore } from "@/stores";
 
