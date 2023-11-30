@@ -39,6 +39,8 @@ const deleteCollection = async (id) => {
   if (confirmed) {
     try {
       await collectionStore.delete(id);
+      await collectionStore.getAll();
+      orderedCollections.value = orderCollections(collections.value)
     } catch (error) {
       alert("Error al borrar la colección");
       console.error(error);
@@ -120,5 +122,10 @@ const finishCollection = async (collection) => {
         </tbody>
       </table>
     </div>
+    <p class="text-center">
+      <router-link :to="{ name: 'home' }" class="btn btn-secondary">
+        Volver
+      </router-link>
+    </p>
   </div>
 </template>

@@ -26,17 +26,22 @@ async function handleFormSubmission(formData) {
 }
 </script>
 <template>
-    <Navbar />
+  <Navbar />
   <div class="container pt-4 pb-4">
-  <div>
-    <div v-if="loading">
-      <div class="spinner-border spinner-border-sm"></div>
-      <h2 class="text-center">Creando mueble</h2>
+    <div>
+      <div v-if="loading">
+        <div class="spinner-border spinner-border-sm"></div>
+        <h2 class="text-center">Creando mueble</h2>
+      </div>
+      <div v-else>
+        <h2 class="text-center">Crear Mueble de la colección</h2>
+        <FurnitureForm @form-submitted="handleFormSubmission" />
+      </div>
     </div>
-    <div v-else>
-      <h2 class="text-center">Crear Mueble de la colección</h2>
-      <FurnitureForm @form-submitted="handleFormSubmission" />
-    </div>
-  </div>
+    <p class="text-center">
+      <router-link :to="{ name: 'furniture' }" class="btn btn-secondary">
+        Volver
+      </router-link>
+    </p>
   </div>
 </template>

@@ -81,6 +81,11 @@
         </div>
       </div>
     </div>
+    <p class="text-center">
+      <router-link :to="{ name: 'fabrication-control-list' }" class="btn btn-secondary">
+        Volver
+      </router-link>
+    </p>
   </div>
 </template>
 

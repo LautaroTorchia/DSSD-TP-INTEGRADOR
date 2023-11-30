@@ -4,34 +4,29 @@
     <div>
       <h2 class="text-center">Crear Colección</h2>
       <CollectionForm @form-submitted="handleFormSubmission" />
+      <p class="text-center">
+        <router-link :to="{ name: 'collections' }" class="btn btn-secondary">
+          Volver
+        </router-link>
+      </p>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import { router } from "../../helpers/router";
 import CollectionForm from "./CollectionForm.vue";
 import Navbar from "@/components/Navbar.vue"
 import { useCollectionsStore } from "@/stores";
 
-export default {
-  components: {
-    CollectionForm,
-  },
-  data() {
-    return {
-      formData: {
-        name: "",
-        description: "",
-      },
-    };
-  },
-  methods: {
-    handleFormSubmission(formData) {
-      const collectionStore = useCollectionsStore();
-      collectionStore.create(formData);
-      router.push({ name: "collections" });
-    },
-  },
+const formData = {
+  name: "",
+  description: "",
 };
+
+function handleFormSubmission(formData) {
+  const collectionStore = useCollectionsStore();
+  collectionStore.create(formData);
+  router.push({ name: "collections" });
+}
 </script>

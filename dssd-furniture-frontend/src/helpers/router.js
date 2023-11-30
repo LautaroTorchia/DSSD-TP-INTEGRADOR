@@ -164,7 +164,7 @@ export const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const publicPages = ["/login", "/forbidden", "/"]; // Exclude /forbidden from authentication check
+  const publicPages = ["/login", "/forbidden"]; // Exclude /forbidden from authentication check
   const authRequired = !publicPages.includes(to.path);
   const auth = useAuthStore();
 

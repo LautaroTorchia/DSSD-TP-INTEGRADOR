@@ -1,95 +1,80 @@
 <template>
-    <Navbar />
+  <Navbar />
   <div class="container pt-4 pb-4">
-  <h2>Colecciones diseñadas:</h2>
-  <div v-if="!loading">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">Nombre</th>
-          <th scope="col">Descripción</th>
-          <th scope="col">Fecha de lanzamiento estimada</th>
-          <th scope="col">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <template v-if="!loading">
-          <template
-            v-for="(collection, index) in orderedCollections"
-            :key="collection.id"
-          >
-            <tr
-              :style="{
+    <h2>Colecciones diseñadas:</h2>
+    <div v-if="!loading">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Fecha de lanzamiento estimada</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template v-if="!loading">
+            <template v-for="(collection, index) in orderedCollections" :key="collection.id">
+              <tr :style="{
                 'background-color': index % 2 === 0 ? '#fff' : '#f8f9fa',
-              }"
-            >
-              <td>
-                <strong>{{ collection.name }}</strong>
-              </td>
-              <td>{{ collection.description }}</td>
-              <td>{{ collection.estimated_launch_date }}</td>
-              <td>
-                <div v-if="collection.cantidadMateriales">
-                  <div v-if="collection.planDeFabricacion">
-                    <div v-if="collection.orders_placed">
-                      <router-link
-                        :to="{
+              }">
+                <td>
+                  <strong>{{ collection.name }}</strong>
+                </td>
+                <td>{{ collection.description }}</td>
+                <td>{{ collection.estimated_launch_date }}</td>
+                <td>
+                  <div v-if="collection.cantidadMateriales">
+                    <div v-if="collection.planDeFabricacion">
+                      <div v-if="collection.orders_placed">
+                        <router-link :to="{
                           name: 'material-control-list',
                           params: { collection: collection.id },
-                        }"
-                        >Controlar entrega de materiales</router-link
-                      >
-                    </div>
-                    <div v-else-if="!collection.loading">
-                      <router-link
-                        :to="{
+                        }">Controlar entrega de materiales</router-link>
+                      </div>
+                      <div v-else-if="!collection.loading">
+                        <router-link :to="{
                           name: 'fabrication-plan-confirm',
                           params: { collection: collection.id },
-                        }"
-                        >Confirmar plan de fabricación</router-link
-                      >
+                        }">Confirmar plan de fabricación</router-link>
+                      </div>
+                    </div>
+                    <div v-else-if="!collection.loading">
+                      <router-link :to="{
+                        name: 'fabrication-plan',
+                        params: { collection: collection.id },
+                      }">Armar plan de fabricación</router-link>
                     </div>
                   </div>
                   <div v-else-if="!collection.loading">
-                    <router-link
-                      :to="{
-                        name: 'fabrication-plan',
-                        params: { collection: collection.id },
-                      }"
-                      >Armar plan de fabricación</router-link
-                    >
-                  </div>
-                </div>
-                <div v-else-if="!collection.loading">
-                  <router-link
-                    :to="{
+                    <router-link :to="{
                       name: 'material-analysis',
                       params: { collection: collection.id },
-                    }"
-                    >Analizar materiales</router-link
-                  >
-                </div>
-              </td>
-            </tr>
+                    }">Analizar materiales</router-link>
+                  </div>
+                </td>
+              </tr>
+            </template>
           </template>
-        </template>
-        <tr v-else>
-          <td colspan="4" class="text-center">
-            <div
-              v-if="collections.loading"
-              class="spinner-border spinner-border-sm"
-            ></div>
-            <div v-else-if="collections.error" class="text-danger mt-3">
-              Error loading collections: {{ collections.error }}
-            </div>
-            <div v-else>No hay nada</div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div v-else class="spinner-border spinner-border-sm">
-  </div>
+          <tr v-else>
+            <td colspan="4" class="text-center">
+              <div v-if="collections.loading" class="spinner-border spinner-border-sm"></div>
+              <div v-else-if="collections.error" class="text-danger mt-3">
+                Error loading collections: {{ collections.error }}
+              </div>
+              <div v-else>No hay nada</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div v-else class="spinner-border spinner-border-sm">
+    </div>
+    <p class="text-center">
+      <router-link :to="{ name: 'home' }" class="btn btn-secondary">
+        Volver
+      </router-link>
+    </p>
   </div>
 </template>
 

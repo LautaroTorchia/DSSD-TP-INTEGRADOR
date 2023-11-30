@@ -30,7 +30,13 @@
       </div>
     </div>
     <div v-else class="spinner-border text-primary" role="status"></div>
+    <p class="text-center">
+      <router-link :to="{ name: 'distribution-list' }" class="btn btn-secondary">
+        Volver
+      </router-link>
+    </p>
   </form>
+  
 </div>
 </template>
 

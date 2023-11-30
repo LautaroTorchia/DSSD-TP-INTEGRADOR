@@ -47,14 +47,14 @@
           </tr>
         </tbody>
       </table>
-      <div>
-        <router-link :to="{ name: 'collections' }" class="btn btn-primary">
-          Volver a listado de colecciones
-        </router-link>
-      </div>
     </div>
     <div v-else class="spinner-border spinner-border-sm">
     </div>
+    <p class="text-center">
+      <router-link :to="{ name: 'collections' }" class="btn btn-secondary">
+        Volver
+      </router-link>
+    </p>
   </div>
 </template>
 

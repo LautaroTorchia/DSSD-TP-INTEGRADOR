@@ -18,6 +18,11 @@
     </div>
     <div v-else class="spinner-border spinner-border-sm">
     </div>
+    <p class="text-center">
+        <router-link :to="{name : 'home'}" class="btn btn-secondary">
+          Volver 
+        </router-link>
+      </p>
   </div>
 </template>
 

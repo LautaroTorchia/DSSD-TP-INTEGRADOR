@@ -1,36 +1,34 @@
 <template>
-    <Navbar />
+  <Navbar />
   <div class="container pt-4 pb-4">
-  <div>
-    <h1>Crear ordenes de entrega</h1>
-    <div v-if="!loading">
-      <ul
-        v-for="collection in showCollections"
-        :key="collection.id"
-        class="list-group"
-      >
-        <li class="list-group-item">
-          <div class="d-flex justify-content-between align-items-center">
-            <span>{{ collection.name }}</span>
-            <router-link
-              :to="{
+    <div>
+      <h1>Crear ordenes de entrega</h1>
+      <div v-if="!loading">
+        <ul v-for="collection in showCollections" :key="collection.id" class="list-group">
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+              <span>{{ collection.name }}</span>
+              <router-link :to="{
                 name: 'delivery-order-create',
                 params: { collection: collection.id },
-              }"
-              class="btn btn-primary"
-            >
-              <slot>Crear ordenes de entrega</slot>
-            </router-link>
-          </div>
-        </li>
-      </ul>
+              }" class="btn btn-primary">
+                <slot>Crear ordenes de entrega</slot>
+              </router-link>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div v-else-if="loading" class="spinner-border spinner-border-sm"></div>
+      <div v-else-if="collections.error" class="text-danger">
+        Error loading collections: {{ collections.error }}
+      </div>
+      <div v-else>No hay nada</div>
     </div>
-    <div v-else-if="loading" class="spinner-border spinner-border-sm"></div>
-    <div v-else-if="collections.error" class="text-danger">
-      Error loading collections: {{ collections.error }}
-    </div>
-    <div v-else>No hay nada</div>
-  </div>
+    <p class="text-center">
+      <router-link :to="{ name: 'home' }" class="btn btn-secondary">
+        Volver
+      </router-link>
+    </p>
   </div>
 </template>
 
