@@ -36,7 +36,6 @@ export const useAuthStore = defineStore({
       user.role =user.role.filter(
         (role) => role.username === user.username,
       ).map((role) => role.role_denomination)
-      console.log(user.role)
       this.user = user;
       localStorage.setItem("user", JSON.stringify(user));
 

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { useFurnitureStore } from "./furniture.store";
+import { setBonitaVariable } from "@/helpers";
 import { fetchWrapper, advanceNamedBonitaTask } from "@/helpers";
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`;
@@ -82,6 +82,11 @@ export const useCollectionsStore = defineStore({
           instancia_bonita: caseId,
         })
         .catch((error) => (this.collections = { error }));
+      try{
+        setBonitaVariable(caseId, "collection_id", values.name)
+      }catch(error){
+        console.error(error)
+      }
     },
     async finish(collection) {
       collection.designed = true;

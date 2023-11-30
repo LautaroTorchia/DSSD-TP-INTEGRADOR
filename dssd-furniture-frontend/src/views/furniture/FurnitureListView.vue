@@ -48,7 +48,6 @@
         </tbody>
       </table>
       <div>
-        <BackButton class="btn btn-primary me-2">Volver</BackButton>
         <router-link :to="{ name: 'collections' }" class="btn btn-primary">
           Volver a listado de colecciones
         </router-link>
@@ -63,7 +62,6 @@
 import { storeToRefs } from "pinia";
 import { useFurnitureStore, useCollectionsStore } from "@/stores";
 import { router } from "@/helpers";
-import BackButton from "@/components/BackButton.vue";
 import { onBeforeMount, ref } from "vue";
 import Navbar from "@/components/Navbar.vue";
 

@@ -88,7 +88,6 @@ const renegotiate = async () => {
     const totalMaterialReservations = await fetchWrapper.get(
       `${baseUrl}/reservas/reservas-materiales/`,
     );
-    console.log(totalMaterialReservations);
     const allMaterialReservations = totalMaterialReservations.filter(
       (reservation) => reservation.coleccion === collectionIdAsInt,
     );
@@ -115,7 +114,6 @@ const renegotiate = async () => {
     const lugarFabricacionReservations = await fetchWrapper.get(
       `${baseUrl}/reservas/reservas-lugares-fabricacion/`,
     );
-    console.log(lugarFabricacionReservations);
 
     const lugarFabricacionReservationsToDelete =
       lugarFabricacionReservations.filter(
@@ -148,7 +146,6 @@ const renegotiate = async () => {
         caseId.value,
         "cantidad_materiales",
       );
-      console.log(cantidadMateriales);
       const materialsArray = JSON.parse(cantidadMateriales);
 
       for (let i = 0; i < materialsArray.length; i++) {

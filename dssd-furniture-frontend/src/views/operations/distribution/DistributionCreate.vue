@@ -23,9 +23,9 @@
       </div>
       <p class="text-danger text-center">{{ submitError }}</p>
       <div class="submit-container">
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Confirmar</button>
         <button type="button" class="btn btn-secondary" @click="clearForm">
-          Clear
+          Limpiar
         </button>
       </div>
     </div>

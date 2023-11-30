@@ -98,7 +98,6 @@
             <button type="submit" class="btn btn-primary btn-lg">Crear</button>
           </div>
         </form>
-        <BackButton />
       </div>
     </div>
   </div>
@@ -106,7 +105,6 @@
 
 <script setup>
 import { onBeforeMount, ref } from "vue";
-import BackButton from "@/components/BackButton.vue";
 import { getCurrentInstance } from "vue";
 import { useMaterialsStore } from "@/stores";
 

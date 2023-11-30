@@ -181,7 +181,6 @@ router.beforeEach(async (to, from, next) => {
       );
 
       const allowedRoles = getAllowedRoles(to.meta);
-      console.log("allowed roles in that view: ", allowedRoles);
 
       const storedUsername = JSON.parse(localStorage.getItem("user")).username;
       const matchingRoles = response.filter(

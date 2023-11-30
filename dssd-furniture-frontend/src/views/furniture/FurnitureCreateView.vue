@@ -29,7 +29,7 @@ async function handleFormSubmission(formData) {
     <Navbar />
   <div class="container pt-4 pb-4">
   <div>
-    <div v-if="loading" class="spinner-border spinner-border-sm">
+    <div v-if="loading">
       <div class="spinner-border spinner-border-sm"></div>
       <h2 class="text-center">Creando mueble</h2>
     </div>

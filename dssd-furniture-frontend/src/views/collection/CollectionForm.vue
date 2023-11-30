@@ -29,7 +29,6 @@
           <button type="submit" class="btn btn-primary">Confirmar</button>
         </div>
       </form>
-      <BackButton />
     </div>
   </div>
 </template>
@@ -80,7 +79,6 @@
 
 <script setup>
 import { ref } from "vue";
-import BackButton from "@/components/BackButton.vue";
 import { getCurrentInstance } from "vue";
 
 const formData = ref({
