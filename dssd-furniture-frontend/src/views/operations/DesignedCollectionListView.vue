@@ -26,7 +26,7 @@
                 <td>
                   <div v-if="collection.cantidadMateriales">
                     <div v-if="collection.planDeFabricacion">
-                      <div v-if="collection.orders_placed">
+                      <div v-if="collection.orders_placed">                        
                         <router-link :to="{
                           name: 'material-control-list',
                           params: { collection: collection.id },

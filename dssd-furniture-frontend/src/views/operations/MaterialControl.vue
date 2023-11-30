@@ -42,7 +42,7 @@
         {{ errorMessage }}
       </div>
       <div class="d-flex justify-content-between mt-4">
-        <button class="btn btn-primary" @click="renegociate">
+        <button class="btn btn-primary" @click="renegociate" :disabled="allReservationsDelivered">
           Renegociar entregas
         </button>
         <button class="btn btn-success" @click="advanceToNextStep" :disabled="!allReservationsDelivered">

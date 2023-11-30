@@ -72,13 +72,13 @@
                           <label class="form-check-label"
                             :for="'materialProvided-' + materialFromProvider.id">Seleccionar</label>
                           <div v-if="materialFromProvider.checked">
-                            <label for="amount">Amount:</label>
+                            <label for="amount">Cantidad:</label>
                             <input type="number" class="form-control" v-model.number="selectedMaterials[material.id][
                               materialFromProvider.id
                             ]
                               " min="1" :max="materialFromProvider.cantidad_disponible" />
 
-                            <label for="deliveryDate">Delivery Date (minimo
+                            <label for="deliveryDate">Fecha de entrega (minimo
                               {{
                                 materialFromProvider.plazo_entrega_dias
                               }}
@@ -98,15 +98,15 @@
                             <div v-if="!validateTotalAmount(material.id, material.amount)
                               ">
                               <p class="text-danger">
-                                Total amount for {{ material.name }} must be
-                                {{ material.amount }}, but is
+                                Cantidad total de {{ material.name }} debe ser
+                                {{ material.amount }}, pero es
                                 {{ getTotalAmount(material.id) }}
                               </p>
                             </div>
 
                             <div v-if="!validateDeliveryDate(materialFromProvider)">
                               <p class="text-danger">
-                                Delivery date is required for selected material
+                                Fecha de entrega es requerida para el material {{ material.name }}
                               </p>
                             </div>
                           </div>
@@ -120,8 +120,7 @@
           </div>
           <div v-if="!validateAllMaterials()">
             <p class="text-danger text-center">
-              Total amount for each material must be equal to the amount of the
-              material
+              La cantidad total de cada material debe ser igual a la cantidad del material requerida
             </p>
           </div>
         </div>

@@ -41,7 +41,7 @@ const loading = ref(true);
 onMounted(async () => {
   await collectionStore.getAll();
   const designedCollections = collections.value.filter((collection) => {
-    return collection.designed;
+    return collection.designed && !collection.fabricated;
   });
 
   showCollections.value = await Promise.all(

@@ -188,6 +188,7 @@ const markAsFabricated = async (reservation) => {
       "Estas seguro que quieres confirmar a la coleccion como fabricada?",
     );
     if (confirmed) {
+      loading.value = true;
       const plan_fabricacion = await getBonitaVariable(
         caseId.value,
         "plan_de_fabricacion",
@@ -219,6 +220,7 @@ const markAsFabricated = async (reservation) => {
   } catch (error) {
     console.error(error);
   }
+  loading.value = false;
 };
 
 const isFabricated = ref(false);
