@@ -33,14 +33,14 @@ export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   linkActiveClass: "active",
   routes: [
-    { path: "/", component: Home, name: "home" },
+    { path: "/", component: Home, name: "home", meta: { roles: ["admin","designer","operations_analist","factory_liason","commercial_analist" ] }, },
     { path: "/forbidden", component: ForbiddenPage, name: "forbidden" },
     { path: "/login", component: Login, name: "login" },
     {
       path: "/dashboard",
       component: Dashboard,
       name: "dashboard",
-      meta: { roles: ["admin"] },
+      meta: { roles: ["admin","designer","operations_analist","factory_liason","commercial_analist" ] },
     },
 
     {
@@ -169,7 +169,7 @@ router.beforeEach(async (to, from, next) => {
   const auth = useAuthStore();
 
   // Check if the route requires authentication
-  if (authRequired && auth.isTokenExpired) {
+  if (authRequired && localStorage.getItem("user") == null) {
     return next("/login");
   }
 

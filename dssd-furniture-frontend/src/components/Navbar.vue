@@ -4,7 +4,6 @@
       <router-link to="/" class="nav-item nav-link">Home</router-link>
       <router-link v-if="role.some(r => ['admin','designer'].includes(r))" :to="{ name: 'collections' }" class="nav-item nav-link">Ver Colecciones</router-link>
       <router-link v-if="role.some(r => ['admin','operations_analist'].includes(r))" :to="{ name: 'designed-collections' }" class="nav-item nav-link">Analizar materiales</router-link>
-      <router-link v-if="role.some(r => ['admin'].includes(r))" :to="{ name: 'dashboard' }" class="nav-item nav-link">Indicadores</router-link>
       <router-link v-if="role.some(r => ['admin','commercial_analist'].includes(r))" :to="{ name: 'delivery-order-collection-list' }" class="nav-item nav-link">Ordenes de entrega</router-link>
       <router-link v-if="role.some(r => ['admin','factory_liason'].includes(r))" :to="{ name: 'fabrication-control-list' }" class="nav-item nav-link">Controlar fabricación</router-link>
       <router-link v-if="role.some(r => ['admin','operations_analist'].includes(r))" :to="{ name: 'distribution-list' }" class="nav-item nav-link">Distribución interna</router-link>
