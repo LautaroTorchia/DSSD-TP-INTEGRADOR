@@ -101,12 +101,6 @@ const finishCollection = async (collection) => {
                     class="btn btn-danger btn-sm ml-1">
                     Borrar
                   </button>
-                  <router-link v-if="!collection.designed" :to="{
-                    name: 'collection-update',
-                    params: { collection: collection.id },
-                  }" class="btn btn-primary btn-sm ml-1">
-                    <slot>Editar</slot>
-                  </router-link>
                   <button v-if="!collection.designed" @click="finishCollection(collection)"
                     class="btn btn-success btn-sm ml-1">
                     Terminar
